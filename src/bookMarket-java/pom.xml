@@ -119,6 +119,12 @@
       <artifactId>commons-fileupload</artifactId>
       <version>1.4</version>
     </dependency>
+    <!--  阿里云oss  -->
+    <dependency>
+      <groupId>com.aliyun</groupId>
+      <artifactId>aliyun-java-sdk-ossadmin</artifactId>
+      <version>2.0.1</version>
+    </dependency>
   </dependencies>
 
 
