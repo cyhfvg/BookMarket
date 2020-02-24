@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 日志级别以及优先级排序:OFF > FATAL > ERROR > WARN > INFO > DEBUG > ALL -->
+<!--Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出-->
+<!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数-->
+<Configuration status="ALL" monitorInterval="5">
+    <Properties>
+        <Property name="appName">bookmarket</Property>
+        <Property name="LOG_HOME">${sys:catalina.home}/logs/${appName}</Property>
+        <Property name="errorfilepath">${LOG_HOME}/error.log</Property>
+        <property name="layout1">%d{yyyy/MM/dd HH:mm:ss.SSS} [%t] %-5p %c{1.} %l %F - %m%n</property>
+        <property name="layout2">%d{yyyy/MM/dd HH:mm:ss.SSS} %-5level %c{3.} %L %M - %msg%xEx%n</property>
+        <property name="layout3">%d{yyyy/MM/dd HH:mm:ss.sss} %-5level %class{36} %L %M - %msg%xEx%n</property>
+    </Properties>
+
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- 控制台只输出level1级别及以上的信息(onMatch), 其他的直接拒绝(onMismatch),设置后可屏蔽具体logger的设定 -->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${layout2}" />
+        </Console>
+        <!-- 文件打印所有信息，适合临时测试使用 ,append="true" 指定追加内容到文件 -->
+        <File name="log" fileName="${LOG_HOME}/test-temp.log" append="false">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
+        </File>
+
+        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档-->
+        <RollingFile name="RollingFileInfo" fileName="${LOG_HOME}/info.log"
+            filePattern="${LOG_HOME}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${layout1}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+                <!-- 每小时文件rollover -->
+                <CronTriggeringPolicy schedule="0 0 * * * ?"/>
+                <!--TimeBasedTriggeringPolicy表示按照时间间隔来进行日志文件的滚动，间隔单位可以是分钟、小时，具体需要根据filePattern的格式来进行判别；-->
+                <!--例如filePattern="e:/app-%d{yyyy-MM-dd_HH-mm}-%i.out"，则表示mm（分钟）为单位；-->
+                <!--<TimeBasedTriggeringPolicy interval="1" modulate="true"/>-->
+            </Policies>
+            <!-- DefaultRolloverStrategy 指定同一个log文件夹下，最多可旋转多少个文件，默认7个 -->
+            <DefaultRolloverStrategy max="20">
+                <!-- 删除策略,basePath表示根文件夹,maxDepth表示路径深度,0表示根目录自身,默认1,仅仅根目录下的文件可访问，删除无法恢复 -->
+                <Delete basePath="${LOG_HOME}" maxDepth="1">
+                    <IfFileName glob="info-%d{yyyy-MM-dd}-%i.log"/>
+                    <!-- 删除30天前的数据 -->
+                    <IfLastModified age="30d"/>
+                    <!-- 访问文件数,保留最新10个文件 exceeds表示删除的文件数量阈值 -->
+                    <IfAccumulatedFileCount exceeds="10"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- warn 100mb -->
+        <RollingFile name="RollingFileWarn" fileName="${LOG_HOME}/warn.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${layout2}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+        <!-- error 100mb -->
+        <RollingFile name="RollingFileError" fileName="${LOG_HOME}/error.log"
+                     filePattern="${LOG_HOME}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${layout3}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+    </Appenders>
+
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效-->
+    <Loggers>
+        <root level="all">
+            <appender-ref ref="Console"/>
+            <!-- Info输出到文件 -->
+            <appender-ref ref="RollingFileInfo"/>
+            <!-- Warn输出到文件 -->
+            <appender-ref ref="RollingFileWarn"/>
+            <!-- Error输出到文件 -->
+            <appender-ref ref="RollingFileError"/>
+        </root>
+
+        <!-- 过滤掉spring的一些无用的DEBUG信息 -->
+        <logger name="org.springframework" level="INFO"/>
+
+        <!-- controller 包下 所有 log 都 使用 Console 输出。-->
+        <!-- additivity="false" 指定此logger输出，则上层logger=>root_logger不输出。否则会输出两次 -->
+        <!-- <logger name="controller" level="ALL" additivity="false"> -->
+            <!-- <appender-ref ref="Console"/> -->
+        <!-- </logger> -->
+
+        <!-- 在此添加 -->
+
+    </Loggers>
+</Configuration>
