@@ -26,6 +26,7 @@
         <servlet-name>springMVC</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+
     <!--把applicationContext.xml加入到配置文件中-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -34,4 +35,29 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+<!--    <context-param>-->
+<!--        <param-name>log4jConfigLocation</param-name>-->
+<!--        <param-value>/WEB-INF/log4j.xml</param-value>-->
+<!--    </context-param>-->
+
+
+    <!-- log4j-begin -->
+    <listener>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
+    <filter>
+        <filter-name>log4jServletFilter</filter-name>
+        <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>log4jServletFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    <!-- log4j-end -->
+
 </web-app>
