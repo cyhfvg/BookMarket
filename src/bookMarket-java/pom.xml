@@ -21,35 +21,28 @@
 
 
   <dependencies>
+
+    <!--    测试-->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
+
     <!--    日志-->
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>2.0.0-alpha1</version>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>2.0.0-alpha0</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>osgi-over-slf4j</artifactId>
-      <version>2.0.0-alpha1</version>
-      <scope>runtime</scope>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-web</artifactId>
+      <version>2.0</version>
     </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j13</artifactId>
-      <version>1.0.1</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-    </dependency><!--    JavaEE-->
+
+    <!--    JavaEE-->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -65,12 +58,14 @@
       <artifactId>jstl</artifactId>
       <version>1.0</version>
     </dependency>
+
     <!--    mysql驱动包-->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.18</version>
     </dependency>
+
     <!--    springframework-->
     <dependency>
       <groupId>org.springframework</groupId>
@@ -108,6 +103,7 @@
       <artifactId>aspectjweaver</artifactId>
       <version>1.9.5</version>
     </dependency>
+
     <!--其他需要的包-->
     <dependency>
       <groupId>org.apache.commons</groupId>
