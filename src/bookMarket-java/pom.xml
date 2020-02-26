@@ -15,13 +15,14 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>10</maven.compiler.source>
+    <maven.compiler.target>10</maven.compiler.target>
 
     <!-- version-begin -->
     <slf4j.version>1.7.24</slf4j.version>
     <log4j2.version>2.8.2</log4j2.version>
     <spring.version>5.2.2.RELEASE</spring.version>
+    <hibernate.version>5.3.0.Final</hibernate.version>
     <!-- version-end -->
   </properties>
 
@@ -86,6 +87,21 @@
       <artifactId>jstl</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <version>1.3.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.25.0-GA</version>
+    </dependency>
 
     <!--    mysql驱动包-->
     <dependency>
@@ -120,6 +136,12 @@
       <artifactId>spring-jdbc</artifactId>
       <version>${spring.version}</version>
     </dependency>
+    <!-- spring-orm -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.github.stefanbirkner</groupId>
       <artifactId>system-rules</artifactId>
@@ -132,6 +154,28 @@
       <version>1.9.5</version>
     </dependency>
 
+    <!-- hibernate -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.hibernate</groupId>-->
+    <!--      <artifactId>hibernate-c3p0</artifactId>-->
+    <!--      <version>${hibernate.version}</version>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>com.mchange</groupId>-->
+    <!--      <artifactId>c3p0</artifactId>-->
+    <!--      <version>0.9.5.2</version>-->
+    <!--    </dependency>-->
+
     <!--其他需要的包-->
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -143,24 +187,34 @@
       <artifactId>commons-fileupload</artifactId>
       <version>1.4</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <version>2.7.0</version>
+    </dependency>
     <!--  阿里云oss  -->
     <dependency>
       <groupId>com.aliyun</groupId>
       <artifactId>aliyun-java-sdk-ossadmin</artifactId>
       <version>2.0.1</version>
     </dependency>
+    <!-- 数据库连接池 -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.1.21</version>
+    </dependency>
   </dependencies>
 
 
   <build>
     <finalName>bookMarket-java</finalName>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <pluginManagement>
       <plugins>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>

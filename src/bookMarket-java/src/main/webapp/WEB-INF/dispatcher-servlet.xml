@@ -12,6 +12,9 @@
 
 <!--    配置注解驱动 可以将request参数与绑定到controller参数上-->
     <mvc:annotation-driven/>
+    <!--    自动扫描装配注解类 -->
+    <context:component-scan base-package="cn.cslg.controller"/>
+    <context:component-scan base-package="cn.cslg.service"/>
 
 <!--    静态资源映射-->
 <!--    静态资源放在webapp的statics目录下 映射如下-->
@@ -31,6 +34,4 @@
         <property name="exposeContextBeansAsAttributes" value="true"/>
     </bean>
 
-<!--    自动扫描装配-->
-    <context:component-scan base-package="controller"/>
 </beans>
