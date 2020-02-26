@@ -2,7 +2,7 @@
 <!-- 日志级别以及优先级排序:OFF > FATAL > ERROR > WARN > INFO > DEBUG > ALL -->
 <!--Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，当设置成trace时，你会看到log4j2内部各种详细输出-->
 <!--monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数-->
-<Configuration status="ALL" monitorInterval="5">
+<Configuration status="OFF" monitorInterval="5">
     <Properties>
         <Property name="appName">bookmarket</Property>
         <Property name="LOG_HOME">${sys:catalina.home}/logs/${appName}</Property>
@@ -86,14 +86,38 @@
             <appender-ref ref="RollingFileError"/>
         </root>
 
+        <!-- cn.cslg.controller 包下 所有 log 都 使用 Console 输出。-->
+        <!-- additivity="false" 指定此logger输出，则上层logger=>root_logger不输出。否则会输出两次 -->
+        <!-- <logger name="cn.cslg.controller" level="ALL" additivity="false"> -->
+        <!-- <appender-ref ref="Console"/> -->
+        <!-- </logger> -->
+
         <!-- 过滤掉spring的一些无用的DEBUG信息 -->
         <logger name="org.springframework" level="INFO"/>
 
-        <!-- controller 包下 所有 log 都 使用 Console 输出。-->
-        <!-- additivity="false" 指定此logger输出，则上层logger=>root_logger不输出。否则会输出两次 -->
-        <!-- <logger name="controller" level="ALL" additivity="false"> -->
-            <!-- <appender-ref ref="Console"/> -->
-        <!-- </logger> -->
+        <!-- begin hibernate logger -->
+        <logger name="org.hibernate" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </logger>
+        <logger name="org.hibernate.sql" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+            <!-- Info输出到文件 -->
+            <appender-ref ref="RollingFileInfo"/>
+            <!-- Warn输出到文件 -->
+            <appender-ref ref="RollingFileWarn"/>
+            <!-- Error输出到文件 -->
+            <appender-ref ref="RollingFileError"/>
+        </logger>
+        <logger name="org.hibernate.type.descriptor.sql" level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+            <!-- Info输出到文件 -->
+            <appender-ref ref="RollingFileInfo"/>
+            <!-- Warn输出到文件 -->
+            <appender-ref ref="RollingFileWarn"/>
+            <!-- Error输出到文件 -->
+            <appender-ref ref="RollingFileError"/>
+        </logger>
+        <!-- end hibernate -->
 
         <!-- 在此添加 -->
 
