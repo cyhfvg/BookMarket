@@ -10,15 +10,15 @@
     <!--    设置扫描目录-->
     <context:component-scan base-package="cn.cslg.controller"/>
     <context:component-scan base-package="cn.cslg.dao"/>
-    <context:component-scan base-package="cn.cslg.dao.impl"/>
     <context:component-scan base-package="cn.cslg.service"/>
-    <context:component-scan base-package="cn.cslg.service.impl"/>
     <context:component-scan base-package="cn.cslg.model"/>
     <context:annotation-config/>
 
-    <!-- hibernate 配置引入 -->
-    <import resource="spring-hibernate.xml"/>
 
+
+    <!-- begin hibernate 配置 事务管理 -->
+    <!-- hibernate 配置 -->
+    <import resource="spring-hibernate.xml"/>
     <!-- 事务管理 txManager, Hibernate的事务管理类 -->
     <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
@@ -35,8 +35,8 @@
             <tx:method name="add"/>
         </tx:attributes>
     </tx:advice>
-
     <!-- 注解方式事务管理 -->
     <tx:annotation-driven transaction-manager="txManager" proxy-target-class="false"/>
+    <!-- end hibernate -->
 
 </beans>

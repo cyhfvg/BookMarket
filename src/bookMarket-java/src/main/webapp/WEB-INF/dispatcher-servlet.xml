@@ -2,9 +2,9 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
 
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
 <!--    此文件负责整个mvc中的配置-->
 
 <!--    启用spring的一些annotation-->
@@ -15,6 +15,7 @@
     <!--    自动扫描装配注解类 -->
     <context:component-scan base-package="cn.cslg.controller"/>
     <context:component-scan base-package="cn.cslg.service"/>
+    <context:component-scan base-package="cn.cslg.advice"/>
 
 <!--    静态资源映射-->
 <!--    静态资源放在webapp的statics目录下 映射如下-->
@@ -34,4 +35,35 @@
         <property name="exposeContextBeansAsAttributes" value="true"/>
     </bean>
 
+    <!-- begin json 转换 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper" ref="objectMapper"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <!-- 序列化行为定制类,自己扩展Jackson的ObjectMapper(extends) -->
+    <bean id="objectMapper" class="cn.cslg.json.CustomObjectMapper" init-method="init">
+        <property name="camelCaseToLowerCaseWithUnderscores" value="true"/>
+        <property name="dateFormatPattern" value="yyyy-MM-dd HH:mm:ss"/>
+    </bean>
+    <!-- end json 转换 -->
+
+    <!-- begin validation -->
+    <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>
+    <!-- end validation -->
+
+    <!-- begin token AOP 验证 -->
+    <bean id="tokenManager" class="cn.cslg.security.impl.DefaultTokenManager"/>
+    <bean id="securityAspect" class="cn.cslg.security.SecurityAspect">
+        <property name="tokenManager" ref="tokenManager"/>
+        <property name="tokenName" value="X-Token"/>
+    </bean>
+    <aop:config>
+        <aop:aspect ref="securityAspect">
+            <aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping)"/>
+        </aop:aspect>
+    </aop:config>
+    <!-- end token AOP 验证 -->
 </beans>

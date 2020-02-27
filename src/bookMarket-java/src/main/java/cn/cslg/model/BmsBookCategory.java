@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Entity;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 
 
