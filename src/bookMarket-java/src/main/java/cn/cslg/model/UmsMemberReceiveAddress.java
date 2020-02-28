@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Scope;
  * @description 会员收货地址表
 
 (ums_member_receive_address)表实体类
- * @author 张广洲
- * @date 2020-02-26 16:02:12
+ * @author zhangguangzhou
+ * @date 2020-02-28 17:32:08
  */
 @Entity
 @Table(name = "ums_member_receive_address")
@@ -85,8 +85,8 @@ public class UmsMemberReceiveAddress {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "UmsMemberReceiveAddressIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "UmsMemberReceiveAddressIdGenerator")
     public Long getId() {
         return id;
     }

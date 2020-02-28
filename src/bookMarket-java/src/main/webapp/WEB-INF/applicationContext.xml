@@ -23,20 +23,39 @@
     <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
-    <!-- 利用AOP方式给方法加上事务管理 -->
-    <aop:config proxy-target-class="true">
-        <!-- service包中所有add开头的方法 -->
-        <aop:pointcut id="txServiceAdd" expression="execution(public * cn.cslg.service..*.add*(..))"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="txServiceAdd"/>
-    </aop:config>
-    <!-- 具体哪些方法需要加上事务管理 -->
+    <!-- 指定具体哪些方法需要加上事务管理 -->
     <tx:advice id="txAdvice" transaction-manager="txManager">
         <tx:attributes>
-            <tx:method name="add"/>
+            <tx:method name="do*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="del*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="mod*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="ins*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="upd*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="invoke" propagation="REQUIRES_NEW" rollback-for="Exception"/>
+            <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
         </tx:attributes>
     </tx:advice>
-    <!-- 注解方式事务管理 -->
-    <tx:annotation-driven transaction-manager="txManager" proxy-target-class="false"/>
+    <!-- 利用AOP方式给方法加上事务管理 -->
+    <aop:config proxy-target-class="true">
+        <!-- dao包中所有的方法 都加上切面,进行事务处理，具体处理在txManager -->
+        <aop:pointcut id="daoPointCut" expression="execution(* cn.cslg.dao..*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="daoPointCut"/>
+    </aop:config>
     <!-- end hibernate -->
+
+    <!-- begin token AOP 验证 -->
+    <bean id="tokenManager" class="cn.cslg.security.impl.DefaultTokenManager"/>
+    <bean id="securityAspect" class="cn.cslg.security.SecurityAspect">
+        <property name="tokenManager" ref="tokenManager"/>
+        <property name="tokenName" value="X-Token"/>
+    </bean>
+    <aop:config>
+        <aop:aspect ref="securityAspect">
+            <aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping)"/>
+        </aop:aspect>
+    </aop:config>
+    <!-- end token AOP 验证 -->
 
 </beans>

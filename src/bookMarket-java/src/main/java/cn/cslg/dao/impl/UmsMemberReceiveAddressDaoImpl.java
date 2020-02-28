@@ -1,6 +1,5 @@
 package cn.cslg.dao.impl;
 
-import cn.cslg.dao.GenericDaoImpl;
 import cn.cslg.model.UmsMemberReceiveAddress;
 import cn.cslg.dao.UmsMemberReceiveAddressDao;
 import org.springframework.stereotype.Repository;

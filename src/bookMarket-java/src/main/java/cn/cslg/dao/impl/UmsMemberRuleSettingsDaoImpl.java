@@ -1,6 +1,5 @@
 package cn.cslg.dao.impl;
 
-import cn.cslg.dao.GenericDaoImpl;
 import cn.cslg.model.UmsMemberRuleSettings;
 import cn.cslg.dao.UmsMemberRuleSettingsDao;
 import org.springframework.stereotype.Repository;

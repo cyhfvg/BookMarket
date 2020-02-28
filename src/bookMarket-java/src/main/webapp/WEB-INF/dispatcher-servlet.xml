@@ -54,16 +54,4 @@
     <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>
     <!-- end validation -->
 
-    <!-- begin token AOP 验证 -->
-    <bean id="tokenManager" class="cn.cslg.security.impl.DefaultTokenManager"/>
-    <bean id="securityAspect" class="cn.cslg.security.SecurityAspect">
-        <property name="tokenManager" ref="tokenManager"/>
-        <property name="tokenName" value="X-Token"/>
-    </bean>
-    <aop:config>
-        <aop:aspect ref="securityAspect">
-            <aop:around method="execute" pointcut="@annotation(org.springframework.web.bind.annotation.RequestMapping)"/>
-        </aop:aspect>
-    </aop:config>
-    <!-- end token AOP 验证 -->
 </beans>

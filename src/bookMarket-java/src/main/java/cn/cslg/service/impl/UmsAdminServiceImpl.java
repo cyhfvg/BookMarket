@@ -1,11 +1,18 @@
 package cn.cslg.service.impl;
 
+import cn.cslg.dto.UmsAdminLoginParam;
+import cn.cslg.dto.UmsAdminParam;
 import cn.cslg.model.UmsAdmin;
 import cn.cslg.dao.UmsAdminDao;
 import cn.cslg.service.UmsAdminService;
+import cn.cslg.util.CodecUtil;
+import cn.cslg.util.CollectionUtil;
+import cn.cslg.util.StringUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,6 +61,27 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     /**
+     * 管理员注册
+     * @param umsAdminParam
+     * @return
+     */
+    @Override
+    public UmsAdmin register(UmsAdminParam umsAdminParam) {
+        UmsAdmin umsAdmin = new UmsAdmin();
+        BeanUtils.copyProperties(umsAdminParam, umsAdmin);
+        umsAdmin.setCreateTime(new Date());
+        umsAdmin.setStatus(1);
+        List<UmsAdmin> list = umsAdminDao.findByProperty(UmsAdmin.class, "username", umsAdmin.getUsername());
+        if (CollectionUtil.isNotEmpty(list)) {
+            return null;
+        }
+        String encodePassword = CodecUtil.encryptSHA(umsAdmin.getPassword());
+        umsAdmin.setPassword(encodePassword);
+        umsAdminDao.save(umsAdmin);
+        return umsAdmin;
+    }
+
+    /**
      * 修改数据
      *
      * @param umsAdmin 实例对象
@@ -71,5 +99,22 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public void deleteById(Long id) {
         this.umsAdminDao.deleteById(UmsAdmin.class, id);
+    }
+
+    /**
+     * 管理员登录
+     * @param umsAdminLoginParam
+     * @return
+     */
+    @Override
+    public UmsAdmin login(UmsAdminLoginParam umsAdminLoginParam) {
+        List<UmsAdmin> list = umsAdminDao.findByProperty(UmsAdmin.class, "username", umsAdminLoginParam.getUsername());
+        if (CollectionUtil.isNotEmpty(list)) {
+            UmsAdmin umsAdmin = list.get(0);
+            if (umsAdmin.getPassword().equals(CodecUtil.encryptSHA(umsAdminLoginParam.getPassword()))) {
+                return umsAdmin;
+            }
+        }
+        return null;
     }
 }

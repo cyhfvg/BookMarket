@@ -1,6 +1,5 @@
 package cn.cslg.dao.impl;
 
-import cn.cslg.dao.GenericDaoImpl;
 import cn.cslg.model.BmsBookCategory;
 import cn.cslg.dao.BmsBookCategoryDao;
 import org.springframework.stereotype.Repository;

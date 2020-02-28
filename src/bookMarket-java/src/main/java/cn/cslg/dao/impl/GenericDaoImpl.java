@@ -1,8 +1,10 @@
-package cn.cslg.dao;
+package cn.cslg.dao.impl;
 
 import java.io.Serializable;
 import java.util.List;
 
+import cn.cslg.dao.BaseDao;
+import cn.cslg.dao.GenericDao;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;

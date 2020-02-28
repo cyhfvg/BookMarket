@@ -1,6 +1,5 @@
 package cn.cslg.dao.impl;
 
-import cn.cslg.dao.GenericDaoImpl;
 import cn.cslg.model.UmsAdmin;
 import cn.cslg.dao.UmsAdminDao;
 import org.springframework.stereotype.Repository;

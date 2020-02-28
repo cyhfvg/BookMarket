@@ -36,6 +36,11 @@ public class Response {
         return this;
     }
 
+    public Response token(String token) {
+        this.meta.setToken(token);
+        return this;
+    }
+
     public Meta getMeta() {
         return this.meta;
     }
@@ -47,6 +52,7 @@ public class Response {
     public class Meta {
         private boolean success;
         private String message;
+        private String token;
 
         public Meta(boolean success) {
             this.success = success;
@@ -57,12 +63,26 @@ public class Response {
             this.message = message;
         }
 
+        public Meta(boolean success, String message, String token) {
+            this.success = success;
+            this.message = message;
+            this.token = token;
+        }
+
         public boolean isSuccess() {
             return success;
         }
 
         public String getMessage() {
             return message;
+        }
+
+        public String getToken() {
+            return this.token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
         }
     }
 }
