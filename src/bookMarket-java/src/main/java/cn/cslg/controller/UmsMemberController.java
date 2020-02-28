@@ -1,6 +1,7 @@
 package cn.cslg.controller;
 
 import cn.cslg.model.UmsMember;
+import cn.cslg.security.IgnoreSecurity;
 import cn.cslg.service.UmsMemberService;
 
 import cn.cslg.bean.Response;
@@ -38,6 +39,7 @@ public class UmsMemberController implements ApplicationContextAware{
      * @param id 主键
      * @return 单条数据
      */
+    @IgnoreSecurity
     @RequestMapping(value = "/selectOne", method = RequestMethod.GET)
     public Response selectOne(Long id) {
         return new Response().failure("");

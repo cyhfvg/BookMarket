@@ -38,6 +38,17 @@
     </listener>
     <!-- end applicationContext.xml -->
 
+    <!-- begin WebContext 对象管理 -->
+    <filter>
+        <filter-name>webContextFilter</filter-name>
+        <filter-class>cn.cslg.web.WebContextFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>webContextFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- end WebContext 对象管理 -->
+
 
     <!-- begin CORS -->
     <filter>

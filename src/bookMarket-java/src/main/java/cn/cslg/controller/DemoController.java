@@ -21,6 +21,7 @@ public class DemoController {
 
     private static Logger logger = LoggerFactory.getLogger(DemoController.class);
 
+    @IgnoreSecurity
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public Response index() {
         logger.trace("trace level");
