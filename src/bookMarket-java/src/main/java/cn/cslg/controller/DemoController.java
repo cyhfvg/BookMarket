@@ -24,13 +24,13 @@ public class DemoController {
     @IgnoreSecurity
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public Response index() {
-        logger.trace("trace level");
-        logger.debug("debug level");
-        logger.info("info level");
-        logger.warn("warn level");
-        logger.error("error level");
-        logger.error("字符串拼接方式一:{},此方式比+快", "logger");
-        logger.error("字符串拼接方式二:" + "logger");
+//        logger.trace("trace level");
+//        logger.debug("debug level");
+//        logger.info("info level");
+//        logger.warn("warn level");
+//        logger.error("error level");
+//        logger.error("字符串拼接方式一:{},此方式比+快", "logger");
+//        logger.error("字符串拼接方式二:" + "logger");
         return new Response().success();
     }
 }

@@ -1,5 +1,7 @@
 package cn.cslg.service;
 
+import cn.cslg.dto.UmsAdminLoginParam;
+import cn.cslg.dto.UmsAdminParam;
 import cn.cslg.model.UmsAdmin;
 import java.util.List;
 
@@ -37,6 +39,8 @@ public interface UmsAdminService {
      */
     void insert(UmsAdmin umsAdmin);
 
+
+    UmsAdmin register(UmsAdminParam umsAdminParam);
     /**
      * 修改数据
      *
@@ -52,5 +56,12 @@ public interface UmsAdminService {
      * @return 是否成功
      */
     void deleteById(Long id);
+
+    /**
+     * 管理员登录
+     * @param umsAdminLoginParam
+     * @return
+     */
+    UmsAdmin login(UmsAdminLoginParam umsAdminLoginParam);
 
 }

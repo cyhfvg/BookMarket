@@ -1,6 +1,5 @@
 package cn.cslg.dao.impl;
 
-import cn.cslg.dao.GenericDaoImpl;
 import cn.cslg.model.UmsRole;
 import cn.cslg.dao.UmsRoleDao;
 import org.springframework.stereotype.Repository;

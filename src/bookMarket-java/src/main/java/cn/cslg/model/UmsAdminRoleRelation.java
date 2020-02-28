@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Scope;
 /**
  * @description 后台用户-角色 关系表
 (ums_admin_role_relation)表实体类
- * @author 张广洲
- * @date 2020-02-26 16:02:12
+ * @author zhangguangzhou
+ * @date 2020-02-28 17:32:08
  */
 @Entity
 @Table(name = "ums_admin_role_relation")
@@ -42,8 +42,8 @@ public class UmsAdminRoleRelation {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "UmsAdminRoleRelationIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "UmsAdminRoleRelationIdGenerator")
     public Long getId() {
         return id;
     }

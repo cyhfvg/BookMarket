@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Scope;
  
 /**
  * @description 会员-书籍分类关系表(ums_member_book_category_relation)表实体类
- * @author 张广洲
- * @date 2020-02-26 16:02:12
+ * @author zhangguangzhou
+ * @date 2020-02-28 17:32:08
  */
 @Entity
 @Table(name = "ums_member_book_category_relation")
@@ -41,8 +41,8 @@ public class UmsMemberBookCategoryRelation {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "UmsMemberBookCategoryRelationIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "UmsMemberBookCategoryRelationIdGenerator")
     public Long getId() {
         return id;
     }

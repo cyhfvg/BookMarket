@@ -1,6 +1,5 @@
 package cn.cslg.dao.impl;
 
-import cn.cslg.dao.GenericDaoImpl;
 import cn.cslg.model.UmsMemberLoginLog;
 import cn.cslg.dao.UmsMemberLoginLogDao;
 import org.springframework.stereotype.Repository;

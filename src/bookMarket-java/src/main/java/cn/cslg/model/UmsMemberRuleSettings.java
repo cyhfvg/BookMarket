@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Scope;
 /**
  * @description 会员成长规则
 (ums_member_rule_settings)表实体类
- * @author 张广洲
- * @date 2020-02-26 16:02:12
+ * @author zhangguangzhou
+ * @date 2020-02-28 17:32:08
  */
 @Entity
 @Table(name = "ums_member_rule_settings")
@@ -66,8 +66,8 @@ public class UmsMemberRuleSettings {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "UmsMemberRuleSettingsIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "UmsMemberRuleSettingsIdGenerator")
     public Long getId() {
         return id;
     }

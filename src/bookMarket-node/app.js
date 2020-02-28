@@ -1,11 +1,13 @@
+let config = require('./config');
+
 let express = require('express');
+
 let app = express();
 
-app.get('/', (req, res) => {
-    res.send('Hello world');
-});
+// 总路由
+app.use('/', require('./router/index'));
 
-let server = app.listen(8081, () => {
+let server = app.listen(config.port , () => {
     let host = server.address().address;
     let port = server.address().port;
 

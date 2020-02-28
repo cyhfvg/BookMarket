@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Scope;
  
 /**
  * @description 用户-标签 关联表(ums_member_tag_relation)表实体类
- * @author 张广洲
- * @date 2020-02-26 16:02:12
+ * @author zhangguangzhou
+ * @date 2020-02-28 17:32:08
  */
 @Entity
 @Table(name = "ums_member_tag_relation")
@@ -41,8 +41,8 @@ public class UmsMemberTagRelation {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "UmsMemberTagRelationIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "UmsMemberTagRelationIdGenerator")
     public Long getId() {
         return id;
     }

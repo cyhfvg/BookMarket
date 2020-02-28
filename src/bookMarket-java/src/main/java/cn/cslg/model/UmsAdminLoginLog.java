@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Scope;
  
 /**
  * @description 后台用户登录日志(ums_admin_login_log)表实体类
- * @author 张广洲
- * @date 2020-02-26 16:02:12
+ * @author zhangguangzhou
+ * @date 2020-02-28 17:32:08
  */
 @Entity
 @Table(name = "ums_admin_login_log")
@@ -60,8 +60,8 @@ public class UmsAdminLoginLog {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "UmsAdminLoginLogIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "UmsAdminLoginLogIdGenerator")
     public Long getId() {
         return id;
     }

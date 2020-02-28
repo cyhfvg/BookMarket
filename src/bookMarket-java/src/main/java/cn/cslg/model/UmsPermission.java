@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Scope;
 /**
  * @description 用户权限表
 (ums_permission)表实体类
- * @author 张广洲
- * @date 2020-02-26 16:02:12
+ * @author zhangguangzhou
+ * @date 2020-02-28 17:32:08
  */
 @Entity
 @Table(name = "ums_permission")
@@ -85,8 +85,8 @@ public class UmsPermission {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid.hex")
-    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "UmsPermissionIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "UmsPermissionIdGenerator")
     public Long getId() {
         return id;
     }

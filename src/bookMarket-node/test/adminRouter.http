@@ -1,0 +1,15 @@
+###
+GET http://127.0.0.1:8081/admin/user
+Content-Type: application/json
+
+###
+GET http://127.0.0.1:8081/member/user
+Content-Type: application/json
+
+###
+GET http://127.0.0.1:8081/admin/admin
+Content-Type: application/json
+
+###
+GET http://127.0.0.1:8081/index
+Content-Type: application/json

@@ -44,6 +44,15 @@ public class UmsMemberController implements ApplicationContextAware{
     public Response selectOne(Long id) {
         return new Response().failure("");
     }
+
+    /**
+     * 添加一个用户
+     * @return
+     */
+    public Response insertOne(@RequestBody UmsMember umsMember) {
+        umsMemberService.insert(umsMember);
+        return new Response().failure("");
+    }
     
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
