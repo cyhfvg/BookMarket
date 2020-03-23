@@ -1,18 +1,13 @@
-const express = require('express');
-
-let app = express();
+let express = require('express');
+let config = require('../config');
+let path = require('path');
 
 let router = express.Router();
 
-router.get('/index', function(res, req) {
-    req.send('index Router');
-})
-
-
-// Todo: 子路由配置
-// 配置子路由
-app.use('/admin', require('./admin/admin'))
-app.use('/member', require('./member/member'))
+router.get('/', function(req, res) {
+    // res.sendFile(path.join(config.project_path, 'views', 'index.ejs'));
+    res.render('home.ejs');
+});
 
 // 导出路由
 module.exports = router;

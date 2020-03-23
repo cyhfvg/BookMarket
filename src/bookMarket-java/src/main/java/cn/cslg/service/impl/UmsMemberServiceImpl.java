@@ -1,11 +1,16 @@
 package cn.cslg.service.impl;
 
+import cn.cslg.dto.UmsMemberParam;
 import cn.cslg.model.UmsMember;
 import cn.cslg.dao.UmsMemberDao;
 import cn.cslg.service.UmsMemberService;
+import cn.cslg.util.CodecUtil;
+import cn.cslg.util.CollectionUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +55,31 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     @Override
     public void insert(UmsMember umsMember) {
         this.umsMemberDao.save(umsMember);
+    }
+
+    /**
+     * 注册新用户
+     * @param umsMemberParam dto注册实体
+     * @return umsMember 新用户实体
+     */
+    @Override
+    public UmsMember register(UmsMemberParam umsMemberParam) {
+        UmsMember umsMember = new UmsMember();
+        BeanUtils.copyProperties(umsMemberParam, umsMember);
+        umsMember.setCreateTime(new Date());
+        umsMember.setStatus(1);
+        // 判断用户是否已存在
+        List<UmsMember> list = umsMemberDao.findByProperty(UmsMember.class, "username", umsMember.getUsername());
+        if (CollectionUtil.isNotEmpty(list)) {
+            return null;
+        }
+
+        // 密码加密
+        String encodePassword = CodecUtil.encryptSHA(umsMember.getPassword());
+        umsMember.setPassword(encodePassword);
+        // 写入数据库
+        umsMemberDao.save(umsMember);
+        return umsMember;
     }
 
     /**

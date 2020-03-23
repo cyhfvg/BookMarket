@@ -1,5 +1,6 @@
 package cn.cslg.controller;
 
+import cn.cslg.dto.UmsMemberParam;
 import cn.cslg.model.UmsMember;
 import cn.cslg.security.IgnoreSecurity;
 import cn.cslg.service.UmsMemberService;
@@ -40,7 +41,7 @@ public class UmsMemberController implements ApplicationContextAware{
      * @return 单条数据
      */
     @IgnoreSecurity
-    @RequestMapping(value = "/selectOne", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public Response selectOne(Long id) {
         return new Response().failure("");
     }
@@ -49,9 +50,17 @@ public class UmsMemberController implements ApplicationContextAware{
      * 添加一个用户
      * @return
      */
-    public Response insertOne(@RequestBody UmsMember umsMember) {
-        umsMemberService.insert(umsMember);
-        return new Response().failure("");
+    @IgnoreSecurity
+    @RequestMapping(method = RequestMethod.POST)
+    public Response insertOne(@RequestBody UmsMemberParam umsMemberParam) {
+        UmsMember umsMember = umsMemberService.register(umsMemberParam);
+        Response response = new Response();
+        if (umsMember == null) {
+            logger.debug("新用户注册失败");
+            return response.failure("用户已存在,注册失败");
+        }
+        logger.debug("新用户注册成功");
+        return response.success(umsMember);
     }
     
     @Override

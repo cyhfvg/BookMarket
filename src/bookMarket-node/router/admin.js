@@ -1,8 +1,10 @@
-const express = require('express');
+let express = require('express');
+let config = require('../config');
+let path = require('path');
 
 let router = express.Router();
 
-router.get('/admin', function(req, res) {
+router.get('/', function(req, res) {
     res.send('/admin')
 });
 
