@@ -1,4 +1,7 @@
-const express = require('express');
+let express = require('express');
+let config = require('../config');
+let path = require('path');
+
 
 let router = express.Router();
 

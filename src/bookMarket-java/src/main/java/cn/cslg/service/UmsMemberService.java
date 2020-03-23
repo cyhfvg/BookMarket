@@ -1,5 +1,6 @@
 package cn.cslg.service;
 
+import cn.cslg.dto.UmsMemberParam;
 import cn.cslg.model.UmsMember;
 import java.util.List;
 
@@ -35,6 +36,12 @@ public interface UmsMemberService {
      * @return 实例对象
      */
     void insert(UmsMember umsMember);
+
+    /**
+     * 注册新用户
+     * @param umsMemberParam
+     */
+    UmsMember register(UmsMemberParam umsMemberParam);
 
     /**
      * 修改数据

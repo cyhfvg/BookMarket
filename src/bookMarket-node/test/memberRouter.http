@@ -1,0 +1,21 @@
+###
+POST http://127.0.0.1:8081/member/register
+Content-Type: application/json
+
+{
+    "username": "cyhfvg",
+    "password": "password"
+}
+
+###
+GET http://127.0.0.1:8081/member/test
+Content-Type: application/json
+
+###
+POST http://127.0.0.1:8081/member/register HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
