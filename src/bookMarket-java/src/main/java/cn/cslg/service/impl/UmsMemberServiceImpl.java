@@ -82,6 +82,18 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         return umsMember;
     }
 
+    @Override
+    public UmsMember login(UmsMemberParam umsMemberParam) {
+        List<UmsMember> list = umsMemberDao.findByProperty(UmsMember.class, "username", umsMemberParam.getUsername());
+        if (CollectionUtil.isNotEmpty(list)) {
+            UmsMember umsMember = list.get(0);
+            if (umsMember.getPassword().equals(CodecUtil.encryptSHA(umsMemberParam.getPassword()))) {
+                return umsMember;
+            }
+        }
+        return null;
+    }
+
     /**
      * 修改数据
      *

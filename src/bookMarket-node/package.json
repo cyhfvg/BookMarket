@@ -1,6 +1,8 @@
 {
+  "name": "book-market-node",
   "dependencies": {
     "axios": "^0.19.2",
+    "cookie-parser": "^1.4.5",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
     "log4js": "^6.1.2"

@@ -3,6 +3,7 @@ package cn.cslg.controller;
 import cn.cslg.dto.UmsMemberParam;
 import cn.cslg.model.UmsMember;
 import cn.cslg.security.IgnoreSecurity;
+import cn.cslg.security.TokenManager;
 import cn.cslg.service.UmsMemberService;
 
 import cn.cslg.bean.Response;
@@ -21,7 +22,6 @@ import javax.annotation.Resource;
  * @since 2020-02-27 23:03:01
  */
 @RestController
-@RequestMapping("/umsMember")
 public class UmsMemberController implements ApplicationContextAware{
 
     /**
@@ -29,7 +29,13 @@ public class UmsMemberController implements ApplicationContextAware{
      */
     @Resource
     private UmsMemberService umsMemberService;
-    
+
+    /**
+     * 令牌管理器
+     */
+    @Resource
+    private TokenManager tokenManager;
+
     private ApplicationContext applicationContext;
 
     private static Logger logger = LoggerFactory.getLogger(UmsMember.class);
@@ -51,7 +57,7 @@ public class UmsMemberController implements ApplicationContextAware{
      * @return
      */
     @IgnoreSecurity
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/umsMember", method = RequestMethod.POST)
     public Response insertOne(@RequestBody UmsMemberParam umsMemberParam) {
         UmsMember umsMember = umsMemberService.register(umsMemberParam);
         Response response = new Response();
@@ -61,6 +67,24 @@ public class UmsMemberController implements ApplicationContextAware{
         }
         logger.debug("新用户注册成功");
         return response.success(umsMember);
+    }
+
+    /**
+     *
+     * @param userName 用户名
+     * @param userPassword 用户密码
+     * @return response Response 对象
+     */
+    @IgnoreSecurity
+    @RequestMapping(value = "umsMember", method = RequestMethod.GET)
+    public Response login(@RequestParam("username") String userName, @RequestParam("password") String userPassword) {
+        UmsMember umsMember = umsMemberService.login(new UmsMemberParam(userName, userPassword));
+        Response response = new Response();
+        if (umsMember != null) {
+            String token = tokenManager.createToken(umsMember.getUsername());
+            return response.success(umsMember).token(token);
+        }
+        return response.failure("用户名或密码错误");
     }
     
     @Override
