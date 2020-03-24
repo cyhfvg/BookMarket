@@ -31,8 +31,6 @@ router.post('/register', (req, res) => {
 router.post('/login',util.urlencoded, (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
-    console.log(username);
-    console.log(password);
 
     axios.get('/umsMember', {
         params: {
