@@ -54,10 +54,8 @@ let vm = new Vue({
                 .then(response => {
                     if (response.data.success === true) {
                         // window.location.replace("/");
-                        let registerCloseBtn = document.getElementById('register_close_btn');
-                        registerCloseBtn.click();
-                        let loginButton = document.getElementById('loginButton');
-                        loginButton.click();
+                        document.getElementById('register_close_btn').click();
+                        document.getElementById('loginButton').click();
                     } else {
                         // Todo: 清空表单
                     }
@@ -73,8 +71,6 @@ let vm = new Vue({
         login: () => {
             let username = document.getElementById('loginUsername').value;
             let password = document.getElementById('loginPassword').value;
-            console.log('username' + username);
-            console.log('password' + password);
 
             vm.axiosInstance.post('/member/login', {
                 username: username,
@@ -83,10 +79,8 @@ let vm = new Vue({
             .then(response => {
                 if (response.data.success === true) {
                     // 关闭 登录 模态框
-                    vm.isLogin = true;
-                    let loginCloseBtn = document.getElementById('login_close_btn');
-                    loginCloseBtn.click();
-
+                    vm.state.isLogin = true;
+                    document.getElementById('login_close_btn').click();
                 } else {
                     // Todo
                 }
