@@ -39,7 +39,7 @@ exports.logger = logger;
 
 exports.use = function(app) {
     // app.use(log4js.connectLogger(dateFileLog, {level:'auto', format: ':method :url'}));
-    app.use(log4js.connectLogger(logger,{level: 'auto',format: (req, res, format) => format(`:remote-addr :method :url ${JSON.stringify(req.body)}`)
+    app.use(log4js.connectLogger(logger,{level: 'auto',format: (req, res, format) => format(`:remote-addr "HTTP/:http-version :method :url :status ${JSON.stringify(req.body)}" ":user-agent"`)
         // format: (req, res, format) => format(`:remote-addr - ${req.id} - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent"`)
     }));
 }

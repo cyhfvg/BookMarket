@@ -43,6 +43,8 @@ public interface UmsMemberService {
      */
     UmsMember register(UmsMemberParam umsMemberParam);
 
+    UmsMember login(UmsMemberParam umsMemberParam);
+
     /**
      * 修改数据
      *

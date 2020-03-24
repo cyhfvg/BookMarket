@@ -1,6 +1,7 @@
+let path = require('path');
 let express = require('express');
 let config = require('../config');
-let path = require('path');
+let util = require('../util');
 
 
 let router = express.Router();
