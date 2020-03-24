@@ -40,6 +40,7 @@ router.post('/login',util.urlencoded, (req, res) => {
     })
     .then(response => {
         res.cookie('token', response.data.meta.token, {maxAge: 600000});
+        res.cookie('userId', response.data.data.id, {maxAge: 600000});
 
         res.send(response.data.meta);
     })
