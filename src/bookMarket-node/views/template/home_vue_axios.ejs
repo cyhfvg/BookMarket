@@ -1,0 +1,119 @@
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
+
+<script type="text/javascript">
+let vm = new Vue({
+    el: '#app',
+    data() {
+        return {
+            likeBooks:[],
+            allBooks: [],
+            shoppingCart: [],
+            alertBox: {
+                alertStyle: '',
+                messageState: '',
+                messageInfo: '',
+            },
+            alertStyles: {
+                success: 'alert-success',
+                info: 'alert-info',
+                warning: 'alert-warning',
+                danger: 'alert-danger',
+                primary: 'alert-primary',
+                secondary: 'alert-secondary',
+                dark: 'alert-dark',
+                light: 'alert-light'
+            },
+            state:{
+                isLogin:false,
+                isMsgShow:false,
+            },
+            axiosInstance: null,
+        }
+    },
+    methods: {
+        /**
+         * 用户注册
+         */
+        register: () => {
+            let username = document.getElementById('registerUsername').value;
+            let password = document.getElementById('registerPassword').value;
+            let password1 = document.getElementById('registerPassword1').value;
+            if (username === '') {
+                vm.$options.methods.showAlert(vm.alertStyles.danger, '错误!', '用户名不可为空')
+            } else if(password === '' || password1 === '') {
+                vm.$options.methods.showAlert(vm.alertStyles.danger, '错误!', '密码不可为空')
+            } else if (password !== password1) {
+                vm.$options.methods.showAlert(vm.alertStyles.danger, '错误!', '两次密码必须相同');
+            } else {
+                vm.axiosInstance.post('/member/register', {
+                    username: username,
+                    password: password
+                })
+                .then(response => {
+                    if (response.data.success === true) {
+                        // window.location.replace("/");
+                        document.getElementById('register_close_btn').click();
+                        document.getElementById('loginButton').click();
+                    } else {
+                        // Todo: 清空表单
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            }
+        },
+        /**
+         * 用户登录
+         */
+        login: () => {
+            let username = document.getElementById('loginUsername').value;
+            let password = document.getElementById('loginPassword').value;
+
+            vm.axiosInstance.post('/member/login', {
+                username: username,
+                password: password
+            })
+            .then(response => {
+                if (response.data.success === true) {
+                    // 关闭 登录 模态框
+                    vm.state.isLogin = true;
+                    document.getElementById('login_close_btn').click();
+                } else {
+                    // Todo
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+        },
+        showAlert: (alertStyle, messageState, messageInfo) => {
+            vm.alertBox.alertStyle = alertStyle;
+            vm.alertBox.messageState = messageState;
+            vm.alertBox.messageInfo = messageInfo;
+            vm.state.isMsgShow = true;
+        },
+        hideAlert: () => {
+            vm.state.isMsgShow = !vm.state.isMsgShow;
+        },
+    },
+    created() {
+        this.axiosInstance = axios.create({
+            baseURL: 'http://127.0.0.1:8081',
+            timeout: 30000,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+    },
+    mounted() {
+
+    },
+    computed: {
+
+    },
+})
+</script>
