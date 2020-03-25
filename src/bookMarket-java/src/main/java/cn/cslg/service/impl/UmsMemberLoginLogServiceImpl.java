@@ -1,11 +1,15 @@
 package cn.cslg.service.impl;
 
+import cn.cslg.dto.UmsMemberLoginLogParam;
+import cn.cslg.dto.UmsMemberParam;
 import cn.cslg.model.UmsMemberLoginLog;
 import cn.cslg.dao.UmsMemberLoginLogDao;
 import cn.cslg.service.UmsMemberLoginLogService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,6 +54,20 @@ public class UmsMemberLoginLogServiceImpl implements UmsMemberLoginLogService {
     @Override
     public void insert(UmsMemberLoginLog umsMemberLoginLog) {
         this.umsMemberLoginLogDao.save(umsMemberLoginLog);
+    }
+
+    /**
+     * 用户登录记录
+     * @param umsMemberLoginLogParam 用户登录信息dto
+     * @return 实例对象
+     */
+    @Override
+    public UmsMemberLoginLog insert(UmsMemberLoginLogParam umsMemberLoginLogParam) {
+        UmsMemberLoginLog umsMemberLoginLog = new UmsMemberLoginLog();
+        BeanUtils.copyProperties(umsMemberLoginLogParam, umsMemberLoginLog);
+        umsMemberLoginLog.setCreateTime(new Date());
+        umsMemberLoginLogDao.save(umsMemberLoginLog);
+        return umsMemberLoginLog;
     }
 
     /**

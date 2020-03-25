@@ -11,6 +11,11 @@ let axiosInstance = axios.create({
     timeout: 1000
 });
 
+let oApiAxiosInstance = axios.create({
+    baseURL: config.oApiBaseUrl,
+    timeout: 1000
+});
+
 /**
  * json 解析
  */
@@ -24,6 +29,7 @@ let axiosInstance = axios.create({
 // 暴露对象
 module.exports = {
     axios: axiosInstance,
+    oAxios: oApiAxiosInstance,
     cookieParser: cookieParser(),
     jsonParser: bodyParser.json(),
     urlencoded: bodyParser.urlencoded({extended: false}),
