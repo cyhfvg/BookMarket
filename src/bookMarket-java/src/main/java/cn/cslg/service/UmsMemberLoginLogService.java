@@ -1,5 +1,8 @@
 package cn.cslg.service;
 
+import cn.cslg.dto.UmsMemberLoginLogParam;
+import cn.cslg.dto.UmsMemberParam;
+import cn.cslg.model.UmsMember;
 import cn.cslg.model.UmsMemberLoginLog;
 import java.util.List;
 
@@ -35,6 +38,13 @@ public interface UmsMemberLoginLogService {
      * @return 实例对象
      */
     void insert(UmsMemberLoginLog umsMemberLoginLog);
+
+    /**
+     * 用户登录记录
+     * @param umsMemberLoginLogParam 用户登录信息dto
+     * @return 实例对象
+     */
+    UmsMemberLoginLog insert(UmsMemberLoginLogParam umsMemberLoginLogParam);
 
     /**
      * 修改数据

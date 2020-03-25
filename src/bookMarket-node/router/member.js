@@ -6,6 +6,7 @@ let util = require('../util');
 
 let router = express.Router();
 let axios = util.axios;
+let oAxios = util.oAxios;
 
 /**
  * 用户注册
@@ -31,22 +32,53 @@ router.post('/register', (req, res) => {
 router.post('/login',util.urlencoded, (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
+    let ipAddress = req.ip.match(/\d+\.\d+\.\d+\.\d+/)[0];
+    // let ip = '122.224.186.100';
 
-    axios.get('/umsMember', {
+    let province = 'null';
+    let city = 'null';
+    let loginType = 0;
+
+    // 获取ip信息
+    oAxios.get(config.oApiIpPath, {
         params: {
-            username: username,
-            password: password
+            appkey: config.oApiAppKey,
+            ip: ipAddress
         }
     })
     .then(response => {
-        res.cookie('token', response.data.meta.token, {maxAge: 600000});
-        res.cookie('userId', response.data.data.id, {maxAge: 600000});
+        let data = response.data;
 
-        res.send(response.data.meta);
-    })
-    .catch(error => {
-        logger.error("/member/login axios catch");
-    });
+        if (data.status === 0) {
+            if (data.result.province !== null) {
+                province = data.result.province;
+            }
+            if (data.result.city !== null) {
+                city = data.result.city;
+            }
+        }
+
+        axios.get('/umsMember', {
+            params: {
+                city: city,
+                ip: ipAddress,
+                loginType: loginType,
+                password: password,
+                province: province,
+                username: username,
+            }
+        })
+        .then(response => {
+            res.cookie('token', response.data.meta.token, {maxAge: 600000});
+            res.cookie('userId', response.data.data.id, {maxAge: 600000});
+
+            res.send(response.data.meta);
+        })
+        .catch(error => {
+            logger.error("/member/login axios catch");
+        });
+
+        });
 });
 
 // 导出路由

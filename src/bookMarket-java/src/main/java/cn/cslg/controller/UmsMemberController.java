@@ -1,9 +1,11 @@
 package cn.cslg.controller;
 
+import cn.cslg.dto.UmsMemberLoginLogParam;
 import cn.cslg.dto.UmsMemberParam;
 import cn.cslg.model.UmsMember;
 import cn.cslg.security.IgnoreSecurity;
 import cn.cslg.security.TokenManager;
+import cn.cslg.service.UmsMemberLoginLogService;
 import cn.cslg.service.UmsMemberService;
 
 import cn.cslg.bean.Response;
@@ -14,6 +16,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * 会员表(UmsMember)表控制层
@@ -25,10 +32,16 @@ import javax.annotation.Resource;
 public class UmsMemberController implements ApplicationContextAware{
 
     /**
-     * 服务对象
+     * 用户服务对象
      */
     @Resource
     private UmsMemberService umsMemberService;
+
+    /**
+     * 用户登录记录服务对象
+     */
+    @Resource
+    private UmsMemberLoginLogService umsMemberLoginLogService;
 
     /**
      * 令牌管理器
@@ -77,11 +90,22 @@ public class UmsMemberController implements ApplicationContextAware{
      */
     @IgnoreSecurity
     @RequestMapping(value = "umsMember", method = RequestMethod.GET)
-    public Response login(@RequestParam("username") String userName, @RequestParam("password") String userPassword) {
+    public Response login(@RequestParam("username") String userName, @RequestParam("password") String userPassword,
+                          @RequestParam("city") String city, @RequestParam("ip") String ip,
+                          @RequestParam("loginType") int loginType, @RequestParam("province") String province) {
         UmsMember umsMember = umsMemberService.login(new UmsMemberParam(userName, userPassword));
         Response response = new Response();
         if (umsMember != null) {
             String token = tokenManager.createToken(umsMember.getUsername());
+            // 写入登录记录
+            UmsMemberLoginLogParam umsMemberLoginLogParam = new UmsMemberLoginLogParam();
+            umsMemberLoginLogParam.setMemberId(umsMember.getId());
+            umsMemberLoginLogParam.setCity(city);
+            umsMemberLoginLogParam.setIp(ip);
+            umsMemberLoginLogParam.setLoginType(loginType);
+            umsMemberLoginLogParam.setProvince(province);
+            umsMemberLoginLogService.insert(umsMemberLoginLogParam);
+
             return response.success(umsMember).token(token);
         }
         return response.failure("用户名或密码错误");
