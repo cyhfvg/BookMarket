@@ -83,6 +83,7 @@ let vm = new Vue({
                     document.getElementById('login_close_btn').click();
                 } else {
                     // Todo
+                    vm.$options.methods.showAlert(vm.alertStyles.warning, '警告!', response.data.message);
                 }
             })
             .catch(error => {

@@ -66,8 +66,8 @@ public class UmsMemberController implements ApplicationContextAware{
     }
 
     /**
-     * 添加一个用户
-     * @return
+     * 添加一个用户/普通用户注册
+     * @return Response 对象
      */
     @IgnoreSecurity
     @RequestMapping(value = "/umsMember", method = RequestMethod.POST)
@@ -83,7 +83,11 @@ public class UmsMemberController implements ApplicationContextAware{
     }
 
     /**
-     *
+     * 普通用户登录
+     * @param city 用户登录地
+     * @param ip 用户登录ip
+     * @param loginType 用户登录类型
+     * @param province 用户登录省份
      * @param userName 用户名
      * @param userPassword 用户密码
      * @return response Response 对象
@@ -108,7 +112,8 @@ public class UmsMemberController implements ApplicationContextAware{
 
             return response.success(umsMember).token(token);
         }
-        return response.failure("用户名或密码错误");
+        response.failure("用户名或密码错误");
+        return response;
     }
     
     @Override

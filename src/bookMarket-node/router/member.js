@@ -35,28 +35,50 @@ router.post('/login',util.urlencoded, (req, res) => {
     let ipAddress = req.ip.match(/\d+\.\d+\.\d+\.\d+/)[0];
     // let ip = '122.224.186.100';
 
-    let province = 'null';
+    let province = 'IANA';
     let city = 'null';
     let loginType = 0;
 
-    // 获取ip信息
-    oAxios.get(config.oApiIpPath, {
-        params: {
-            appkey: config.oApiAppKey,
-            ip: ipAddress
-        }
-    })
-    .then(response => {
-        let data = response.data;
+    // // 获取ip信息
+    // oAxios.get(config.oApiIpPath, {
+    //     params: {
+    //         appkey: config.oApiAppKey,
+    //         ip: ipAddress
+    //     }
+    // })
+    // .then(response => {
+    //     let data = response.data;
 
-        if (data.status === 0) {
-            if (data.result.province !== null) {
-                province = data.result.province;
-            }
-            if (data.result.city !== null) {
-                city = data.result.city;
-            }
-        }
+    //     if (data.status === 0) {
+    //         if (data.result.province !== null) {
+    //             province = data.result.province;
+    //         }
+    //         if (data.result.city !== null) {
+    //             city = data.result.city;
+    //         }
+    //     }
+
+    //     axios.get('/umsMember', {
+    //         params: {
+    //             city: city,
+    //             ip: ipAddress,
+    //             loginType: loginType,
+    //             password: password,
+    //             province: province,
+    //             username: username,
+    //         }
+    //     })
+    //     .then(response => {
+    //         res.cookie('token', response.data.meta.token, {maxAge: 600000});
+    //         res.cookie('userId', response.data.data.id, {maxAge: 600000});
+
+    //         res.send(response.data.meta);
+    //     })
+    //     .catch(error => {
+    //         logger.error("/member/login axios catch");
+    //     });
+
+    //     });
 
         axios.get('/umsMember', {
             params: {
@@ -69,16 +91,17 @@ router.post('/login',util.urlencoded, (req, res) => {
             }
         })
         .then(response => {
-            res.cookie('token', response.data.meta.token, {maxAge: 600000});
-            res.cookie('userId', response.data.data.id, {maxAge: 600000});
-
-            res.send(response.data.meta);
+            let data = response.data;
+            if (data.success === true) {
+                res.cookie('token', data.meta.token, {maxAge: 600000});
+                res.cookie('userId', data.id, {maxAge: 600000});
+            }
+            res.send(data.meta);
         })
         .catch(error => {
-            logger.error("/member/login axios catch");
+            console.log(error);
         });
 
-        });
 });
 
 // 导出路由
