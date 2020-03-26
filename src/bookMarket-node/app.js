@@ -34,5 +34,5 @@ app.use('/book', require(path.join(config.project_path, 'router', 'book')));
 
 let server = app.listen(config.port , () => {
     let port = server.address().port;
-    console.log("%s...", port);
+    console.log("member node client running in %s...", port);
 })
