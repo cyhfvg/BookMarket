@@ -69,17 +69,20 @@ router.post('/login',util.urlencoded, (req, res) => {
     //         }
     //     })
     //     .then(response => {
-    //         res.cookie('token', response.data.meta.token, {maxAge: 600000});
-    //         res.cookie('userId', response.data.data.id, {maxAge: 600000});
-
-    //         res.send(response.data.meta);
+    //         let data = response.data;
+    //         if (data.meta.success === true) {
+    //             res.cookie('token', data.meta.token, {maxAge: 600000});
+    //             res.cookie('userId', data.data.id, {maxAge: 600000});
+    //         }
+    //         res.send(data.meta);
     //     })
     //     .catch(error => {
-    //         logger.error("/member/login axios catch");
+    //         console.log(error);
     //     });
 
-    //     });
+    // });
 
+    // Todo: 上一段替换此段
         axios.get('/umsMember', {
             params: {
                 city: city,
@@ -92,9 +95,9 @@ router.post('/login',util.urlencoded, (req, res) => {
         })
         .then(response => {
             let data = response.data;
-            if (data.success === true) {
+            if (data.meta.success === true) {
                 res.cookie('token', data.meta.token, {maxAge: 600000});
-                res.cookie('userId', data.id, {maxAge: 600000});
+                res.cookie('userId', data.data.id, {maxAge: 600000});
             }
             res.send(data.meta);
         })

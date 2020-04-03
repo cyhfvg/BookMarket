@@ -6,9 +6,19 @@ let util = require('../util');
 
 let router = express.Router();
 
-router.get('/:id', (req, res) => {
-    res.send(`${req.params.id} 用户信息`);
+/**
+ * 个人信息页面
+ */
+router.get('/memberInfo', (req, res) => {
+    res.render('memberInfo.ejs');
 });
+
+/**
+ * 账号设置
+ */
+router.get('/account', (req, res) => {
+    res.render('account.ejs');
+})
 
 // 导出路由
 module.exports = router;

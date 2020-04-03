@@ -6,8 +6,18 @@ let util = require('../util');
 
 let router = express.Router();
 
-router.get('/:id', (req, res) => {
-    res.send(`${req.params.id} 用户信息`);
+/**
+ * 个人中心/个人资料
+ */
+router.post('/info', (req, res) => {
+
+});
+
+/**
+ * 个人中心/余额
+ */
+router.post('/balance', (req, res) => {
+
 });
 
 // 导出路由

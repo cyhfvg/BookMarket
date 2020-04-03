@@ -44,8 +44,8 @@ function clearCookie(){
     let keys=document.cookie.match(/[^ =;]+(?=\=)/g);
     if (keys) {
         for (let i = keys.length; i--;) {
-            // document.cookie=keys[i]+"=0; expire="+date.toGMTString()+"; path=/";
-            delCookie(keys[i]);
+            document.cookie=keys[i]+"=0; expire="+date.toGMTString()+"; path=/";
+            // delCookie(keys[i]);
         }
     }
 }

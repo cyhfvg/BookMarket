@@ -2,34 +2,36 @@
 
 <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
 
+<script src="/js/config.js"></script>
+
 <script type="text/javascript">
 let vm = new Vue({
     el: '#app',
     data() {
         return {
-            likeBooks:[],
-            allBooks: [],
-            shoppingCart: [],
             alertBox: {
                 alertStyle: '',
-                messageState: '',
                 messageInfo: '',
+                messageState: '',
             },
             alertStyles: {
-                success: 'alert-success',
-                info: 'alert-info',
-                warning: 'alert-warning',
                 danger: 'alert-danger',
+                dark: 'alert-dark',
+                info: 'alert-info',
+                light: 'alert-light',
                 primary: 'alert-primary',
                 secondary: 'alert-secondary',
-                dark: 'alert-dark',
-                light: 'alert-light'
+                success: 'alert-success',
+                warning: 'alert-warning',
             },
+            allBooks: [],
+            axiosInstance: null,
+            likeBooks:[],
+            shoppingCart: [],
             state:{
                 isLogin:false,
                 isMsgShow:false,
             },
-            axiosInstance: null,
         }
     },
     methods: {
@@ -80,9 +82,11 @@ let vm = new Vue({
                 if (response.data.success === true) {
                     // 关闭 登录 模态框
                     vm.state.isLogin = true;
+                    // Todo: delete
+                    console.log(response);
+
                     document.getElementById('login_close_btn').click();
                 } else {
-                    // Todo
                     vm.$options.methods.showAlert(vm.alertStyles.warning, '警告!', response.data.message);
                 }
             })
@@ -95,7 +99,7 @@ let vm = new Vue({
          * 用户注销
          */
         logout: () => {
-            clearCookie();
+            foreach();
             window.location.replace('/');
         },
         showAlert: (alertStyle, messageState, messageInfo) => {
@@ -111,7 +115,7 @@ let vm = new Vue({
     created() {
         // 设置axios实例的config
         this.axiosInstance = axios.create({
-            baseURL: 'http://127.0.0.1:8081',
+            baseURL: configValue.axiosBaseURL,
             timeout: 30000,
             headers: {
                 'Content-Type': 'application/json'
