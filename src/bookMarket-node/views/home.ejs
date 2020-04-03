@@ -43,7 +43,8 @@
                             <a class="dropdown-item button" id="loginButton" :class="{display_hide:state.isLogin}" data-toggle="modal" data-target="#loginModal">登录</a>
                             <a class="dropdown-item" :class="{display_hide:!state.isLogin}" href="#">我的摊位</a>
                             <a class="dropdown-item" :class="{display_hide:!state.isLogin}" href="#">购物车</a>
-                            <a class="dropdown-item" :class="{display_hide:!state.isLogin}" href="/memberInfo">个人信息</a>
+                            <a class="dropdown-item" :class="{display_hide:!state.isLogin}" href="/views/memberInfo" target="_blank">个人中心</a>
+                            <a class="dropdown-item" :class="{display_hide:!state.isLogin}" href="/views/account" target="_blank">账号设置</a>
                             <a class="dropdown-item button" :class="{display_hide:!state.isLogin}" @click="logout()">退出登录</a>
                         </div>
                     </li>

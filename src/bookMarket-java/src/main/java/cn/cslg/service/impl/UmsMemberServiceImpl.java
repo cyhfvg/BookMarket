@@ -68,6 +68,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         BeanUtils.copyProperties(umsMemberParam, umsMember);
         umsMember.setCreateTime(new Date());
         umsMember.setStatus(1);
+        umsMember.setMemberLevelId((long) 4);
         // 判断用户是否已存在
         List<UmsMember> list = umsMemberDao.findByProperty(UmsMember.class, "username", umsMember.getUsername());
         if (CollectionUtil.isNotEmpty(list)) {

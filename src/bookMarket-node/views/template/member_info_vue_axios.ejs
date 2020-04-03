@@ -1,0 +1,50 @@
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
+
+<script src="/js/config.js"></script>
+
+<script type="text/javascript">
+    let vm = new Vue({
+        el: '#app',
+        data() {
+            return {
+                axiosInstance: null,
+            }
+        },
+        methods: {
+            /**
+             * 点击item刷新对应tab
+             * @param tabName 局部刷新的tab名字
+             */
+            loadTabs: (tabName) => {
+                // Todo: innerHTML <== axios
+                axiosInstance.post('/memberInfo/' + tabName, {
+                    userId: getCookie('userId'),
+                })
+                .then(response => {
+                    document.getElementById('item_tab').innerHTML = '';
+                })
+                console.log(tabName);
+            },
+        },
+        created() {
+            // 设置axios实例的config
+            this.axiosInstance = axios.create({
+                baseURL: configValue.axiosBaseURL,
+                timeout: 30000,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            // Todo: 验证登录
+        },
+        mounted() {
+
+        },
+        computed: {
+
+        },
+    })
+</script>

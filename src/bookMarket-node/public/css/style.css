@@ -9,3 +9,9 @@ html, body {
 .message_hide {
     display: none;
 }
+
+.left_item {
+    background-color: beige;
+    height: 50px;
+    text-align: center;
+}
