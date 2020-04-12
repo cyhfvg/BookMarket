@@ -6,15 +6,19 @@
     <title>个人中心</title>
     <!-- 引入css样式表，和js -->
     <%- include('template/css_and_js') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
+    <script src="/js/config.js"></script>
 </head>
 <body>
-    <div id="app">
+    <div>
         <div class="container">
             <div id="item" class="row">
                 <!-- 左侧条目栏 -->
-                <div class="col-2">
-                    <div class="left_item" @click="loadTabs('info')">个人资料</div>
-                    <div class="left_item" @click="loadTabs('balance')">我的钱包</div>
+                <div id="left" class="col-2" style="visibility: hidden;">
+                    <div class="left_item" @click="loadTabs('infoInner')">个人资料</div>
+                    <div class="left_item" @click="loadTabs('balanceInner')">我的钱包</div>
                 </div>
                 <!-- 右侧对应栏目 -->
                 <div id="item_tab" class="col-10">
@@ -22,10 +26,7 @@
                 </div>
             </div>
         </div>
-        <!-- 底部 -->
-        <div class="jumbotron text-center" style="margin-bottom: 0;">
-            <p>底部内容</p>
-        </div>
+        <%- include('template/foot.ejs') %>
     </div>
 </body>
 <%- include('template/member_info_vue_axios.ejs') %>

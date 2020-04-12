@@ -58,7 +58,7 @@ router.post('/login',util.urlencoded, (req, res) => {
     //         }
     //     }
 
-    //     axios.get('/umsMember', {
+    //     axios.get('/login', {
     //         params: {
     //             city: city,
     //             ip: ipAddress,
@@ -83,7 +83,7 @@ router.post('/login',util.urlencoded, (req, res) => {
     // });
 
     // Todo: 上一段替换此段
-        axios.get('/umsMember', {
+        axios.get('/login', {
             params: {
                 city: city,
                 ip: ipAddress,
@@ -96,8 +96,8 @@ router.post('/login',util.urlencoded, (req, res) => {
         .then(response => {
             let data = response.data;
             if (data.meta.success === true) {
-                res.cookie('token', data.meta.token, {maxAge: 600000});
-                res.cookie('userId', data.data.id, {maxAge: 600000});
+                res.cookie('token', data.meta.token, {maxAge: 6000000});
+                res.cookie('userId', data.data.id, {maxAge: 6000000});
             }
             res.send(data.meta);
         })

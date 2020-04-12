@@ -15,3 +15,17 @@ html, body {
     height: 50px;
     text-align: center;
 }
+
+.info_item {
+    height: 50px;
+    text-align: left;
+}
+
+#infoTab>div>div>div>input {
+    background: none;
+    border: 0px;
+    outline: none;
+}
+/*
+.info_input {
+} */

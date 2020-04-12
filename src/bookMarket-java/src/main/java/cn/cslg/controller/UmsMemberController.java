@@ -1,7 +1,9 @@
 package cn.cslg.controller;
 
+import cn.cslg.dto.UmsMemberHeadUpdateParam;
 import cn.cslg.dto.UmsMemberLoginLogParam;
 import cn.cslg.dto.UmsMemberParam;
+import cn.cslg.dto.UmsMemberInfoUpdateParam;
 import cn.cslg.model.UmsMember;
 import cn.cslg.security.IgnoreSecurity;
 import cn.cslg.security.TokenManager;
@@ -9,6 +11,7 @@ import cn.cslg.service.UmsMemberLoginLogService;
 import cn.cslg.service.UmsMemberService;
 
 import cn.cslg.bean.Response;
+import cn.cslg.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +19,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.util.Arrays.asList;
 
 /**
  * 会员表(UmsMember)表控制层
@@ -83,6 +81,59 @@ public class UmsMemberController implements ApplicationContextAware{
     }
 
     /**
+     * 获取个人信息
+     * @param userId 用户id
+     * @return Response 对象
+     */
+    @RequestMapping(value = "/umsMember", method = RequestMethod.GET)
+    public Response selectOne(@RequestParam("userId") long userId) {
+        Response response = new Response();
+        UmsMember umsMember = umsMemberService.queryById(userId);
+        if (umsMember != null) {
+            umsMember.setPassword("");
+            logger.debug("获取{}用户信息", userId);
+            return response.success(umsMember);
+        }
+        return response.failure("用户信息不存在");
+    }
+
+    /**
+     *  修改个人信息
+     * @param umsMemberInfoUpdateParam UmsMember dto
+     * @return
+     */
+    @RequestMapping(value = "/umsMember", method = RequestMethod.PATCH)
+    public Response updateOne(@RequestBody UmsMemberInfoUpdateParam umsMemberInfoUpdateParam) {
+
+        UmsMember umsMember = umsMemberService.queryById(umsMemberInfoUpdateParam.getId());
+
+        umsMember.setBirthday(DateUtil.parseDate(umsMemberInfoUpdateParam.getBirthday()));
+        umsMember.setGender(umsMemberInfoUpdateParam.getGender());
+        umsMember.setNickname(umsMemberInfoUpdateParam.getNickname());
+        umsMember.setId(umsMemberInfoUpdateParam.getId());
+        umsMember.setJob(umsMemberInfoUpdateParam.getJob());
+
+        umsMemberService.update(umsMember);
+        return new Response().success();
+
+    }
+
+    /**
+     * 更新用户头像
+     * @param umsMemberHeadUpdateParam 用户头像dto
+     * @return Response
+     */
+    @RequestMapping(value = "/umsMember/icon", method = RequestMethod.PATCH)
+    public Response updateOneHead(@RequestBody UmsMemberHeadUpdateParam umsMemberHeadUpdateParam) {
+        UmsMember umsMember = umsMemberService.queryById(umsMemberHeadUpdateParam.getId());
+        String oldIcon = umsMember.getIcon();
+        umsMember.setIcon(umsMemberHeadUpdateParam.getIcon());
+
+        umsMemberService.update(umsMember);
+        return new Response().success(oldIcon);
+    }
+
+    /**
      * 普通用户登录
      * @param city 用户登录地
      * @param ip 用户登录ip
@@ -93,7 +144,7 @@ public class UmsMemberController implements ApplicationContextAware{
      * @return response Response 对象
      */
     @IgnoreSecurity
-    @RequestMapping(value = "umsMember", method = RequestMethod.GET)
+    @RequestMapping(value = "login", method = RequestMethod.GET)
     public Response login(@RequestParam("username") String userName, @RequestParam("password") String userPassword,
                           @RequestParam("city") String city, @RequestParam("ip") String ip,
                           @RequestParam("loginType") int loginType, @RequestParam("province") String province) {

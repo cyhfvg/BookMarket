@@ -3,8 +3,8 @@ POST http://localhost:8080/bookMarket-java/umsMember
 Content-Type: application/json
 
 {
-  "username": "memberTest1",
-  "password": "123456*hhd"
+  "username": "userTest1",
+  "password": "userTest1"
 }
 
 ###

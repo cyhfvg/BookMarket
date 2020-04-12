@@ -2,7 +2,14 @@
     "files.autoGuessEncoding": true,
     "cSpell.words": [
         "IANA",
+        "aliyuncs",
         "appenders",
-        "appkey"
+        "appkey",
+        "autoclose",
+        "clearfix",
+        "datepicker",
+        "datetime",
+        "memberinfo",
+        "reslove"
     ]
 }
