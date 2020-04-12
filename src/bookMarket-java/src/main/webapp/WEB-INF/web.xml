@@ -60,7 +60,7 @@
         </init-param>
         <init-param>
             <param-name>allowMethods</param-name>
-            <param-value>GET,POST,PUT,DELETE,PUTCH</param-value>
+            <param-value>GET,POST,PUT,DELETE,PATCH</param-value>
         </init-param>
         <init-param>
             <param-name>allowCredentials</param-name>

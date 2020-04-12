@@ -82,8 +82,6 @@ let vm = new Vue({
                 if (response.data.success === true) {
                     // 关闭 登录 模态框
                     vm.state.isLogin = true;
-                    // Todo: delete
-                    console.log(response);
 
                     document.getElementById('login_close_btn').click();
                 } else {

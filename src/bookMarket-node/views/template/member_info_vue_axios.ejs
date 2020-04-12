@@ -1,50 +1,62 @@
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
 
-<script src="/js/config.js"></script>
+<script src="/js/config.js"></script> -->
+
+<script src="/js/utils.js"></script>
 
 <script type="text/javascript">
-    let vm = new Vue({
-        el: '#app',
-        data() {
-            return {
-                axiosInstance: null,
+  let vm = new Vue({
+    el: "#left",
+    data() {
+      return {
+        axiosInstance: null,
+      };
+    },
+    methods: {
+      /**
+       * 点击item刷新对应tab
+       * tabs ['/infoInner', '/balanceInner']
+       * @param tabName 局部刷新的tab名字
+       */
+      loadTabs: function(tabName) {
+        // Todo: 我的钱包
+        this.axiosInstance
+          .post("/memberInfo/" + tabName, {
+            // no params
+          })
+          .then((response) => {
+            // 未获取innerHtml
+            if (response.data.inner === undefined) {
+              return;
             }
-        },
-        methods: {
-            /**
-             * 点击item刷新对应tab
-             * @param tabName 局部刷新的tab名字
-             */
-            loadTabs: (tabName) => {
-                // Todo: innerHTML <== axios
-                axiosInstance.post('/memberInfo/' + tabName, {
-                    userId: getCookie('userId'),
-                })
-                .then(response => {
-                    document.getElementById('item_tab').innerHTML = '';
-                })
-                console.log(tabName);
-            },
-        },
-        created() {
-            // 设置axios实例的config
-            this.axiosInstance = axios.create({
-                baseURL: configValue.axiosBaseURL,
-                timeout: 30000,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            });
+            // 先清除 innerHtml 防止 重复 ElementId 出现
+            setHTMLWithScript(document.getElementById('item_tab'), '');
+            setHTMLWithScript(
+              document.getElementById("item_tab"),
+              response.data.inner
+            );
+          });
+      },
+    },
+    beforeCreate() {
+      // Todo: 验证登录
 
-            // Todo: 验证登录
+    },
+    created() {
+      // 设置axios实例的config
+      this.axiosInstance = axios.create({
+        baseURL: configValue.axiosBaseURL,
+        timeout: 30000,
+        headers: {
+          "Content-Type": "application/json",
         },
-        mounted() {
+      });
 
-        },
-        computed: {
-
-        },
-    })
+      this.loadTabs('infoInner');
+    },
+    mounted() {},
+    computed: {},
+  });
 </script>
