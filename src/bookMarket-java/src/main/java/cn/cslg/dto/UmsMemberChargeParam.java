@@ -6,27 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 /**
  * description:
  *
  * @author zhangguangzhou
- * @version 2020/4/11 9:01 1.00
+ * @version 2020/4/14 6:54 1.00
  */
-
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UmsMemberInfoUpdateParam {
+public class UmsMemberChargeParam {
     @NotEmpty(message = "id 不可为空")
     private long id;
-    private String birthday;
-    private String city;
-    private String job;
-    private String nickname;
-    private int gender;
-
+    @NotEmpty(message = "charge 不可为空")
+    private int charge;
 }

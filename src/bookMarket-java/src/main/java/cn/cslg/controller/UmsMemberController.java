@@ -1,9 +1,6 @@
 package cn.cslg.controller;
 
-import cn.cslg.dto.UmsMemberHeadUpdateParam;
-import cn.cslg.dto.UmsMemberLoginLogParam;
-import cn.cslg.dto.UmsMemberParam;
-import cn.cslg.dto.UmsMemberInfoUpdateParam;
+import cn.cslg.dto.*;
 import cn.cslg.model.UmsMember;
 import cn.cslg.security.IgnoreSecurity;
 import cn.cslg.security.TokenManager;
@@ -107,11 +104,13 @@ public class UmsMemberController implements ApplicationContextAware{
 
         UmsMember umsMember = umsMemberService.queryById(umsMemberInfoUpdateParam.getId());
 
+        // note: 参数获取成功后，可判断数据是否修改，若无修改，可不用更新
         umsMember.setBirthday(DateUtil.parseDate(umsMemberInfoUpdateParam.getBirthday()));
+        umsMember.setCity(umsMemberInfoUpdateParam.getCity());
         umsMember.setGender(umsMemberInfoUpdateParam.getGender());
-        umsMember.setNickname(umsMemberInfoUpdateParam.getNickname());
         umsMember.setId(umsMemberInfoUpdateParam.getId());
         umsMember.setJob(umsMemberInfoUpdateParam.getJob());
+        umsMember.setNickname(umsMemberInfoUpdateParam.getNickname());
 
         umsMemberService.update(umsMember);
         return new Response().success();
@@ -131,6 +130,22 @@ public class UmsMemberController implements ApplicationContextAware{
 
         umsMemberService.update(umsMember);
         return new Response().success(oldIcon);
+    }
+
+    /**
+     * 用户充值
+     * @param umsMemberChargeParam 充值dto
+     * @return Response
+     */
+    @RequestMapping(value = "/umsMember/charge", method = RequestMethod.PATCH)
+    public Response reCharge(@RequestBody UmsMemberChargeParam umsMemberChargeParam) {
+        UmsMember umsMember = umsMemberService.queryById(umsMemberChargeParam.getId());
+        int charge = umsMemberChargeParam.getCharge();
+        umsMember.setBalance(umsMember.getBalance() + charge);
+
+        umsMemberService.update(umsMember);
+
+        return new Response().success(charge);
     }
 
     /**
