@@ -1,6 +1,6 @@
-<div id="right">
+<div id="right" style="background-color: #f5f6f7;">
   <div><h3>个人资料</h3></div>
-  <div id="top" style="margin-bottom: 10px;">
+  <div id="top" style="margin-bottom: 10px; background-color: #ffffff;">
     <div class="clearfix" style="height: 90px;">
       <div id="top_left" class="float-left">
         <div id="head" style="height: 64px; width: 64px;">
@@ -12,6 +12,7 @@
             data-toggle="modal"
             data-target="#headModal"
             @click=""
+            style="color: #607dd2;"
             >修改头像</a
           >
         </div>
@@ -19,11 +20,20 @@
       <div id="top_right" class="float-left h-100" style="margin-left: 20px;">
         <div id="id" class="h-50">ID:{{ username }}</div>
         <div id="balance" class="h-50">
-          余额: {{ balance }} <a type="button" @click="recharge()">充值</a>
+          元宝: {{ balance }}&nbsp;&nbsp;<a
+          data-toggle="modal"
+          data-target="#balanceModal"
+            style="color: #607dd2;"
+            >充值</a
+          >
         </div>
       </div>
       <div name="info_right" class="float-right">
-        <div><a type="button" @click="editInfo()">修改资料</a></div>
+        <div>
+          <a type="button" @click="editInfo()" style="color: #607dd2;"
+            >修改资料</a
+          >
+        </div>
       </div>
     </div>
     <!-- 修改头像模态框 -->
@@ -34,7 +44,7 @@
             <!-- 模态框头部 -->
             <div class="modal-header">
               <h5 class="modal-title">头像上传</h5>
-              <div>{{ headAlertMsg }}</div>
+              <div style="color: darkorange;">{{ headAlertMsg }}</div>
             </div>
             <!-- 模态框主体 -->
             <div class="modal-body">
@@ -55,7 +65,13 @@
               >
                 关闭
               </button>
-              <button id="head_reset_button" type="reset" class="btn btn-primary">重置</button>
+              <button
+                id="head_reset_button"
+                type="reset"
+                class="btn btn-primary"
+              >
+                重置
+              </button>
               <button
                 type="button"
                 class="btn btn-primary"
@@ -68,7 +84,57 @@
         </form>
       </div>
     </div>
+    <!-- 充值模态框 -->
+    <div class="modal fade" id="balanceModal">
+      <div class="modal-dialog">
+        <form action="#" method="POST">
+          <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h5 class="modal-title">元宝充值</h5>
+              <div style="color: darkorange;">{{ headAlertMsg }}</div>
+            </div>
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <!-- tag: 充值输入框 -->
+              <label>1元 可充值 100元宝</label><br />
+              <input type="text" name="charge" v-model="charge" />
+              <label>{{ charge / 100 }}元</label>
+            </div>
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button
+                type="button"
+                id="balance_close_btn"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                关闭
+              </button>
+              <button
+                id="balance_reset_button"
+                type="reset"
+                class="btn btn-primary"
+              >
+                重置
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="recharge()"
+              >
+              充值
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
+
+  <ul class="nav nav-list">
+    <li class="divider"></li>
+  </ul>
   <div id="infoTab clearfix">
     <!-- 修改显示 -->
     <div name="info_left" class="float-left" :class="{display_hide : !isEdit}">
@@ -103,10 +169,26 @@
           >
         </div>
       </div>
+      <div name="city" class="info_item">
+        <div class="float-left">城市:</div>
+        <div class="float-left">
+          <input
+            type="text"
+            class="form-control"
+            v-model="city"
+            placeholder="输入城市.例 北京"
+          />
+        </div>
+      </div>
       <div name="birthday" class="info_item">
         <div class="float-left">生日:</div>
         <div class="float-left">
-          <input type="text" class="form-control" id="datePicker" v-model="birthday" />
+          <input
+            type="text"
+            class="form-control"
+            id="datePicker"
+            v-model="birthday"
+          />
         </div>
       </div>
       <div name="job" class="info_item clearfix">
@@ -149,10 +231,15 @@
           {{ genderName }}
         </div>
       </div>
+      <div name="city" class="info_item">
+        <div class="float-left">城市:</div>
+        <div class="float-left" style="margin-left: 5px;">
+          {{ city }}
+        </div>
+      </div>
       <div name="birthday" class="info_item">
         <div class="float-left">生日:</div>
         <div class="float-left" style="margin-left: 5px;">
-          <!-- <input type="text" id="datePicker"> -->
           {{ birthday }}
         </div>
       </div>
@@ -174,6 +261,7 @@
         axiosInstance: null,
         balance: 0,
         birthday: "",
+        charge: 100,
         city: "",
         gender: "0",
         headAlertMsg: "",
@@ -199,7 +287,9 @@
             this.balance =
               typeof member.balance == "undefined" ? "" : member.balance;
             this.birthday =
-              typeof member.birthday == "undefined" ? "" : new Date(member.birthday).Format('yyyy-MM-dd');
+              typeof member.birthday == "undefined"
+                ? ""
+                : new Date(member.birthday).Format("yyyy-MM-dd");
             this.city = typeof member.city == "undefined" ? "" : member.city;
             this.icon = typeof member.icon == "undefined" ? "" : member.icon;
             this.job = typeof member.job == "undefined" ? "" : member.job;
@@ -216,6 +306,16 @@
        */
       recharge: function () {
         // Todo: 充值
+        let me = this;
+        me.axiosInstance.post('/memberInfo/charge', {
+          charge: me.charge / 100,
+        })
+        .then(response => {
+          window.open(decodeURIComponent(response.data.url));
+        })
+        .catch(err => {
+
+        });
       },
       /**
        * 修改资料
@@ -267,8 +367,10 @@
             if (response.data.success) {
               document.getElementById("head_close_btn").click();
               this.icon = response.data.icon;
+              this.headAlertMsg = "";
             } else {
-              document.getElementById('head_update_input').files[0] = undefined;
+              document.getElementById("head_reset_button").click();
+              this.headAlertMsg = "请重新上传";
             }
           });
       },
@@ -300,10 +402,6 @@
         }
         return name;
       },
-      // birthday: function () {
-      //   let me = this;
-      //   return new Date(me.birthdayTime).Format("yyyy-MM-dd");
-      // },
     },
   });
   // jQuery

@@ -18,7 +18,14 @@ router.get('/memberInfo', (req, res) => {
  */
 router.get('/account', (req, res) => {
     res.render('account.ejs');
-})
+});
+
+/**
+ * 卖书页面
+ */
+router.get('/sell', (req, res) => {
+    res.render('sell.ejs');
+});
 
 // 导出路由
 module.exports = router;

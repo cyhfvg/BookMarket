@@ -1,8 +1,11 @@
+let alipay = require("../alipay");
 let config = require("../config");
 let express = require("express");
 let fs = require("fs");
 let path = require("path");
 let util = require("../util");
+
+let uuid = require("uuid");
 
 let router = express.Router();
 
@@ -59,17 +62,18 @@ router.post("/info", (req, res) => {
  * 个人信息更新
  */
 router.post("/update", (req, res) => {
-  let { nickname, gender, birthday, job } = req.body;
+  let { nickname, gender, birthday, job, city } = req.body;
   let { userId, token } = req.cookies;
   axios
     .patch(
       "/umsMember",
       {
         birthday: birthday,
+        city: city,
         gender: gender,
-        nickname: nickname,
         id: userId,
         job: job,
+        nickname: nickname,
       },
       {
         headers: {
@@ -88,24 +92,77 @@ router.post("/update", (req, res) => {
 router.post("/headUpdate", util.multer.single("file"), (req, res) => {
   let file = req.file;
   let { userId, token } = req.cookies;
-  let fileName = file.filename;
-  let localFile = file.path;
   if (file === undefined) {
     res.send({ success: false });
-  } else {
-    ossClient.put("user-head/", fileName, localFile, (urls) => {
-      let url = urls[0];
-      if (url === undefined) {
-        res.send({success: false});
-      }
-      console.log("url:" + url);
-      console.log("id: " + userId);
+    return;
+  }
+  let fileName = file.filename;
+  let localFile = file.path;
+
+  ossClient.put("user-head/", fileName, localFile, (urls) => {
+    let url = urls[0];
+    if (url === undefined) {
+      res.send({ success: false });
+    }
+    axios
+      .patch(
+        "/umsMember/icon",
+        {
+          id: userId,
+          icon: url,
+        },
+        {
+          headers: {
+            "X-Token": token,
+          },
+        }
+      )
+      .then((response) => {
+        // 上传完成后移除本地文件
+        fs.unlinkSync(localFile);
+
+        if (response.data.meta.success === true) {
+          // 成功后删除oss上旧的头像
+          let oldIconUrl = response.data.data;
+          // 若无头像，不必删除
+          if (oldIconUrl !== "") {
+            let result = /aliyuncs\.com\/([\S]+\/+)([\S]+)/g.exec(oldIconUrl);
+            let dir = result[1];
+            let objectName = result[2];
+            ossClient.deleteObj(dir, objectName);
+          }
+          res.send({
+            success: true,
+            icon: url,
+          });
+        } else {
+          res.send({ success: false });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        res.send({ success: false });
+      });
+  });
+});
+
+/**
+ * 个人中心/余额 充值元宝
+ */
+router.post("/charge", (req, res) => {
+  let { userId, token } = req.cookies;
+  let charge = req.body.charge;
+  let tradeNo = uuid.v1();
+  alipay
+    .charge(tradeNo, charge, (result) => {
+      console.log(result);
+      // Fixme: 还未支付 就增加余额
       axios
         .patch(
-          "/umsMember/icon",
+          "/umsMember/charge",
           {
             id: userId,
-            icon: url,
+            charge: charge * 100,
           },
           {
             headers: {
@@ -114,37 +171,52 @@ router.post("/headUpdate", util.multer.single("file"), (req, res) => {
           }
         )
         .then((response) => {
-          // 上传完成后移除本地文件
-          fs.unlinkSync(localFile);
-
-          if (response.data.meta.success === true) {
-            // 成功后删除oss上旧的头像
-            let oldIconUrl = response.data.data;
-            let result = /aliyuncs\.com\/([\S]+\/+)([\S]+)/g.exec(oldIconUrl);
-            let dir = result[1];
-            let objectName = result[2];
-            ossClient.deleteObj(dir, objectName);
-
-            res.send({
-              success: true,
-              icon: url,
-            });
-          } else {
-            res.send({success: false});
-          }
+          console.log("charge success");
+          // res.send("success");
         })
         .catch((err) => {
           console.error(err);
-          res.send({ success: false });
         });
+
+      res.send(JSON.stringify({ url: encodeURIComponent(result) }));
+    })
+    .catch((err) => {
+      console.log(err);
     });
+});
+/**
+ * 支付宝支付成功notify
+ */
+router.post("/notify", (req, res) => {
+  let postData = req.body;
+  console.log("触发付款");
+  if (postData.trade_status === "TRADE_SUCCESS") {
+    let data = req.body; // 订单信息
+    let charge = total_amount * 100;
+    axios
+      .patch(
+        "/umsMember/charge",
+        {
+          id: userId,
+          charge: charge,
+        },
+        {
+          headers: {
+            "X-Token": token,
+          },
+        }
+      )
+      .then((response) => {
+        console.log("charge success");
+        res.send("success");
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    console.log("支付完成！");
   }
 });
-
-/**
- * 个人中心/余额
- */
-router.post("/balance", (req, res) => {});
 
 // 导出路由
 module.exports = router;

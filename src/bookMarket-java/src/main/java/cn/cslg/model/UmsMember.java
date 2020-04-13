@@ -110,6 +110,11 @@ public class UmsMember {
      * 成长值
      */
     private Integer growth;
+
+    /**
+     * 余额
+     */
+    private Integer balance;
  
         
     @Id
@@ -262,6 +267,15 @@ public class UmsMember {
     
     public void setGrowth(Integer growth) {
         this.growth = growth;
+    }
+
+    @Column(name = "balance")
+    public Integer getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Integer balance) {
+        this.balance = balance;
     }
         
     public UmsMember() {
