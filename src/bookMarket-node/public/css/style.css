@@ -1,31 +1,37 @@
-html, body {
-    height: 100%;
+html,
+body {
+  height: 100%;
 }
 
-.display_hide{
-    display: none;
+.display_hide {
+  display: none;
 }
 
 .message_hide {
-    display: none;
+  display: none;
 }
 
 .left_item {
-    background-color: beige;
-    height: 50px;
-    text-align: center;
+  background-color: beige;
+  height: 50px;
+  text-align: center;
 }
 
 .info_item {
-    height: 50px;
-    text-align: left;
+  height: 50px;
+  text-align: left;
 }
 
-#infoTab>div>div>div>input {
-    background: none;
-    border: 0px;
-    outline: none;
+#infoTab > div > div > div > input {
+  background: none;
+  border: 0px;
+  outline: none;
 }
-/*
-.info_input {
-} */
+
+.book_item {
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-image: url(https://book-market.oss-cn-shanghai.aliyuncs.com/default/default-book-cover.jpg);
+  height: 120px;
+  width: 120px;
+}

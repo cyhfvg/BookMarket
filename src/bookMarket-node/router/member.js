@@ -6,7 +6,7 @@ let util = require('../util');
 
 let router = express.Router();
 let axios = util.axios;
-let oAxios = util.oAxios;
+let jiSuAxios = util.jiSuAxios;
 
 /**
  * 用户注册
@@ -40,9 +40,9 @@ router.post('/login',util.urlencoded, (req, res) => {
     let loginType = 0;
 
     // // 获取ip信息
-    // oAxios.get(config.oApiIpPath, {
+    // jiSuAxios.get(config.jiSuApiIpPath, {
     //     params: {
-    //         appkey: config.oApiAppKey,
+    //         appkey: config.jiSuApiAppKey,
     //         ip: ipAddress
     //     }
     // })
@@ -58,28 +58,28 @@ router.post('/login',util.urlencoded, (req, res) => {
     //         }
     //     }
 
-    //     axios.get('/login', {
-    //         params: {
-    //             city: city,
-    //             ip: ipAddress,
-    //             loginType: loginType,
-    //             password: password,
-    //             province: province,
-    //             username: username,
-    //         }
-    //     })
-    //     .then(response => {
-    //         let data = response.data;
-    //         if (data.meta.success === true) {
-    //             res.cookie('token', data.meta.token, {maxAge: 600000});
-    //             res.cookie('userId', data.data.id, {maxAge: 600000});
-    //         }
-    //         res.send(data.meta);
-    //     })
-    //     .catch(error => {
-    //         console.log(error);
-    //     });
-
+        // axios.get('/login', {
+        //     params: {
+        //         city: city,
+        //         ip: ipAddress,
+        //         loginType: loginType,
+        //         password: password,
+        //         province: province,
+        //         username: username,
+        //     }
+        // })
+        // .then(response => {
+        //     let data = response.data;
+        //     console.debug('login success');
+        //     if (data.meta.success === true) {
+        //         res.cookie('token', data.meta.token, {maxAge: 600000});
+        //         res.cookie('userId', data.data.id, {maxAge: 600000});
+        //     }
+        //     res.send(data.meta);
+        // })
+        // .catch(error => {
+        //     console.log(error);
+        // });
     // });
 
     // Todo: 上一段替换此段

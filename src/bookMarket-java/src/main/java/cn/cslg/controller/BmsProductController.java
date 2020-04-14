@@ -1,7 +1,7 @@
 package cn.cslg.controller;
 
-import cn.cslg.model.BmsBookCategory;
-import cn.cslg.service.BmsBookCategoryService;
+import cn.cslg.model.BmsProduct;
+import cn.cslg.service.BmsProductService;
 
 import cn.cslg.bean.Response;
 import org.slf4j.Logger;
@@ -13,24 +13,24 @@ import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
 
 /**
- * 书籍分类(BmsBookCategory)表控制层
+ * 商品信息(BmsProduct)表控制层
  *
  * @author zhangguangzhou
  * @since 2020-04-14 14:56:00
  */
 @RestController
-@RequestMapping("/bmsBookCategory")
-public class BmsBookCategoryController implements ApplicationContextAware{
+@RequestMapping("/bmsProduct")
+public class BmsProductController implements ApplicationContextAware{
 
     /**
      * 服务对象
      */
     @Resource
-    private BmsBookCategoryService bmsBookCategoryService;
+    private BmsProductService bmsProductService;
     
     private ApplicationContext applicationContext;
 
-    private static Logger logger = LoggerFactory.getLogger(BmsBookCategory.class);
+    private static Logger logger = LoggerFactory.getLogger(BmsProduct.class);
     
     /**
      * 通过主键查询单条数据

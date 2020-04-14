@@ -1,0 +1,101 @@
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+<script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
+
+<script src="/js/config.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script type="text/javascript">
+  let vm = new Vue({
+    el: "#app",
+    data() {
+      return {
+        axiosInstance: null,
+        book: null,
+        cols: 5,
+        rows: 0,
+        searchBooks: [],
+        searchText: "",
+      };
+    },
+    methods: {
+      init: function () {
+        // let me = this;
+        // queryBook(me.searchText);
+      },
+      queryBook: function () {
+        let me = this;
+        let text = me.searchText;
+        if (text === "") {
+          return;
+        }
+        me.axiosInstance
+          .post("/book/sell/searchBook", {
+            text: text,
+          })
+          .then((response) => {
+            if (response.data.status === 0) {
+              let result = response.data.result;
+              // console.log(result);
+              // 书名查询 结果
+              if (result.total !== undefined) {
+                me.searchBooks = result.list;
+              } else {
+                // ISBN 查询 结果
+                me.book = result;
+              }
+            } else {
+              // 失败
+              me.searchText = "";
+            }
+          });
+      },
+      eachRowBooks: function (row) {
+        let me = this;
+        let cols = me.cols;
+        let books = [];
+        for (let i = 0; i < cols; i++) {
+          books[i] = me.searchBooks[(row - 1) * cols + i];
+        }
+        return books;
+      },
+    },
+    beforeCreate() {
+      // Todo: 验证身份
+      // 从/js/utils.js中使用方法 验证身份
+    },
+    created() {
+      // 设置axios实例的config
+      this.axiosInstance = axios.create({
+        baseURL: configValue.axiosBaseURL,
+        timeout: 30000,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    mounted() {
+      // 数据初始化
+      this.init();
+    },
+    watch: {
+      searchBooks(newVal) {
+        let me = this;
+        me.rows = me.searchBooks.length / me.cols;
+      },
+    },
+    computed: {
+      remain: function () {
+        let me = this;
+        let len = me.searchBooks.length;
+        let count = len - me.rows * me.cols;
+        let remain = [];
+        for (let i = 0; i < count; i++) {
+          remain[i] = me.searchBooks[len - i - 1];
+        }
+        return remain;
+      },
+    },
+  });
+</script>

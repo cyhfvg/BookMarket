@@ -1,15 +1,15 @@
 package cn.cslg.service;
 
-import cn.cslg.model.BmsBookCategory;
+import cn.cslg.model.BmsProduct;
 import java.util.List;
 
 /**
- * 书籍分类(BmsBookCategory)表服务接口
+ * 商品信息(BmsProduct)表服务接口
  *
  * @author zhangguangzhou
  * @since 2020-04-14 14:56:00
  */
-public interface BmsBookCategoryService {
+public interface BmsProductService {
 
     /**
      * 通过ID查询单条数据
@@ -17,7 +17,7 @@ public interface BmsBookCategoryService {
      * @param id 主键
      * @return 实例对象
      */
-    BmsBookCategory queryById(Long id);
+    BmsProduct queryById(Long id);
 
     /**
      * 查询多条数据
@@ -26,23 +26,23 @@ public interface BmsBookCategoryService {
      * @param limit 查询条数
      * @return 对象列表
      */
-    List<BmsBookCategory> queryAllByLimit(int offset, int limit);
+    List<BmsProduct> queryAllByLimit(int offset, int limit);
 
     /**
      * 新增数据
      *
-     * @param bmsBookCategory 实例对象
+     * @param bmsProduct 实例对象
      * @return 实例对象
      */
-    void insert(BmsBookCategory bmsBookCategory);
+    void insert(BmsProduct bmsProduct);
 
     /**
      * 修改数据
      *
-     * @param bmsBookCategory 实例对象
+     * @param bmsProduct 实例对象
      * @return 实例对象
      */
-    void update(BmsBookCategory bmsBookCategory);
+    void update(BmsProduct bmsProduct);
 
     /**
      * 通过主键删除数据
