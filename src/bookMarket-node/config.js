@@ -7,9 +7,11 @@ module.exports = {
     apiPort: 8080,
     apiModuleName: "bookMarket-java",
     // 极速API 配置项
-    oApiBaseUrl: "https://api.jisuapi.com",
-    oApiIpPath: "/ip/location",
-    oApiAppKey: "148a5d000c527ed5",
+    jiSuApiBaseUrl: "https://api.jisuapi.com",
+    jiSuApiIpPath: "/ip/location",
+    jiSuApiBookNamePath: 'isbn/search',
+    jiSuApiBookIsbnPath: '/isbn/query',
+    jiSuApiAppKey: "148a5d000c527ed5",
     // 阿里云 OSS 配置项
     ossRegion: 'oss-cn-shanghai',
     ossAccessKeyId: 'LTAI4FtQ9cPJRn3E7r6R7swT',

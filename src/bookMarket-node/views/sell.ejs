@@ -1,11 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>我要卖书</title>
-</head>
-<body>
-
-</body>
+    <!-- 引入css样式表，和js -->
+    <%- include('template/css_and_js') %>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 头部 -->
+      <div class="jumbotron text-center" style="margin-bottom: 0;">
+        <h1>二手书城</h1>
+        <p>放心交易</p>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <input
+              type="text"
+              name="searchText"
+              placeholder="输入书名或ISBN寻找书籍信息"
+              v-model="searchText"
+            />
+            <input type="button" value="查找" @click="queryBook()" />
+          </div>
+          <div class="col"></div>
+        </div>
+        <!-- Todo: v-for 渲染 搜索的书籍 -->
+        <div v-if="searchBooks.length">
+          <div class="row" v-for="n in rows">
+            <div class="col" v-for="book in eachRowBooks(n)">
+              <div class="book_item">
+                <img :src="book.pic" alt="" height="120px" width="120px" />
+              </div>
+              <label>ISBN: {{ book.isbn }}</label>
+            </div>
+          </div>
+          <!-- 剩余书籍 -->
+          <div class="row" v-if="remain.length">
+            <div class="col" v-for="book in remain">
+              <div class="book_item">
+                <img :src="book.pic" alt="" height="120px" width="120px" />
+              </div>
+              <label>ISBN: {{ book.isbn }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('template/foot.ejs') %>
+  </body>
+  <!-- 引入 vue 代码 -->
+  <%- include('template/sell_book_vue_axios.ejs') %>
 </html>

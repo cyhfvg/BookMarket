@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Scope;
 /**
  * @description 书籍分类(bms_book_category)表实体类
  * @author zhangguangzhou
- * @date 2020-02-28 17:32:08
+ * @date 2020-04-14 14:56:00
  */
 @Entity
 @Table(name = "bms_book_category")
