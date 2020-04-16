@@ -17,22 +17,32 @@
       <div class="container">
         <div class="row">
           <div class="col"></div>
-          <div class="col">
-            <input
-              type="text"
-              name="searchText"
-              placeholder="输入书名或ISBN寻找书籍信息"
-              v-model="searchText"
-            />
-            <input type="button" value="查找" @click="queryBook()" />
+          <div class="col-sm-6 clearfix">
+            <div class="form-group float-left" style="width: 250px;">
+              <input
+                type="text"
+                class="form-control"
+                name="searchText"
+                placeholder="输入书名或ISBN寻找书籍"
+                v-model="searchText"
+              />
+            </div>
+            <div class="form-group float-left" style="margin-left: 20px;">
+              <input
+                type="button"
+                class="btn btn-light"
+                value="查找"
+                @click="queryBook()"
+              />
+            </div>
           </div>
           <div class="col"></div>
         </div>
-        <!-- Todo: v-for 渲染 搜索的书籍 -->
-        <div v-if="searchBooks.length">
+        <!-- tag: v-for 渲染卖书时 搜索的书籍 -->
+        <div v-if="!isbnSearchFlag && searchBooks.length">
           <div class="row" v-for="n in rows">
             <div class="col" v-for="book in eachRowBooks(n)">
-              <div class="book_item">
+              <div class="book_item" @click="query(book.isbn)">
                 <img :src="book.pic" alt="" height="120px" width="120px" />
               </div>
               <label>ISBN: {{ book.isbn }}</label>
@@ -41,10 +51,63 @@
           <!-- 剩余书籍 -->
           <div class="row" v-if="remain.length">
             <div class="col" v-for="book in remain">
-              <div class="book_item">
+              <div class="book_item" @click="query(book.isbn)">
                 <img :src="book.pic" alt="" height="120px" width="120px" />
               </div>
               <label>ISBN: {{ book.isbn }}</label>
+            </div>
+          </div>
+          <!-- Todo: 搜索分页按钮 -->
+          <div v-if="searchBooks.length"></div>
+        </div>
+        <!-- Todo: ISBN 搜索到的书籍渲染 -->
+        <div v-if="isbnSearchFlag && !objIsEmpty(book)">
+          <div class="row">
+            <div class="col">
+              <div class="book_item" style="width: 240px; height: 240px;">
+                <img
+                  :src="book.pic"
+                  :alt="book.summary"
+                  height="240px"
+                  width="240px"
+                />
+              </div>
+              <div>书籍名称:&nbsp;&nbsp;{{ book.title }}</div>
+              <div>出版社:&nbsp;&nbsp;{{ book.publisher }}</div>
+              <div>出版时间:&nbsp;&nbsp;{{ book.pubdate }}</div>
+              <div>书籍页数;&nbsp;&nbsp;{{ book.page }}</div>
+              <div>书籍定价: &nbsp;&nbsp;{{ book.price }}元</div>
+            </div>
+            <div class="col">
+              <!-- Todo: 返回按钮 -->
+              <div v-if="searchBooks.length" @click="showResults()">
+                <label style="background-color: #f0f8ff;">返回</label>
+              </div>
+              <div>
+                <p>注: 此处提交的卖书请求，需在<font color="#EEB422">我的摊位</font>中提交信息才可上架</p>
+              </div>
+              <div><label>我的定价:</label></div>
+              <div class="clearfix">
+                <div class="form-group float-left" style="width: 250px;">
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="myPrice"
+                    v-model="myPrice"
+                  />
+                </div>
+                <div class="form-group float-left">
+                  <input
+                    class="btn btn-light"
+                    type="button"
+                    value="卖出书籍"
+                    @click="sell()"
+                  />
+                </div>
+                <div class="float-right" style="color: red;">
+                  {{ alertText }}
+                </div>
+              </div>
             </div>
           </div>
         </div>

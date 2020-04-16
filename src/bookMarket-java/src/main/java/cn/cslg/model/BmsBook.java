@@ -11,14 +11,14 @@ import org.springframework.context.annotation.Scope;
 
  
 /**
- * @description 商品信息(bms_product)表实体类
+ * @description 商品信息(bms_book)表实体类
  * @author zhangguangzhou
- * @date 2020-04-14 14:56:00
+ * @date 2020-04-16 20:04:51
  */
 @Entity
-@Table(name = "bms_product")
+@Table(name = "bms_book")
 @Scope("prototype")
-public class BmsProduct {
+public class BmsBook {
     
             
     /**
@@ -36,7 +36,7 @@ public class BmsProduct {
     /**
      * ISBN号
      */
-    private Integer isbn;
+    private String isbn;
  
             
     /**
@@ -60,7 +60,7 @@ public class BmsProduct {
     /**
      * 价格 元宝
      */
-    private Double price;
+    private Integer price;
  
             
     /**
@@ -76,7 +76,13 @@ public class BmsProduct {
  
             
     /**
-     * 描述
+     * 书籍简介
+     */
+    private String summary;
+ 
+            
+    /**
+     * 本书描述
      */
     private String description;
  
@@ -113,8 +119,8 @@ public class BmsProduct {
         
     @Id
     @Column(name = "id")
-    @GenericGenerator(name = "BmsProductIdGenerator}", strategy = "native")
-    @GeneratedValue(generator = "BmsProductIdGenerator")
+    @GenericGenerator(name = "BmsBookIdGenerator}", strategy = "native")
+    @GeneratedValue(generator = "BmsBookIdGenerator")
     public Long getId() {
         return id;
     }
@@ -135,11 +141,11 @@ public class BmsProduct {
         
     
     @Column(name = "ISBN")
-    public Integer getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
     
-    public void setIsbn(Integer isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
         
@@ -175,11 +181,11 @@ public class BmsProduct {
         
     
     @Column(name = "price")
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
     
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
         
@@ -201,6 +207,16 @@ public class BmsProduct {
     
     public void setProductCategoryName(String productCategoryName) {
         this.productCategoryName = productCategoryName;
+    }
+        
+    
+    @Column(name = "summary")
+    public String getSummary() {
+        return summary;
+    }
+    
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
         
     
@@ -263,7 +279,7 @@ public class BmsProduct {
         this.sort = sort;
     }
         
-    public BmsProduct() {
+    public BmsBook() {
     
     }
 }
