@@ -59,7 +59,8 @@ let vm = new Vue({
                         document.getElementById('register_close_btn').click();
                         document.getElementById('loginButton').click();
                     } else {
-                        // Todo: 清空表单
+                        // tag: 注册失败 清空表单
+                        document.getElementById('register_reset_btn').click();
                     }
                 })
                 .catch(error => {

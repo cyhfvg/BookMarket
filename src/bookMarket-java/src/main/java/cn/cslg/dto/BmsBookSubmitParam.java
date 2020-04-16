@@ -10,18 +10,24 @@ import lombok.Setter;
  * description:
  *
  * @author zhangguangzhou
- * @version 2020/4/14 6:54 1.00
+ * @version 2020/4/15 14:08 1.00
  */
 
 @Setter
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UmsMemberChargeParam {
+@NoArgsConstructor
+public class BmsBookSubmitParam {
     @NotEmpty(message = "id 不可为空")
     private long id;
-    @NotEmpty(message = "charge 不可为空")
-    private int charge;
+    @NotEmpty(message = "member id 不可为空")
+    private long memberId;
+    private String isbn;
+    private Integer price;
+    private String author;
+    private String name;
+    private String pic;
+    private String summary;
 
 
 }

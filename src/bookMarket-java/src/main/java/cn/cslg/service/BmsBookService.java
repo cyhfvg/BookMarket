@@ -1,15 +1,15 @@
 package cn.cslg.service;
 
-import cn.cslg.model.BmsProduct;
+import cn.cslg.model.BmsBook;
 import java.util.List;
 
 /**
- * 商品信息(BmsProduct)表服务接口
+ * 商品信息(BmsBook)表服务接口
  *
  * @author zhangguangzhou
- * @since 2020-04-14 14:56:00
+ * @since 2020-04-15 13:44:51
  */
-public interface BmsProductService {
+public interface BmsBookService {
 
     /**
      * 通过ID查询单条数据
@@ -17,7 +17,7 @@ public interface BmsProductService {
      * @param id 主键
      * @return 实例对象
      */
-    BmsProduct queryById(Long id);
+    BmsBook queryById(Long id);
 
     /**
      * 查询多条数据
@@ -26,23 +26,23 @@ public interface BmsProductService {
      * @param limit 查询条数
      * @return 对象列表
      */
-    List<BmsProduct> queryAllByLimit(int offset, int limit);
+    List<BmsBook> queryAllByLimit(int offset, int limit);
 
     /**
      * 新增数据
      *
-     * @param bmsProduct 实例对象
+     * @param bmsBook 实例对象
      * @return 实例对象
      */
-    void insert(BmsProduct bmsProduct);
+    void insert(BmsBook bmsBook);
 
     /**
      * 修改数据
      *
-     * @param bmsProduct 实例对象
+     * @param bmsBook 实例对象
      * @return 实例对象
      */
-    void update(BmsProduct bmsProduct);
+    void update(BmsBook bmsBook);
 
     /**
      * 通过主键删除数据

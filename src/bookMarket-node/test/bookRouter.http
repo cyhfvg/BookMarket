@@ -5,3 +5,11 @@ Content-Type: application/json
 {
     "text": "老人与海"
 }
+
+###
+POST http://127.0.0.1:8081/book/sell/searchBook
+Content-Type: application/json
+
+{
+    "text": "9787515907024"
+}

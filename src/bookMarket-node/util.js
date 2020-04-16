@@ -14,7 +14,7 @@ let AlipaySdk = require("alipay-sdk").default;
 let axiosInstance = axios.create({
   baseURL:
     config.apiHost + ":" + config.apiPort + "/" + config.apiModuleName + "/",
-  timeout: 1000,
+  timeout: 3000,
 });
 
 /**
@@ -22,15 +22,20 @@ let axiosInstance = axios.create({
  */
 let alipaySdk = new AlipaySdk({
   appId: "2016102400752515",
-    privateKey: fs.readFileSync(
-      path.join(config.project_path, "pem", "private_key.pem"),
-      "ascii"
-    ),
-    alipayPublicKey: 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgvqFRD9lXTENYk0Dl/fcT+jnqBUUxpP3QieGfdA19Q8pGhscYQDPPAgHAgcXIJzKgvRhJpwFy5c3e+4c3BOQXS4BUaVKUosXAo4HqvEt0M+SivJn+YUTB6Ua4VUm92PEDHJcIvydycHglTk4kwjECXnzwpxfbclhLFqsPI20m/yZEO8lv7yCh8qgCoFC/fy+kv51OJeW0fjX4oi0qqUrRtt9OJp4tyrWZTkRbkswafUH8PcQRTxLOnSMezkzJlssqQjeK+gAKskusAKF3JISXWauP3CMFgMOTscHWm8lq8S1JCut6VJOqwuOl3gfwDg9GBZ/I4i0kNBQbwc4bnQhWQIDAQAB',
+  privateKey: fs.readFileSync(
+    path.join(config.project_path, "pem", "private_key.pem"),
+    "ascii"
+  ),
+  // alipayPublicKey: 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgvqFRD9lXTENYk0Dl/fcT+jnqBUUxpP3QieGfdA19Q8pGhscYQDPPAgHAgcXIJzKgvRhJpwFy5c3e+4c3BOQXS4BUaVKUosXAo4HqvEt0M+SivJn+YUTB6Ua4VUm92PEDHJcIvydycHglTk4kwjECXnzwpxfbclhLFqsPI20m/yZEO8lv7yCh8qgCoFC/fy+kv51OJeW0fjX4oi0qqUrRtt9OJp4tyrWZTkRbkswafUH8PcQRTxLOnSMezkzJlssqQjeK+gAKskusAKF3JISXWauP3CMFgMOTscHWm8lq8S1JCut6VJOqwuOl3gfwDg9GBZ/I4i0kNBQbwc4bnQhWQIDAQAB',
+  alipayPublicKey: fs.readFileSync(
+    path.join(config.project_path, "pem", "public_key.pem"),
+    "ascii"
+  ),
+
   gateway: "https://openapi.alipaydev.com/gateway.do",
-  charset: 'utf-8',
-  version: '1.0',
-  signType: 'RSA2'
+  charset: "utf-8",
+  version: "1.0",
+  signType: "RSA2",
 });
 
 /**
@@ -90,7 +95,6 @@ Date.prototype.Format = function (fmt) {
       );
   return fmt;
 };
-
 
 // 暴露对象
 module.exports = {
