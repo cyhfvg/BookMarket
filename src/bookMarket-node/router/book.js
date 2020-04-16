@@ -11,12 +11,12 @@ let axios = util.axios;
  * 卖书时，从极速API搜索书籍信息
  */
 router.post("/sell/searchBook", (req, res) => {
-  let text = req.body.text;
+  let {text, page} = req.body;
   let url = config.jiSuApiBookNamePath;
   let params = {
     appkey: config.jiSuApiAppKey,
     title: text,
-    pagenum: 1,
+    pagenum: page,
   };
 
   // 若是isbn 更换isbn的配置项
