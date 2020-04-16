@@ -15,7 +15,9 @@
         axiosInstance: null,
         book: {},
         cols: 5,
+        curPage: 1,
         isbnSearchFlag: false,
+        total: 0,
         myPrice: 1,
         rows: 0,
         searchBooks: [],
@@ -36,12 +38,20 @@
       queryBook: function () {
         let me = this;
         let text = me.searchText;
-        me.query(text);
+        me.query(text, me.curPage);
+      },
+      /**
+       * 分页功能
+       */
+      changePage: function(pageNum) {
+        let me = this;
+        me.curPage = pageNum;
+        me.queryBook();
       },
       /**
        * 查找书籍信息
        */
-      query: function (text) {
+      query: function (text, page) {
         let me = this;
         if (text === "") {
           return;
@@ -49,6 +59,7 @@
         me.axiosInstance
           .post("/book/sell/searchBook", {
             text: text,
+            page: page
           })
           .then((response) => {
             if (response.data.status === 0) {
@@ -56,6 +67,7 @@
               console.log(result);
               // 书名查询 结果
               if (result.total !== undefined) {
+                me.total = result.total;
                 me.searchBooks = result.list;
                 me.isbnSearchFlag = false;
               } else {
@@ -191,6 +203,13 @@
         }
         return remain;
       },
+      /**
+       * 总页数
+       */
+      totalPage: function() {
+        let me = this;
+        return Math.ceil(me.total / (me.rows * me.cols));
+      }
     },
   });
 </script>

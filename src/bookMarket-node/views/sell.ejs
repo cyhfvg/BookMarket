@@ -58,9 +58,68 @@
             </div>
           </div>
           <!-- Todo: 搜索分页按钮 -->
-          <div v-if="searchBooks.length"></div>
+          <div class="clearfix" v-if="searchBooks.length > 0">
+            <div class="float-right">
+              <!-- 上十页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage > 10"
+                class="page_item"
+                @click="changePage(curPage - 10)"
+              >
+              <img src="/icons/double-left.svg">
+              </div>
+              <!-- 上一页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage > 1"
+                class="page_item"
+                @click="changePage(curPage - 1)"
+              >
+              <img src="/icons/single-left.svg">
+              </div>
+              <!-- 下一页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage < totalPage"
+                class="page_item"
+                @click="changePage(curPage + 1)"
+              >
+              <img src="/icons/single-right.svg">
+              </div>
+              <!-- 下十页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage < totalPage - 9"
+                class="page_item"
+                @click="changePage(curPage + 10)"
+              >
+              <img src="/icons/double-right.svg">
+              </div>
+              <!-- 跳转页码 -->
+              <div
+                class="page_item float-right"
+                style="border:3px solid #000;width: 86px; height: 32px;"
+              >
+                <input
+                  type="text"
+                  name="page"
+                  v-model="curPage"
+                  style="width: 32px;"
+                /><input
+                  type="button"
+                  value="跳转"
+                  @click="changePage(curPage)"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- Todo: ISBN 搜索到的书籍渲染 -->
+        <!-- note: ISBN 搜索到的书籍渲染 -->
         <div v-if="isbnSearchFlag && !objIsEmpty(book)">
           <div class="row">
             <div class="col">
@@ -84,7 +143,11 @@
                 <label style="background-color: #f0f8ff;">返回</label>
               </div>
               <div>
-                <p>注: 此处提交的卖书请求，需在<font color="#EEB422">我的摊位</font>中提交信息才可上架</p>
+                <p>
+                  注: 此处提交的卖书请求，需在<font color="#EEB422"
+                    >我的摊位</font
+                  >中提交信息才可上架
+                </p>
               </div>
               <div><label>我的定价:</label></div>
               <div class="clearfix">
