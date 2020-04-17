@@ -2,6 +2,7 @@ package cn.cslg.service;
 
 import cn.cslg.model.BmsBook;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品信息(BmsBook)表服务接口
@@ -58,5 +59,13 @@ public interface BmsBookService {
      * @return 是否成功
      */
     void deleteById(Long id);
+
+    /**
+     * 根据页码，页长分页获取所有在售书籍
+     * @param page int 页码
+     * @param pageSize int 页长
+     * @return HashMap<String, Object> <= [<total, int>, <books, ArrayList<BmsBook>>]
+     */
+    Map<String, Object> listAllBooks(int page, int pageSize);
 
 }

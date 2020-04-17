@@ -1,3 +1,4 @@
+<!-- note:不再使用 -->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
@@ -11,7 +12,7 @@
     el: "#app",
     data() {
       return {
-        alertText: '',
+        alertText: "",
         axiosInstance: null,
         book: {},
         cols: 5,
@@ -43,7 +44,7 @@
       /**
        * 分页功能
        */
-      changePage: function(pageNum) {
+      changePage: function (pageNum) {
         let me = this;
         me.curPage = pageNum;
         me.queryBook();
@@ -59,7 +60,7 @@
         me.axiosInstance
           .post("/book/sell/searchBook", {
             text: text,
-            page: page
+            page: page,
           })
           .then((response) => {
             if (response.data.status === 0) {
@@ -139,14 +140,19 @@
             window.open("", "_self");
             window.close();
           } else {
-            me.alertText = '请刷新页面重新提交'
+            me.alertText = "请刷新页面重新提交";
           }
         });
       },
     },
     beforeCreate() {
-      // Todo: 验证身份
-      // 从/js/utils.js中使用方法 验证身份
+      // tag: 验证身份
+      // 是否已经登录
+      if (getCookie("token") === null) {
+        window.opener = null;
+        window.open("", "_self");
+        window.close();
+      }
     },
     created() {
       // 设置axios实例的config
@@ -206,10 +212,10 @@
       /**
        * 总页数
        */
-      totalPage: function() {
+      totalPage: function () {
         let me = this;
         return Math.ceil(me.total / (me.rows * me.cols));
-      }
+      },
     },
   });
 </script>
