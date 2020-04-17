@@ -1,12 +1,13 @@
 let config = require("../config");
 let express = require("express");
+let fs = require('fs');
 let path = require("path");
 let util = require("../util");
-let fs = require('fs');
 
 let router = express.Router();
-let jiSuAxios = util.jiSuAxios;
+
 let axios = util.axios;
+let jiSuAxios = util.jiSuAxios;
 let ossClient = util.ossClient;
 
 /**
@@ -146,7 +147,7 @@ router.post("/onSell", util.multer.single('file'), (req, res) => {
           }
         )
         .then((response) => {
-          // 上传完成后移除本地文件
+          // Fixme: 上传完成后移除本地文件
           fs.unlinkSync(localFile);
 
           if (response.data.meta.success === true) {
@@ -163,6 +164,51 @@ router.post("/onSell", util.multer.single('file'), (req, res) => {
         });
     }
   );
+});
+
+/**
+ * 获取商场所有书籍
+ */
+router.post('/allBooks', (req, res) => {
+  let {page, pageSize} = req.body;
+  let url = '/bmsBook/listAll';
+  let params = {
+    params: {
+      page: page,
+      pageSize: pageSize
+    }
+  };
+  let config = {};
+  axios.get(url, params, config).then(response => {
+    console.dir(response);
+    res.send(response.data);
+  }).catch(err => {
+    console.dir(err);
+  });
+});
+
+/**
+ * 获取 猜你喜欢书籍
+ */
+router.post('/likeBooks', (req, res) => {
+  let {userId, token} = req.cookies;
+  let url = '/bmsBook/listLikeBooks';
+  let params = {
+    params: {
+      userId: userId,
+    }
+  };
+  let config = {
+    headers: {
+      'X-Token': token
+    }
+  };
+  axios.get(url, params, config).then(response => {
+    console.dir(response);
+    res.send(response.data);
+  }).catch(err => {
+    console.dir(err);
+  });
 });
 
 // 导出路由

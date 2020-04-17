@@ -109,6 +109,188 @@
       <%- include('template/foot.ejs') %>
     </div>
   </body>
-  <!-- 引入 vue 代码 -->
-  <%- include('template/home_vue_axios.ejs') %>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
+
+  <script src="/js/config.js"></script>
+
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: "#app",
+      data() {
+        return {
+          alertBox: {
+            alertStyle: "",
+            messageInfo: "",
+            messageState: "",
+          },
+          alertStyles: {
+            danger: "alert-danger",
+            dark: "alert-dark",
+            info: "alert-info",
+            light: "alert-light",
+            primary: "alert-primary",
+            secondary: "alert-secondary",
+            success: "alert-success",
+            warning: "alert-warning",
+          },
+          axiosInstance: null,
+          allBooks: [],
+          likeBooks: [],
+          shoppingCart: [],
+          curPage: 1,
+          cols: 5,
+          rows: 0,
+          total: 0,
+          state: {
+            isLogin: false,
+            isMsgShow: false,
+          },
+        };
+      },
+      methods: {
+        /**
+         * 初始化
+         */
+        init: function () {
+          let me = this;
+          // Todo:获取所有书籍
+          me.axiosInstance
+            .post("/book/allBooks", {
+              page: me.curPage,
+              pageSize: me.rows * me.cols,
+            })
+            .then((response) => {
+              let result = response.data;
+              console.dir(result);
+              if (result.meta.success === true) {
+                me.total = result.data.total;
+                me.allBooks = result.data.books;
+              }
+            });
+          // Todo: 获取 猜你喜欢 书籍
+          me.axiosInstance.post("book/likeBooks", {}).then((response) => {
+            let result = response.data;
+            console.dir(result);
+            if (result.meta.success === true) {
+              me.likeBooks = result.data;
+            }
+          });
+        },
+        /**
+         * 用户注册
+         */
+        register: () => {
+          let username = document.getElementById("registerUsername").value;
+          let password = document.getElementById("registerPassword").value;
+          let password1 = document.getElementById("registerPassword1").value;
+          if (username === "") {
+            vm.$options.methods.showAlert(
+              vm.alertStyles.danger,
+              "错误!",
+              "用户名不可为空"
+            );
+          } else if (password === "" || password1 === "") {
+            vm.$options.methods.showAlert(
+              vm.alertStyles.danger,
+              "错误!",
+              "密码不可为空"
+            );
+          } else if (password !== password1) {
+            vm.$options.methods.showAlert(
+              vm.alertStyles.danger,
+              "错误!",
+              "两次密码必须相同"
+            );
+          } else {
+            vm.axiosInstance
+              .post("/member/register", {
+                username: username,
+                password: password,
+              })
+              .then((response) => {
+                if (response.data.success === true) {
+                  // window.location.replace("/");
+                  document.getElementById("register_close_btn").click();
+                  document.getElementById("loginButton").click();
+                } else {
+                  // tag: 注册失败 清空表单
+                  document.getElementById("register_reset_btn").click();
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        },
+        /**
+         * 用户登录
+         */
+        login: () => {
+          let username = document.getElementById("loginUsername").value;
+          let password = document.getElementById("loginPassword").value;
+
+          vm.axiosInstance
+            .post("/member/login", {
+              username: username,
+              password: password,
+            })
+            .then((response) => {
+              if (response.data.success === true) {
+                // 关闭 登录 模态框
+                vm.state.isLogin = true;
+
+                document.getElementById("login_close_btn").click();
+              } else {
+                vm.$options.methods.showAlert(
+                  vm.alertStyles.warning,
+                  "警告!",
+                  response.data.message
+                );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        },
+        /**
+         * 用户注销
+         */
+        logout: () => {
+          foreach();
+          window.location.replace("/");
+        },
+        showAlert: (alertStyle, messageState, messageInfo) => {
+          vm.alertBox.alertStyle = alertStyle;
+          vm.alertBox.messageState = messageState;
+          vm.alertBox.messageInfo = messageInfo;
+          vm.state.isMsgShow = true;
+        },
+        hideAlert: () => {
+          vm.state.isMsgShow = !vm.state.isMsgShow;
+        },
+      },
+      beforeCreate() {},
+      created() {
+        // 设置axios实例的config
+        this.axiosInstance = axios.create({
+          baseURL: configValue.axiosBaseURL,
+          timeout: 30000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        // 是否已经登录
+        if (getCookie("token") != null) {
+          this.state.isLogin = true;
+        }
+      },
+      mounted() {
+        this.init();
+      },
+      computed: {},
+    });
+  </script>
 </html>

@@ -79,12 +79,16 @@
             </div>
             <div class="col">
               <!-- note: 返回按钮 -->
-              <div v-if="books.length" @click="changePublishFlag()" style="width: 50px;">
+              <div
+                v-if="books.length"
+                @click="changePublishFlag()"
+                style="width: 50px;"
+              >
                 <label style="background-color: #f0f8ff;">返回</label>
               </div>
               <div class="clearfix">
                 <div class="form-group">
-                  <!--  Todo: 提交多份文件 -->
+                  <!--  note 提交多份文件 -->
                   <input type="file" id="files" name="files" multiple />
                 </div>
                 <div class="form-group">
@@ -125,7 +129,7 @@
       data() {
         return {
           axios: null,
-          alertText: '',
+          alertText: "",
           book: {},
           books: [],
           cols: 5,
@@ -225,39 +229,48 @@
           let param3 = new FormData();
           let param4 = new FormData();
           let param5 = new FormData();
-          param1.append('file', files[0]);
-          param2.append('file', files[1]);
-          param3.append('file', files[2]);
-          param4.append('file', files[3]);
-          param5.append('file', files[4]);
-          param1.append('bookId', me.book.id);
-          param2.append('bookId', me.book.id);
-          param3.append('bookId', me.book.id);
-          param4.append('bookId', me.book.id);
-          param5.append('bookId', me.book.id);
-          param1.append('description', description);
-          param2.append('description', description);
-          param3.append('description', description);
-          param4.append('description', description);
-          param5.append('description', description);
-          axios.all([
-            me.axios.post(url, param1, config),
-            me.axios.post(url, param2, config),
-            me.axios.post(url, param3, config),
-            me.axios.post(url, param4, config),
-            me.axios.post(url, param5, config),
-          ]).then(axios.spread(function(res1, res2, res3, res4, res5){
-            console.log(res1);
-            if (res1.data.success === true) {
-              me.getBooks();
-              me.changePublishFlag();
-            }
-          }));
+          param1.append("file", files[0]);
+          param2.append("file", files[1]);
+          param3.append("file", files[2]);
+          param4.append("file", files[3]);
+          param5.append("file", files[4]);
+          param1.append("bookId", me.book.id);
+          param2.append("bookId", me.book.id);
+          param3.append("bookId", me.book.id);
+          param4.append("bookId", me.book.id);
+          param5.append("bookId", me.book.id);
+          param1.append("description", description);
+          param2.append("description", description);
+          param3.append("description", description);
+          param4.append("description", description);
+          param5.append("description", description);
+          axios
+            .all([
+              me.axios.post(url, param1, config),
+              me.axios.post(url, param2, config),
+              me.axios.post(url, param3, config),
+              me.axios.post(url, param4, config),
+              me.axios.post(url, param5, config),
+            ])
+            .then(
+              axios.spread(function (res1, res2, res3, res4, res5) {
+                console.log(res1);
+                if (res1.data.success === true) {
+                  me.getBooks();
+                  me.changePublishFlag();
+                }
+              })
+            );
         },
       },
       beforeCreate() {
-        // Todo: 验证身份
-        // 从/js/utils.js中使用方法 验证身份
+        // tag: 验证身份
+        // 是否已经登录
+        if (getCookie("token") === null) {
+          window.opener = null;
+          window.open("", "_self");
+          window.close();
+        }
       },
       created() {
         let me = this;

@@ -4,6 +4,8 @@ import cn.cslg.model.BmsBook;
 import cn.cslg.dao.BmsBookDao;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 商品信息(BmsBook)表服务实现类
  *
@@ -13,4 +15,10 @@ import org.springframework.stereotype.Repository;
 @Repository("bmsBookDao")
 public class BmsBookDaoImpl extends GenericDaoImpl<BmsBook, Long> implements BmsBookDao {
 
+//    Fixme: 修复 getCount函数 不损耗性能
+    @Override
+    public long getCount() {
+        List<BmsBook> list = findAll(BmsBook.class);
+        return list.size();
+    }
 }

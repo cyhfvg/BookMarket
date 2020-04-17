@@ -6,8 +6,9 @@ import cn.cslg.service.BmsBookService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品信息(BmsBook)表服务实现类
@@ -81,5 +82,13 @@ public class BmsBookServiceImpl implements BmsBookService {
     @Override
     public void deleteById(Long id) {
         this.bmsBookDao.deleteById(BmsBook.class, id);
+    }
+
+    @Override
+    public Map<String, Object> listAllBooks(int page, int pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", bmsBookDao.getCount());
+        map.put("books", bmsBookDao.findAll(BmsBook.class, pageSize * (page - 1), pageSize));
+        return map;
     }
 }

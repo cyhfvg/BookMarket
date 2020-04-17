@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品信息(BmsBook)表控制层
@@ -110,6 +111,32 @@ public class BmsBookController implements ApplicationContextAware{
         bmsBook.setPublishStatus(1);
         bmsBookService.update(bmsBook);
         return new Response().success(bmsBook);
+    }
+
+    /**
+     * 分页列出所有书籍
+     * @param page int 页码
+     * @param pageSize int 页长
+     * @return Response {{total: num}, {books: []}}
+     */
+    @RequestMapping(value = "listAll", method = RequestMethod.GET)
+    public Response listAllBooks(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        Response response = new Response();
+        Map<String, Object> map = bmsBookService.listAllBooks(page, pageSize);
+        return response.success(map);
+    }
+
+    /**
+     * 列出用户可能喜欢的书籍
+     * @param userId long 用户id
+     * @return Response
+     */
+    @RequestMapping(value = "listLikeBooks", method = RequestMethod.GET)
+    public Response listLikeBooks(@RequestParam("userId") long userId) {
+        Response response = new Response();
+//        Todo: 更换方法 获取 喜欢书籍
+        List<BmsBook> list = bmsBookService.queryAllByLimit(0, 10);
+        return response.success(list);
     }
     
     @Override

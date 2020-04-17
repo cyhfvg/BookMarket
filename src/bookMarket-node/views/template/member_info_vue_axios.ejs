@@ -1,3 +1,4 @@
+<!-- note:不再使用 -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
 <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
@@ -20,7 +21,7 @@
        * tabs ['/infoInner', '/balanceInner']
        * @param tabName 局部刷新的tab名字
        */
-      loadTabs: function(tabName) {
+      loadTabs: function (tabName) {
         this.axiosInstance
           .post("/memberInfo/" + tabName, {
             // no params
@@ -31,7 +32,7 @@
               return;
             }
             // 先清除 innerHtml 防止 重复 ElementId 出现
-            setHTMLWithScript(document.getElementById('item_tab'), '');
+            setHTMLWithScript(document.getElementById("item_tab"), "");
             setHTMLWithScript(
               document.getElementById("item_tab"),
               response.data.inner
@@ -40,8 +41,13 @@
       },
     },
     beforeCreate() {
-      // Todo: 验证登录
-
+      // tag: 验证登录
+      // 是否已经登录
+      if (getCookie("token") === null) {
+        window.opener = null;
+        window.open("", "_self");
+        window.close();
+      }
     },
     created() {
       // 设置axios实例的config
@@ -53,7 +59,7 @@
         },
       });
 
-      this.loadTabs('infoInner');
+      this.loadTabs("infoInner");
     },
     mounted() {},
     computed: {},
