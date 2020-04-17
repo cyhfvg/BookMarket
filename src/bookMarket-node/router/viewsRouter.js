@@ -27,5 +27,12 @@ router.get('/sell', (req, res) => {
     res.render('sell.ejs');
 });
 
+/**
+ * 用户摊位页面
+ */
+router.get('/myShop', (req, res) => {
+    res.render('myShop.ejs');
+});
+
 // 导出路由
 module.exports = router;

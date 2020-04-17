@@ -32,10 +32,8 @@ exports.put = async function (dir, objectName, file, callback) {
  * @param {string} objectName 对象名
  */
 exports.get = async function (dir, objectName) {
-  // Fixme: callback
   try {
     // let result = await ossClient.get('book-cover/log.js');
-    // Fixme: 对象返回
     let result = await ossClient.get(dir + objectName);
   } catch (err) {
     console.log(err);
@@ -48,7 +46,6 @@ exports.get = async function (dir, objectName) {
  * @param {string} objectName 对象名
  */
 exports.deleteObj = async function (dir, objectName) {
-  // Fixme: callback
   try {
     let result = await ossClient.delete(dir + objectName);
     return result.res;

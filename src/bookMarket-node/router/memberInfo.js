@@ -99,51 +99,56 @@ router.post("/headUpdate", util.multer.single("file"), (req, res) => {
   let fileName = file.filename;
   let localFile = file.path;
 
-  ossClient.put("user-head/", fileName, localFile, (urls) => {
-    let url = urls[0];
-    if (url === undefined) {
-      res.send({ success: false });
-    }
-    axios
-      .patch(
-        "/umsMember/icon",
-        {
-          id: userId,
-          icon: url,
-        },
-        {
-          headers: {
-            "X-Token": token,
-          },
-        }
-      )
-      .then((response) => {
-        // 上传完成后移除本地文件
-        fs.unlinkSync(localFile);
-
-        if (response.data.meta.success === true) {
-          // 成功后删除oss上旧的头像
-          let oldIconUrl = response.data.data;
-          // 若无头像，不必删除
-          if (oldIconUrl !== "") {
-            let result = /aliyuncs\.com\/([\S]+\/+)([\S]+)/g.exec(oldIconUrl);
-            let dir = result[1];
-            let objectName = result[2];
-            ossClient.deleteObj(dir, objectName);
-          }
-          res.send({
-            success: true,
-            icon: url,
-          });
-        } else {
-          res.send({ success: false });
-        }
-      })
-      .catch((err) => {
-        console.error(err);
+  ossClient.put(
+    "user-head/" + new Date().Format("yyyy-MM-dd") + "/",
+    fileName,
+    localFile,
+    (urls) => {
+      let url = urls[0];
+      if (url === undefined) {
         res.send({ success: false });
-      });
-  });
+      }
+      axios
+        .patch(
+          "/umsMember/icon",
+          {
+            id: userId,
+            icon: url,
+          },
+          {
+            headers: {
+              "X-Token": token,
+            },
+          }
+        )
+        .then((response) => {
+          // 上传完成后移除本地文件
+          fs.unlinkSync(localFile);
+
+          if (response.data.meta.success === true) {
+            // 成功后删除oss上旧的头像
+            let oldIconUrl = response.data.data;
+            // 若无头像，不必删除
+            if (oldIconUrl !== "") {
+              let result = /aliyuncs\.com\/([\S]+\/+)([\S]+)/g.exec(oldIconUrl);
+              let dir = result[1];
+              let objectName = result[2];
+              ossClient.deleteObj(dir, objectName);
+            }
+            res.send({
+              success: true,
+              icon: url,
+            });
+          } else {
+            res.send({ success: false });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          res.send({ success: false });
+        });
+    }
+  );
 });
 
 /**
