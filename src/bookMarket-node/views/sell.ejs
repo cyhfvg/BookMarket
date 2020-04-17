@@ -9,11 +9,8 @@
   </head>
   <body>
     <div id="app">
-      <!-- 头部 -->
-      <div class="jumbotron text-center" style="margin-bottom: 0;">
-        <h1>二手书城</h1>
-        <p>放心交易</p>
-      </div>
+      <!-- 引入 head 大图 -->
+      <%- include('template/head.ejs') %>
       <div class="container">
         <div class="row">
           <div class="col"></div>
@@ -38,7 +35,7 @@
           </div>
           <div class="col"></div>
         </div>
-        <!-- tag: v-for 渲染卖书时 搜索的书籍 -->
+        <!-- note: v-for 渲染卖书时 搜索的书籍 -->
         <div v-if="!isbnSearchFlag && searchBooks.length">
           <div class="row" v-for="n in rows">
             <div class="col" v-for="book in eachRowBooks(n)">
@@ -57,7 +54,7 @@
               <label>ISBN: {{ book.isbn }}</label>
             </div>
           </div>
-          <!-- Todo: 搜索分页按钮 -->
+          <!-- note: 搜索分页按钮 -->
           <div class="clearfix" v-if="searchBooks.length > 0">
             <div class="float-right">
               <!-- 上十页 -->
@@ -138,7 +135,7 @@
               <div>书籍定价: &nbsp;&nbsp;{{ book.price }}元</div>
             </div>
             <div class="col">
-              <!-- Todo: 返回按钮 -->
+              <!-- note: 返回按钮 -->
               <div v-if="searchBooks.length" @click="showResults()">
                 <label style="background-color: #f0f8ff;">返回</label>
               </div>

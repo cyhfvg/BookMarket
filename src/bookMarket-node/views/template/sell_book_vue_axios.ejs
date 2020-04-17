@@ -168,7 +168,7 @@
        */
       searchBooks(newVal) {
         let me = this;
-        me.rows = me.searchBooks.length / me.cols;
+        me.rows = Math.floor(me.searchBooks.length / me.cols);
       },
       /**
        * 根据 搜索文本变化设置 搜索结果显示

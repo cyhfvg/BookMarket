@@ -29,6 +29,13 @@ public interface BmsBookService {
     List<BmsBook> queryAllByLimit(int offset, int limit);
 
     /**
+     * 通过用户id查询用户摊位的书籍
+     * @param memberId long 用户id
+     * @return 返回结果集
+     */
+    List<BmsBook> listShopBooks(long memberId);
+
+    /**
      * 新增数据
      *
      * @param bmsBook 实例对象

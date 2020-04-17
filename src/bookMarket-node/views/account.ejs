@@ -1,1 +1,39 @@
 <!-- Todo: 账号设置 手机/邮箱 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>账号设置</title>
+    <!-- 引入css样式表，和js -->
+    <%- include('template/css_and_js') %>
+  </head>
+  <body>
+    <div id="app">
+
+    </div>
+
+    <%- include('template/foot.ejs') %>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
+
+  <script src="/js/config.js"></script>
+
+  <script src="/js/utils.js"></script>
+
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: "#app",
+      data() {
+        return {};
+      },
+      methods: {},
+      created() {},
+      mounted() {},
+      watch: {},
+      computed: {},
+    });
+  </script>
+</html>

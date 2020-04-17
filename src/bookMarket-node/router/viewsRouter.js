@@ -27,12 +27,11 @@ router.get('/sell', (req, res) => {
     res.render('sell.ejs');
 });
 
-// Todo: 删除
 /**
- * 根据isbn显示书籍详情业
+ * 用户摊位页面
  */
-router.get('/sell/:isbn', (req, res) => {
-    let isbn = req.params.isbn;
+router.get('/myShop', (req, res) => {
+    res.render('myShop.ejs');
 });
 
 // 导出路由
