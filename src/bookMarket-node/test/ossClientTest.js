@@ -1,7 +1,6 @@
 let OSS = require('ali-oss');
 
 let ossClient = new OSS({
-    // Todo: 将 config 项 放入 config文件中
     region: 'oss-cn-shanghai',
     accessKeyId: 'LTAI4FtQ9cPJRn3E7r6R7swT',
     accessKeySecret: 'ZYOq5vVHnQcAsszh4hXuTVmp9Bx1u7',

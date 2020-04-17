@@ -11,8 +11,8 @@ import java.util.List;
 /**
  * 书籍分类(BmsBookCategory)表服务实现类
  *
- * @author 张广洲
- * @since 2020-02-26 14:20:02
+ * @author zhangguangzhou
+ * @since 2020-04-14 14:56:00
  */
 @Service("bmsBookCategoryService")
 public class BmsBookCategoryServiceImpl implements BmsBookCategoryService {

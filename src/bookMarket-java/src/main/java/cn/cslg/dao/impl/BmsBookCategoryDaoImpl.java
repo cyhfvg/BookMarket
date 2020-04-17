@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 /**
  * 书籍分类(BmsBookCategory)表服务实现类
  *
- * @author 张广洲
- * @since 2020-02-26 13:36:01
+ * @author zhangguangzhou
+ * @since 2020-04-14 14:56:00
  */
 @Repository("bmsBookCategoryDao")
 public class BmsBookCategoryDaoImpl extends GenericDaoImpl<BmsBookCategory, Long> implements BmsBookCategoryDao {

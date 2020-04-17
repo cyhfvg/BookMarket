@@ -1,7 +1,9 @@
 {
     "files.autoGuessEncoding": true,
     "cSpell.words": [
+        "Asszh",
         "IANA",
+        "LTAI",
         "alipay",
         "aliyuncs",
         "appenders",
@@ -11,6 +13,8 @@
         "datepicker",
         "datetime",
         "memberinfo",
+        "pagenum",
+        "pubdate",
         "reslove"
     ]
 }

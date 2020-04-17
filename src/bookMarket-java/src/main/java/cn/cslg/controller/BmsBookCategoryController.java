@@ -15,8 +15,8 @@ import javax.annotation.Resource;
 /**
  * 书籍分类(BmsBookCategory)表控制层
  *
- * @author 张广洲
- * @since 2020-02-27 23:03:01
+ * @author zhangguangzhou
+ * @since 2020-04-14 14:56:00
  */
 @RestController
 @RequestMapping("/bmsBookCategory")
