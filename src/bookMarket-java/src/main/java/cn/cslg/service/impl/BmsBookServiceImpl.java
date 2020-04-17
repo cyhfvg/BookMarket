@@ -6,6 +6,7 @@ import cn.cslg.service.BmsBookService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +41,16 @@ public class BmsBookServiceImpl implements BmsBookService {
     @Override
     public List<BmsBook> queryAllByLimit(int offset, int limit) {
         return this.bmsBookDao.findAll(BmsBook.class, offset, limit);
+    }
+
+    /**
+     * 通过用户id查询用户摊位的书籍
+     * @param memberId long 用户id
+     * @return 返回结果集
+     */
+    @Override
+    public List<BmsBook> listShopBooks(long memberId) {
+        return this.bmsBookDao.findByProperty(BmsBook.class, "memberId", memberId);
     }
 
     /**

@@ -35,3 +35,8 @@ body {
   height: 120px;
   width: 120px;
 }
+
+.publish_status {
+  border: 1px solid gray;
+  color: brown;
+}

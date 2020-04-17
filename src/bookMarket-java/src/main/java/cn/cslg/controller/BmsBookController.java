@@ -1,10 +1,13 @@
 package cn.cslg.controller;
 
 import cn.cslg.dto.BmsBookSubmitParam;
+import cn.cslg.dto.BmsBookUpdateAlbumsParam;
 import cn.cslg.model.BmsBook;
 import cn.cslg.service.BmsBookService;
 
 import cn.cslg.bean.Response;
+import cn.cslg.util.CollectionUtil;
+import cn.cslg.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 商品信息(BmsBook)表控制层
@@ -61,10 +66,50 @@ public class BmsBookController implements ApplicationContextAware{
         bmsBook.setPrice(bmsBookSubmitParam.getPrice());
         bmsBook.setSummary(bmsBookSubmitParam.getSummary());
 
+        bmsBook.setDeleteStatus(0);
+        bmsBook.setPublishStatus(0);
+
         bmsBookService.insert(bmsBook);
 
         return new Response().success(bmsBook);
 
+    }
+
+    /**
+     * 获取用户所有卖书请求
+     * @param userId 用户id
+     * @return List<Book>
+     */
+    @RequestMapping(value = "/shop/list", method = RequestMethod.GET)
+    public Response listShopBooks(@RequestParam("userId") long userId) {
+        Response response = new Response();
+        List<BmsBook> list = bmsBookService.listShopBooks(userId);
+        if (list == null
+            || CollectionUtil.isEmpty(list)) {
+            return response.success(new ArrayList<BmsBook>());
+        }
+        return response.success(list);
+    }
+
+    /**
+     * 更新书籍上架信息
+     * @param bmsBookUpdateAlbumsParam dto
+     * @return Response
+     */
+    @RequestMapping(value = "/onSell", method = RequestMethod.PATCH)
+    public Response editAlbum(@RequestBody BmsBookUpdateAlbumsParam bmsBookUpdateAlbumsParam) {
+        BmsBook bmsBook = bmsBookService.queryById(bmsBookUpdateAlbumsParam.getId());
+        if (bmsBook.getAlbumPics() == null) {
+            bmsBook.setAlbumPics("");
+        }
+        if (StringUtil.isNotEmpty(bmsBook.getAlbumPics())) {
+            bmsBook.setAlbumPics(bmsBook.getAlbumPics() + ",");
+        }
+        bmsBook.setAlbumPics(bmsBook.getAlbumPics() + bmsBookUpdateAlbumsParam.getUrl());
+        bmsBook.setDescription(bmsBookUpdateAlbumsParam.getDescription());
+        bmsBook.setPublishStatus(1);
+        bmsBookService.update(bmsBook);
+        return new Response().success(bmsBook);
     }
     
     @Override

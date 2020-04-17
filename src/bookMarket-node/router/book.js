@@ -2,16 +2,18 @@ let config = require("../config");
 let express = require("express");
 let path = require("path");
 let util = require("../util");
+let fs = require('fs');
 
 let router = express.Router();
 let jiSuAxios = util.jiSuAxios;
 let axios = util.axios;
+let ossClient = util.ossClient;
 
 /**
  * 卖书时，从极速API搜索书籍信息
  */
 router.post("/sell/searchBook", (req, res) => {
-  let {text, page} = req.body;
+  let { text, page } = req.body;
   let url = config.jiSuApiBookNamePath;
   let params = {
     appkey: config.jiSuApiAppKey,
@@ -67,11 +69,100 @@ router.post("/sell", (req, res) => {
     .post(url, params, config)
     .then((response) => {
       console.dir(response);
-      res.send(response.data.meta)
+      res.send(response.data.meta);
     })
     .catch((err) => {
       console.error(err);
     });
+});
+
+/**
+ * 我的摊位 获取我的{在售书籍}
+ */
+router.post("/shopBooks", (req, res) => {
+  let { userId, token } = req.cookies;
+
+  let url = "/bmsBook/shop/list";
+  let params = {
+    params: {
+      userId: userId,
+    },
+  };
+  let config = {
+    headers: {
+      "X-Token": token,
+    },
+  };
+  axios
+    .get(url, params, config)
+    .then((response) => {
+      let result = response.data;
+      if (result.meta.success === true) {
+        res.send(result);
+      } else {
+        res.send({ meta: { success: false } });
+      }
+    })
+    .catch((err) => {
+      console.dir(err);
+    });
+});
+
+/**
+ * 书籍上架
+ */
+router.post("/onSell", util.multer.single('file'), (req, res) => {
+  let file = req.file;
+  let { userId, token } = req.cookies;
+  let { bookId, description} = req.body;
+  if (file === undefined) {
+    res.send({ success: false });
+    return;
+  }
+  let fileName = file.filename;
+  let localFile = file.path;
+
+  ossClient.put(
+    "album_pics/" + new Date().Format("yyyy-MM-dd") + "/",
+    fileName,
+    localFile,
+    (urls) => {
+      let url = urls[0];
+      if (url === undefined) {
+        res.send({ success: false });
+      }
+      axios
+        .patch(
+          "/bmsBook/onSell",
+          {
+            id: bookId,
+            url: url,
+            description: description
+          },
+          {
+            headers: {
+              "X-Token": token,
+            },
+          }
+        )
+        .then((response) => {
+          // 上传完成后移除本地文件
+          fs.unlinkSync(localFile);
+
+          if (response.data.meta.success === true) {
+            res.send({
+              success: true,
+            });
+          } else {
+            res.send({ success: false });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          res.send({ success: false });
+        });
+    }
+  );
 });
 
 // 导出路由
