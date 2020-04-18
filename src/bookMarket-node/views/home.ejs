@@ -154,11 +154,8 @@
     </div>
   </body>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-
-  <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
-
-  <script src="/js/config.js"></script>
+  <!-- 引入 axios and vue 依赖 -->
+  <%- include('template/axios_and_vue.ejs') %>
 
   <script type="text/javascript">
     let vm = new Vue({
@@ -286,6 +283,7 @@
               if (response.data.success === true) {
                 // 关闭 登录 模态框
                 vm.state.isLogin = true;
+                vm.init();
 
                 document.getElementById("login_close_btn").click();
               } else {
