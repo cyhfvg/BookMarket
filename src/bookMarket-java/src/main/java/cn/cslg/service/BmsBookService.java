@@ -1,6 +1,8 @@
 package cn.cslg.service;
 
 import cn.cslg.model.BmsBook;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -77,5 +79,12 @@ public interface BmsBookService {
      * @return HashMap<String, Object> <= [<total, int>, <books, ArrayList<BmsBook>]
      */
     Map<String, Object> searchBooks(long memberId, String searchText, int page, int pageSize);
+
+    /**
+     * 根据书籍id列表返回书籍
+     * @param Ids 书籍id
+     * @return 返回书籍结果集
+     */
+    List<BmsBook> getBooksByIds(List Ids);
 
 }

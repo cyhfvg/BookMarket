@@ -1,10 +1,13 @@
 package cn.cslg.controller;
 
 import cn.cslg.dto.BmsCartLogAddParam;
+import cn.cslg.model.BmsBook;
 import cn.cslg.model.BmsCartLog;
+import cn.cslg.service.BmsBookService;
 import cn.cslg.service.BmsCartLogService;
 
 import cn.cslg.bean.Response;
+import cn.cslg.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +15,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户购物车内容表(BmsCartLog)表控制层
@@ -29,6 +34,9 @@ public class BmsCartLogController implements ApplicationContextAware{
      */
     @Resource
     private BmsCartLogService bmsCartLogService;
+
+    @Resource
+    private BmsBookService bmsBookService;
     
     private ApplicationContext applicationContext;
 
@@ -61,6 +69,25 @@ public class BmsCartLogController implements ApplicationContextAware{
         bmsCartLog.setIsbn(bmsCartLogAddParam.getIsbn());
         bmsCartLogService.insert(bmsCartLog);
         return response.success();
+    }
+
+    @RequestMapping(value = "/carts", method = RequestMethod.GET)
+    public Response getCarts(@RequestParam("userId") long userId) {
+        Response response = new Response();
+        List<BmsCartLog> list = bmsCartLogService.getCarts(userId);
+        if (CollectionUtil.isEmpty(list)) {
+            return response.failure("空购物车");
+        }
+        List<Long> Ids = new ArrayList<>();
+        for (BmsCartLog cart :
+                list) {
+            Ids.add(cart.getBookId());
+        }
+        List<BmsBook> books = bmsBookService.getBooksByIds(Ids);
+        if (CollectionUtil.isEmpty(books)) {
+            return response.failure("书籍卖完");
+        }
+        return response.success(books);
     }
     
     @Override

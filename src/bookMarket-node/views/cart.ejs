@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的购物车</title>
+    <!-- 引入css样式表，和js -->
+    <%- include('template/css_and_js') %>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 引入 head 大图 -->
+      <%- include('template/head.ejs') %>
+      <div class="container"></div>
+      <%- include('template/foot.ejs') %>
+    </div>
+  </body>
+  <!-- 引入 axios and vue 依赖 -->
+  <%- include('template/axios_and_vue.ejs') %>
+
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: "#app",
+      data() {
+        return {
+          axios: null,
+          carts: [],
+        };
+      },
+      methods: {
+        init: function () {
+          let me = this;
+          me.getCarts();
+        },
+        /**
+         * 获取 购物车内容
+         */
+        getCarts: function () {
+          let me = this;
+
+          let url = "/cart/getCarts";
+          let params = {};
+          let config = {};
+          me.axios.post(url, params, config).then((response) => {
+            let result = response.data;
+            me.carts = result;
+          });
+        },
+      },
+      watch: {},
+      computed: {},
+      beforeCreate() {
+        // tag: 验证身份
+        // 是否已经登录
+        if (getCookie("token") === null) {
+          window.opener = null;
+          window.open("", "_self");
+          window.close();
+        }
+      },
+      created() {
+        // 设置axios实例的config
+        this.axios = axios.create({
+          baseURL: configValue.axiosBaseURL,
+          timeout: 30000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        this.init();
+      },
+      mounted() {},
+    });
+  </script>
+</html>
