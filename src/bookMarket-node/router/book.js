@@ -1,6 +1,6 @@
 let config = require("../config");
 let express = require("express");
-let fs = require('fs');
+let fs = require("fs");
 let path = require("path");
 let util = require("../util");
 
@@ -111,10 +111,10 @@ router.post("/shopBooks", (req, res) => {
 /**
  * 书籍上架
  */
-router.post("/onSell", util.multer.single('file'), (req, res) => {
+router.post("/onSell", util.multer.single("file"), (req, res) => {
   let file = req.file;
   let { userId, token } = req.cookies;
-  let { bookId, description} = req.body;
+  let { bookId, description } = req.body;
   if (file === undefined) {
     res.send({ success: false });
     return;
@@ -137,7 +137,7 @@ router.post("/onSell", util.multer.single('file'), (req, res) => {
           {
             id: bookId,
             url: url,
-            description: description
+            description: description,
           },
           {
             headers: {
@@ -168,48 +168,127 @@ router.post("/onSell", util.multer.single('file'), (req, res) => {
 /**
  * 获取商场所有书籍
  */
-router.post('/allBooks', (req, res) => {
-  let {page, pageSize} = req.body;
-  let url = '/bmsBook/listAll';
+router.post("/allBooks", (req, res) => {
+  let { page, pageSize } = req.body;
+  let url = "/bmsBook/listAll";
   let params = {
     params: {
       page: page,
-      pageSize: pageSize
-    }
+      pageSize: pageSize,
+    },
   };
   let config = {};
-  axios.get(url, params, config).then(response => {
-    res.send(response.data);
-  }).catch(err => {
-    console.dir(err);
-  });
+  axios
+    .get(url, params, config)
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((err) => {
+      console.dir(err);
+    });
 });
 
 /**
  * 获取 猜你喜欢书籍
  */
-router.post('/likeBooks', (req, res) => {
-  let {userId, token} = req.cookies;
+router.post("/likeBooks", (req, res) => {
+  let { userId, token } = req.cookies;
   if (userId === undefined) {
-    res.end();
+    res.send({
+      meta: {
+        success: false,
+      },
+    });
     return;
   }
-  let url = '/bmsBook/listLikeBooks';
+  let url = "/bmsBook/listLikeBooks";
   let params = {
     params: {
       userId: userId,
-    }
+    },
+  };
+  let config = {
+    headers: {
+      "X-Token": token,
+    },
+  };
+  axios
+    .get(url, params, config)
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((err) => {
+      console.dir(err);
+    });
+});
+
+/**
+ * 搜索书籍
+ */
+router.post("/searchBooks", (req, res) => {
+  let {searchText, page, pageSize} = req.body;
+  let { userId, token } = req.cookies;
+
+  let url = "/bmsBook/searchBooks";
+  let params = {
+    params: {
+      searchText: searchText,
+      userId: userId,
+      page: page,
+      pageSize: pageSize
+    },
+  };
+  let config = {
+    headers: {
+      "X-Token": token,
+    },
+  };
+
+  axios
+    .get(url, params, config)
+    .then((response) => {
+      let result = response.data;
+      console.dir(result);
+      res.send(result);
+    })
+    .catch((err) => {
+      console.dir(err);
+      res.send({
+        meta: {
+          success: false,
+        },
+      });
+    });
+});
+
+/**
+ * 添加书籍到购物车
+ */
+router.post('/addCart', (req, res) => {
+  let {userId, token} = req.cookies;
+  let {bookId, isbn} = req.body;
+
+  let url = '/bmsCartLog/addBook';
+  let params = {
+    userId: userId,
+    bookId: bookId,
+    isbn: isbn
   };
   let config = {
     headers: {
       'X-Token': token
     }
   };
-  axios.get(url, params, config).then(response => {
-    res.send(response.data);
+
+  // 清加到后台
+  axios.post(url, params, config).then(response => {
+    let result = response.data;
+    if (result.meta.success === true) {
+      res.send(result);
+    }
   }).catch(err => {
     console.dir(err);
-  });
+  })
 });
 
 // 导出路由

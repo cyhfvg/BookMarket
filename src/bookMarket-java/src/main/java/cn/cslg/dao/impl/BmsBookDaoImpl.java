@@ -2,6 +2,7 @@ package cn.cslg.dao.impl;
 
 import cn.cslg.model.BmsBook;
 import cn.cslg.dao.BmsBookDao;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,7 +19,9 @@ public class BmsBookDaoImpl extends GenericDaoImpl<BmsBook, Long> implements Bms
 //    Fixme: 修复 getCount函数 不损耗性能
     @Override
     public long getCount() {
-        List<BmsBook> list = findAll(BmsBook.class);
+        String [] propertyNames = {"deleteStatus", "publishStatus"};
+        Object [] values = {0, 1};
+        List<BmsBook> list = findByProperties(BmsBook.class,propertyNames, values);
         return list.size();
     }
 }

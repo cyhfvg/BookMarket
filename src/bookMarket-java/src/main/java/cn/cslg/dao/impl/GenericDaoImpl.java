@@ -90,6 +90,15 @@ public class GenericDaoImpl<T,PK extends Serializable>
 	}
 
 	@Override
+	public List<T> findByProperties(Class<T> entityClass, String[] propertyNames, Object[] values) {
+	    DetachedCriteria dc = DetachedCriteria.forEntityName(entityClass.getName());
+	    for (int i = 0; i < propertyNames.length; i++) {
+	    	dc.add(Restrictions.eq(propertyNames[i], values[i]));
+		}
+		return (List<T>) super.getHibernateTemplate().findByCriteria(dc);
+	}
+
+	@Override
 	public void update(String hql, Object[] params) {
 		Query query = super.currentSession().createQuery(hql);
 		for(int i=0; i<params.length; i++) {
