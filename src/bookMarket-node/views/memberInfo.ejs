@@ -1,33 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>个人中心</title>
     <!-- 引入css样式表，和js -->
     <%- include('template/css_and_js') %>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios@0.19.2/dist/axios.js"></script>
-    <script src="/js/config.js"></script>
-</head>
-<body>
+    <!-- 引入 axios and vue 依赖 -->
+    <%- include('template/axios_and_vue.ejs') %>
+  </head>
+  <body>
     <div>
-        <div class="container">
-            <div id="item" class="row">
-                <!-- 左侧条目栏 -->
-                <div id="left" class="col-2" style="visibility: hidden;">
-                    <div class="left_item" @click="loadTabs('infoInner')">个人资料</div>
-                    <div class="left_item" @click="loadTabs('balanceInner')">我的钱包</div>
-                </div>
-                <!-- 右侧对应栏目 -->
-                <div id="item_tab" class="col-10">
-
-                </div>
+      <div class="container">
+        <div id="item" class="row">
+          <!-- 左侧条目栏 -->
+          <div id="left" class="col-2" style="visibility: hidden;">
+            <div class="left_item" @click="loadTabs('infoInner')">个人资料</div>
+            <div class="left_item" @click="loadTabs('balanceInner')">
+              我的钱包
             </div>
+          </div>
+          <!-- 右侧对应栏目 -->
+          <div id="item_tab" class="col-10"></div>
         </div>
-        <%- include('template/foot.ejs') %>
+      </div>
+      <%- include('template/foot.ejs') %>
     </div>
-</body>
-<%- include('template/member_info_vue_axios.ejs') %>
+  </body>
+
+  <script src="/js/utils.js"></script>
+
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: "#left",
+      data() {
+        return {
+          axiosInstance: null,
+        };
+      },
+      methods: {
+        /**
+         * 点击item刷新对应tab
+         * tabs ['/infoInner', '/balanceInner']
+         * @param tabName 局部刷新的tab名字
+         */
+        loadTabs: function (tabName) {
+          this.axiosInstance
+            .post("/memberInfo/" + tabName, {
+              // no params
+            })
+            .then((response) => {
+              // 未获取innerHtml
+              if (response.data.inner === undefined) {
+                return;
+              }
+              // 先清除 innerHtml 防止 重复 ElementId 出现
+              setHTMLWithScript(document.getElementById("item_tab"), "");
+              setHTMLWithScript(
+                document.getElementById("item_tab"),
+                response.data.inner
+              );
+            });
+        },
+      },
+      beforeCreate() {
+        // tag: 验证登录
+        // 是否已经登录
+        if (getCookie("token") === null) {
+          window.opener = null;
+          window.open("", "_self");
+          window.close();
+        }
+      },
+      created() {
+        // 设置axios实例的config
+        this.axiosInstance = axios.create({
+          baseURL: configValue.axiosBaseURL,
+          timeout: 30000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        this.loadTabs("infoInner");
+      },
+      mounted() {},
+      computed: {},
+    });
+  </script>
 </html>
