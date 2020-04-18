@@ -73,6 +73,8 @@ public interface GenericDao<T, PK> {
 	 */
 	public List<T> findByProperty(Class<T> entityClass, String propertyName, Object value);
 
+	public List<T> findByProperties(Class<T> entityClass, String[] propertyNames, Object[] values);
+
 	/**
 	 * 更新
 	 * @param hql

@@ -16,4 +16,5 @@ public interface BmsBookDao extends GenericDao<BmsBook, Long>{
      */
     long getCount();
 
+
 }

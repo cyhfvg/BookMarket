@@ -68,4 +68,14 @@ public interface BmsBookService {
      */
     Map<String, Object> listAllBooks(int page, int pageSize);
 
+    /**
+     * 搜索书籍
+     * @param memberId 用户编号
+     * @param searchText 搜索字符串
+     * @param page 页码
+     * @param pageSize 页长
+     * @return HashMap<String, Object> <= [<total, int>, <books, ArrayList<BmsBook>]
+     */
+    Map<String, Object> searchBooks(long memberId, String searchText, int page, int pageSize);
+
 }
