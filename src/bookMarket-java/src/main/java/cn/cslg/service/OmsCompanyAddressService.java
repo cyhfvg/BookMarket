@@ -52,4 +52,11 @@ public interface OmsCompanyAddressService {
      */
     void deleteById(Long id);
 
+    /**
+     *
+     * @param memberId 用户编号
+     * @return 查询结果集
+     */
+    List<OmsCompanyAddress> getAddressByMemberId(long memberId);
+
 }

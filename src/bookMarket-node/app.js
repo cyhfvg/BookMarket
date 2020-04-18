@@ -33,6 +33,7 @@ app.use('/member', require(path.join(config.project_path, 'router', 'member')));
 app.use('/book', require(path.join(config.project_path, 'router', 'book')));
 app.use('/memberInfo', require(path.join(config.project_path, 'router', 'memberInfo')));
 app.use('/cart', require(path.join(config.project_path, 'router', 'cart')));
+app.use('/order', require(path.join(config.project_path, 'router', 'order')));
 // views 页面
 app.use('/views', require(path.join(config.project_path, 'router', 'viewsRouter')));
 

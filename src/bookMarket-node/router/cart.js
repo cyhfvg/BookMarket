@@ -30,7 +30,6 @@ router.post("/getCarts", (req, res) => {
     .get(url, params, config)
     .then((response) => {
       let result = response.data;
-      console.dir(result);
       if (result.meta.success === true) {
         res.send(result.data);
       }
