@@ -190,6 +190,10 @@ router.post('/allBooks', (req, res) => {
  */
 router.post('/likeBooks', (req, res) => {
   let {userId, token} = req.cookies;
+  if (userId === undefined) {
+    res.end();
+    return;
+  }
   let url = '/bmsBook/listLikeBooks';
   let params = {
     params: {
