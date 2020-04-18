@@ -46,7 +46,7 @@
                 href="#"
                 >我的</a
               >
-              <!-- Todo: 我的 标签页 -->
+              <!-- note: 我的 标签页 -->
               <div class="dropdown-menu">
                 <a
                   class="dropdown-item button"
@@ -101,10 +101,54 @@
 
       <!-- 主体 -->
       <div class="container">
-        <!-- Todo: 猜你喜欢 -->
-        <div class="row"></div>
-        <!-- Todo: 全部商品 -->
-        <div class="row"></div>
+        <!-- 书城书籍 -->
+        <div>
+          <!-- tag: 猜你喜欢 -->
+          <div v-if="likeBooks.length">
+            <div class="row">
+              <div class="col"><hr /></div>
+              <div class="col-auto">猜你喜欢</div>
+              <div class="col"><hr /></div>
+            </div>
+            <div class="row">
+              <div class="col" v-for="(book, index) in likeBooksView">
+                <div class="like_book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" height="60px" width="60px" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- tag: 全部商品 -->
+          <div v-if="allBooks.length">
+            <div class="row">
+              <div class="col"><hr /></div>
+              <div class="col-auto">全部书籍</div>
+              <div class="col"><hr /></div>
+            </div>
+            <div class="row" v-for="n in rows">
+              <div class="col" v-for="book in eachRowBooks(n)">
+                <div class="book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" height="120px" width="120px" />
+                </div>
+                <label>{{ book.name }}</label>
+              </div>
+            </div>
+            <!-- 不满一页时，不满一行的数据单独渲染 -->
+            <div class="row" v-if="remain.length">
+              <div class="col" v-for="book in remain">
+                <div class="book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" alt="" height="120px" width="120px" />
+                </div>
+                <label>{{ book.name }}</label>
+              </div>
+              <div class="col" v-for="n in (cols - remain.length)">
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Todo: 搜索书籍 -->
+        <div></div>
       </div>
       <%- include('template/foot.ejs') %>
     </div>
@@ -142,7 +186,7 @@
           shoppingCart: [],
           curPage: 1,
           cols: 5,
-          rows: 0,
+          rows: 4,
           total: 0,
           state: {
             isLogin: false,
@@ -156,24 +200,25 @@
          */
         init: function () {
           let me = this;
-          // Todo:获取所有书籍
+          // note:获取所有书籍
           me.axiosInstance
             .post("/book/allBooks", {
               page: me.curPage,
-              pageSize: me.rows * me.cols,
+              pageSize: 4 * me.cols,
             })
             .then((response) => {
               let result = response.data;
-              console.dir(result);
               if (result.meta.success === true) {
                 me.total = result.data.total;
                 me.allBooks = result.data.books;
+                if (me.allBooks.length < me.rows * me.cols) {
+                  me.rows = Math.floor(me.allBooks.length / me.cols);
+                }
               }
             });
-          // Todo: 获取 猜你喜欢 书籍
+          // Fixme: 获取 猜你喜欢 书籍
           me.axiosInstance.post("book/likeBooks", {}).then((response) => {
             let result = response.data;
-            console.dir(result);
             if (result.meta.success === true) {
               me.likeBooks = result.data;
             }
@@ -271,6 +316,24 @@
         hideAlert: () => {
           vm.state.isMsgShow = !vm.state.isMsgShow;
         },
+        /**
+         * 全部书籍每行数据
+         */
+        eachRowBooks: function (row) {
+          let me = this;
+          let cols = me.cols;
+          let books = [];
+          for (let i = 0; i < cols; i++) {
+            books[i] = me.allBooks[(row - 1) * cols + i];
+          }
+          return books;
+        },
+        /**
+         * 展示具体书籍购买页面
+         */
+        showBookInfo: function (book) {
+          console.log("书籍购买页面");
+        },
       },
       beforeCreate() {},
       created() {
@@ -290,7 +353,39 @@
       mounted() {
         this.init();
       },
-      computed: {},
+      computed: {
+        /**
+         * 显示最多五条喜欢书籍
+         */
+        likeBooksView: function () {
+          let me = this;
+          let likeBooks = me.likeBooks;
+          let len = likeBooks.length;
+          let books = [];
+
+          if (len > 5) {
+            for (let i = 0; i < 5; i++) {
+              books[i] = likeBooks[i];
+            }
+            return books;
+          }
+
+          for (let i = 0; i < len; i++) {
+            books[i] = likeBooks[i];
+          }
+          return books;
+        },
+        remain: function () {
+          let me = this;
+          let len = me.allBooks.length;
+          let count = len - me.rows * me.cols;
+          let remain = [];
+          for (let i = 0; i < count; i++) {
+            remain[i] = me.allBooks[len - i - 1];
+          }
+          return remain;
+        },
+      },
     });
   </script>
 </html>

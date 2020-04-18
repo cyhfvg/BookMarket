@@ -69,7 +69,6 @@ router.post("/sell", (req, res) => {
   axios
     .post(url, params, config)
     .then((response) => {
-      console.dir(response);
       res.send(response.data.meta);
     })
     .catch((err) => {
@@ -180,7 +179,6 @@ router.post('/allBooks', (req, res) => {
   };
   let config = {};
   axios.get(url, params, config).then(response => {
-    console.dir(response);
     res.send(response.data);
   }).catch(err => {
     console.dir(err);
@@ -204,7 +202,6 @@ router.post('/likeBooks', (req, res) => {
     }
   };
   axios.get(url, params, config).then(response => {
-    console.dir(response);
     res.send(response.data);
   }).catch(err => {
     console.dir(err);

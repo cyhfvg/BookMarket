@@ -36,6 +36,14 @@ body {
   width: 120px;
 }
 
+.like_book_item {
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-image: url(https://book-market.oss-cn-shanghai.aliyuncs.com/default/default-book-cover.jpg);
+  height: 60px;
+  width: 60px;
+}
+
 .publish_status {
   border: 1px solid gray;
   color: brown;
