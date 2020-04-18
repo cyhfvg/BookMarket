@@ -1,13 +1,17 @@
 package cn.cslg.service.impl;
 
+import cn.cslg.dao.BmsSearchLogDao;
 import cn.cslg.model.BmsBook;
 import cn.cslg.dao.BmsBookDao;
+import cn.cslg.model.BmsSearchLog;
 import cn.cslg.service.BmsBookService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品信息(BmsBook)表服务实现类
@@ -19,6 +23,9 @@ import java.util.List;
 public class BmsBookServiceImpl implements BmsBookService {
     @Resource(name="bmsBookDao")
     private BmsBookDao bmsBookDao;
+
+    @Resource(name = "bmsSearchLogDao")
+    private BmsSearchLogDao bmsSearchLogDao;
 
     /**
      * 通过ID查询单条数据
@@ -81,5 +88,51 @@ public class BmsBookServiceImpl implements BmsBookService {
     @Override
     public void deleteById(Long id) {
         this.bmsBookDao.deleteById(BmsBook.class, id);
+    }
+
+    /**
+     * 分页列出书籍
+     * @param page int 页码
+     * @param pageSize int 页长
+     * @return Map<String, Object>
+     */
+    @Override
+    public Map<String, Object> listAllBooks(int page, int pageSize) {
+        String hql = "select book from BmsBook as book where delete_status = ?0 and publish_status = ?1";
+        Object [] params = {0, 1};
+
+        List<BmsBook> list = bmsBookDao.findAll(BmsBook.class,hql, params, pageSize * (page - 1), pageSize);
+        long total = bmsBookDao.getCount();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", total);
+        map.put("books", list);
+        return map;
+    }
+
+    /**
+     * 搜索书籍
+     * @param memberId 用户编号
+     * @param searchText 搜索字符串
+     * @param page 页码
+     * @param pageSize 页长
+     * @return Map<String, Object>
+     */
+    @Override
+    public Map<String, Object> searchBooks(long memberId, String searchText, int page, int pageSize) {
+        List<BmsBook> list = bmsBookDao.findAll(BmsBook.class, "select book from BmsBook as book where book.name like ?0 or book.isbn like ?1 ",new Object[]{"%" + searchText + "%", "%" + searchText + "%"}, pageSize * (page - 1), pageSize);
+        int count = list.size();
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", count);
+        map.put("books", list);
+
+        BmsSearchLog log = new BmsSearchLog();
+        log.setMemberId(memberId);
+        log.setText(searchText);
+        log.setCreateTime(new Date());
+        bmsSearchLogDao.save(log);
+
+        return map;
     }
 }

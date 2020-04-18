@@ -98,6 +98,7 @@ router.post('/login',util.urlencoded, (req, res) => {
             if (data.meta.success === true) {
                 res.cookie('token', data.meta.token, {maxAge: 6000000});
                 res.cookie('userId', data.data.id, {maxAge: 6000000});
+                res.cookie('balance', data.data.balance, {maxAge: 6000000});
             }
             res.send(data.meta);
         })
