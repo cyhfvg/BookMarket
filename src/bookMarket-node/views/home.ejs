@@ -24,8 +24,8 @@
         </button>
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
           <form class="form-inline">
-            <input class="form-control" type="text" placeholder="Search" />
-            <button class="btn btn-success" type="button">Search</button>
+            <input class="form-control" v-model="searchText" type="text" placeholder="Search" />
+            <button class="btn btn-success" type="button" @click="search()">Search</button>
           </form>
           <ul class="navbar-nav nav-pills">
             <li class="nav-item">
@@ -180,7 +180,9 @@
           axiosInstance: null,
           allBooks: [],
           likeBooks: [],
+          searchBooks: [],
           shoppingCart: [],
+          searchText: '',
           curPage: 1,
           cols: 5,
           rows: 4,
@@ -331,6 +333,12 @@
          */
         showBookInfo: function (book) {
           console.log("书籍购买页面");
+        },
+        /**
+         * 搜索书籍
+         */
+        search: function() {
+
         },
       },
       beforeCreate() {},
