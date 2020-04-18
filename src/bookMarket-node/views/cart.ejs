@@ -11,9 +11,137 @@
     <div id="app">
       <!-- 引入 head 大图 -->
       <%- include('template/head.ejs') %>
-      <div class="container"></div>
-      <%- include('template/foot.ejs') %>
+      <div class="container">
+        <div v-if="carts.length && !buyFlag">
+          <div class="row">
+            <div class="col">
+              <div
+                class="row clearfix"
+                v-for="(book, index) in carts"
+                style="background-color: #fffff0;"
+              >
+                <div class="float-left" style="width: 30px; height: 60px;">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    style="margin-top: 1.25rem;"
+                    v-model="checked"
+                    :value="book"
+                  />
+                </div>
+                <div
+                  class="float-left like_book_item"
+                  style="width: 60px; height: 60px;"
+                >
+                  <img :src="book.pic" width="60px" height="60px" />
+                </div>
+                <div class="float-left" style="margin-left: 15px;">
+                  <label>{{ book.name }}</label>
+                </div>
+                <div class="float-left" style="margin-left: 15px;">
+                  <label>{{ book.price }}元宝</label>
+                </div>
+              </div>
+            </div>
+            <!-- 选择的书籍 -->
+            <div class="col">
+              <div v-if="checked.length">
+                <div class="row" v-for="book in checked">
+                  <div class="float-left" style="width: 30px; height: 60px;">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      style="margin-top: 1.25rem;"
+                      v-model="checked"
+                      :value="book"
+                    />
+                  </div>
+                  <div
+                    class="float-left like_book_item"
+                    style="width: 60px; height: 60px;"
+                  >
+                    <img :src="book.pic" width="60px" height="60px" />
+                  </div>
+                  <div class="float-left" style="margin-left: 15px;">
+                    <label>{{ book.name }}</label>
+                  </div>
+                  <div class="float-left" style="margin-left: 15px;">
+                    <label>{{ book.price }}元宝</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div style="margin-top: 10px;">
+                    <span>总金额: {{ totalPrice }} 元宝</span>
+                  </div>
+                </div>
+                <div class="col">
+                  <input
+                    type="button"
+                    class="btn btn-info"
+                    value="立刻购买"
+                    @click="buyPage()"
+                    v-if="totalPrice > 0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 订单确认页面 -->
+      <div v-if="buyFlag">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col-auto">
+            <div v-if="!addAddressFlag">
+              <div v-if="!addressList.length">
+                <span
+                  >还未添加地址，立即<a
+                    type="button"
+                    class="btn btn-link"
+                    @click="showAddAddress()"
+                    >添加</a
+                  ></span
+                >
+              </div>
+            </div>
+            <!-- 添加收货地址页面 -->
+            <div v-if="addAddressFlag">
+                <div class="row input-group" v-for="(value, key) in address" style="margin-top: 5px;">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">{{ getPropertyName(key) }}</span>
+                  </div>
+                  <input type="text" class="form-control" :name="key" :placeholder="key" v-model="address[key]"/>
+                </div>
+                <div class="row">
+                  <div class="input-group">
+                    <button type="button" class="btn btn-primary" @click="addAddress()">添加</button>
+                    <button type="button" class="btn btn-danger" @click="showAddAddress()">取消</button>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
+      <!-- 购物车为空时显示 -->
+      <div v-if="!carts.length">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col">
+            <div style="margin-top: 100px; margin-bottom: 100px;">
+              <label
+                ><font size="5" color="#D3D3D3">购物车空空如也哦</font></label
+              >
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+      </div>
     </div>
+    <%- include('template/foot.ejs') %>
   </body>
   <!-- 引入 axios and vue 依赖 -->
   <%- include('template/axios_and_vue.ejs') %>
@@ -23,14 +151,27 @@
       el: "#app",
       data() {
         return {
+          addAddressFlag: false,
+          address: {
+            city: "",
+            detailAddress: "",
+            name: "",
+            phone: "",
+            province: "",
+            region: "",
+          },
+          addressList: [],
           axios: null,
+          buyFlag: false,
           carts: [],
+          checked: [],
         };
       },
       methods: {
         init: function () {
           let me = this;
           me.getCarts();
+          me.getAddress();
         },
         /**
          * 获取 购物车内容
@@ -46,9 +187,90 @@
             me.carts = result;
           });
         },
+        getAddress: function () {
+          let me = this;
+
+          let url = "/order/getAddress";
+          let params = {};
+          let config = {};
+          me.axios.post(url, params, config).then((response) => {
+            console.dir(response.data);
+            let result = response.data;
+            me.addressList = result;
+          });
+        },
+        /**
+         * 显示订单确认页面
+         */
+        buyPage: function () {
+          let me = this;
+          me.buyFlag = !me.buyFlag;
+        },
+        /**
+         * 显示添加地址页面
+         */
+        showAddAddress: function () {
+          let me = this;
+          me.addAddressFlag = !me.addAddressFlag;
+        },
+        /**
+         * 返回地址对象的中文键名
+         */
+        getPropertyName: function(key) {
+          let result = '';
+          switch (key) {
+            case 'city': result = '城市';break;
+            case 'detailAddress': result = '详细地址';break;
+            case 'name': result = '收货人姓名';break;
+            case 'phone': result = '联系电话';break;
+            case 'province': result = '省份';break;
+            case 'region': result = '地区';break;
+            default: break;
+          }
+          return result;
+        },
+        /**
+         * 添加地址
+         */
+        addAddress: function() {
+          let me = this;
+          let address = me.address;
+
+          for (let key in address) {
+            if (address[key] === '') {
+              return;
+            }
+          }
+
+          let url = '/order/addAddress';
+          let params = {
+            address: address
+          };
+          let config = {};
+
+          me.axios.post(url, params, config).then(response => {
+            let result = response.data;
+            console.dir(result);
+            if (result.meta.success === true) {
+              me.getAddress();
+              me.showAddAddress();
+            }
+          });
+        },
       },
       watch: {},
-      computed: {},
+      computed: {
+        totalPrice: function () {
+          let me = this;
+          let totalPrice = 0;
+
+          for (let i = 0; i < me.checked.length; i++) {
+            totalPrice += me.checked[i].price;
+          }
+
+          return totalPrice;
+        },
+      },
       beforeCreate() {
         // tag: 验证身份
         // 是否已经登录
