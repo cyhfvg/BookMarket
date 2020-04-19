@@ -13,14 +13,24 @@ import org.springframework.context.annotation.Scope;
 /**
  * @description (oms_company_address)表实体类
  * @author zhangguangzhou
- * @date 2020-04-13 10:06:45
+ * @date 2020-04-18 23:04:53
  */
 @Entity
 @Table(name = "oms_company_address")
 @Scope("prototype")
 public class OmsCompanyAddress {
     
+            
+    /**
+     * 编号
+     */
     private Long id;
+ 
+            
+    /**
+     * 用户编号
+     */
+    private Long memberId;
  
             
     /**
@@ -87,6 +97,16 @@ public class OmsCompanyAddress {
     
     public void setId(Long id) {
         this.id = id;
+    }
+        
+    
+    @Column(name = "member_id")
+    public Long getMemberId() {
+        return memberId;
+    }
+    
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
         
     

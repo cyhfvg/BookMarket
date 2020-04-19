@@ -71,4 +71,14 @@ public class OmsCompanyAddressServiceImpl implements OmsCompanyAddressService {
     public void deleteById(Long id) {
         this.omsCompanyAddressDao.deleteById(OmsCompanyAddress.class, id);
     }
+
+    /**
+     *
+     * @param memberId 用户编号
+     * @return 返回结果集
+     */
+    @Override
+    public List<OmsCompanyAddress> getAddressByMemberId(long memberId) {
+        return omsCompanyAddressDao.findByProperty(OmsCompanyAddress.class, "memberId", memberId);
+    }
 }

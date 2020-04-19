@@ -52,4 +52,11 @@ public interface BmsCartLogService {
      */
     void deleteById(Long id);
 
+    /**
+     * 获取对应用户的购物车
+     * @param memberId 用户id
+     * @return List<BmsCartLog>
+     */
+    List<BmsCartLog> getCarts(long memberId);
+
 }

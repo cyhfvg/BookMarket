@@ -11,4 +11,8 @@ import java.util.List;
  */
 public interface BmsCartLogDao extends GenericDao<BmsCartLog, Long>{
 
+    void deleteCartLogs(List<BmsCartLog> cartLogs);
+
+    List<BmsCartLog> findByMemberIdandBookIds(long memberId, List<Long> bookIds);
+
 }

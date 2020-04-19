@@ -9,6 +9,13 @@
     "custom" : false,
     "ext" : { }
   }, {
+    "name" : "memberId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  }, {
     "name" : "addressName",
     "comment" : null,
     "type" : null,
