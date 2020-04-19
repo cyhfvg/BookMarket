@@ -16,6 +16,13 @@
     "custom" : false,
     "ext" : { }
   }, {
+    "name" : "memberId",
+    "comment" : null,
+    "type" : null,
+    "shortType" : null,
+    "custom" : false,
+    "ext" : { }
+  }, {
     "name" : "orderSn",
     "comment" : null,
     "type" : null,
@@ -30,14 +37,14 @@
     "custom" : false,
     "ext" : { }
   }, {
-    "name" : "bookName",
+    "name" : "bookIsbn",
     "comment" : null,
     "type" : null,
     "shortType" : null,
     "custom" : false,
     "ext" : { }
   }, {
-    "name" : "bookSn",
+    "name" : "bookName",
     "comment" : null,
     "type" : null,
     "shortType" : null,
@@ -64,17 +71,10 @@
     "shortType" : null,
     "custom" : false,
     "ext" : { }
-  }, {
-    "name" : "promotionName",
-    "comment" : null,
-    "type" : null,
-    "shortType" : null,
-    "custom" : false,
-    "ext" : { }
   } ],
   "pkColumn" : null,
   "otherColumn" : null,
-  "savePackageName" : "",
-  "savePath" : "./src/main/java",
+  "savePackageName" : "cn.cslg",
+  "savePath" : "./src/main/java/cn/cslg",
   "saveModelName" : "bookMarket-java"
 }

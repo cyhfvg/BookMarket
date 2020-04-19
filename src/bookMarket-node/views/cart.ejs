@@ -89,45 +89,163 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- 订单确认页面 -->
-      <div v-if="buyFlag">
-        <div class="row">
-          <div class="col"></div>
-          <div class="col-auto">
-            <div v-if="!addAddressFlag">
-              <div v-if="!addressList.length">
-                <span
-                  >还未添加地址，立即<a
-                    type="button"
-                    class="btn btn-link"
-                    @click="showAddAddress()"
-                    >添加</a
-                  ></span
-                >
+        <!-- 订单确认页面 -->
+        <div v-if="buyFlag">
+          <div class="row">
+            <div class="col"><div></div></div>
+            <div class="col">
+              <div v-if="!addAddressFlag">
+                <!-- 选择地址 -->
+                <div v-if="addressList.length">
+                  <div class="row">
+                    <div class="col" v-if="showChangeAddressFlag">
+                      <div>
+                        <div class="row" v-for="item in addressList">
+                          <div
+                            style="
+                              width: 150px;
+                              height: 30px;
+                              margin-top: 5px;
+                              background-color: aliceblue;
+                            "
+                            @click="changeAddress(item)"
+                          >
+                            {{ item.addressName }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="row" v-if="!objIsEmpty(selectAddress)">
+                        <div class="col">
+                          <div class="clearfix">
+                            <div class="float-left" style="margin-right: 10px;">
+                              {{ selectAddress.addressName }}
+                            </div>
+                            <div
+                              class="float-right"
+                              style="color: #6a5acd;"
+                              @click="showChangeAddress()"
+                            >
+                              更换地址
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col" v-if=!objIsEmpty(selectAddress)></div>
+                  </div>
+                </div>
+
+                <!-- 添加地址 -->
+                <div>
+                  <span style="color: #27408b;"
+                    ><a
+                      type="button"
+                      class="btn btn-link"
+                      @click="showAddAddress()"
+                      >添加地址</a
+                    ></span
+                  >
+                </div>
+
+                <div>
+                  <!-- 最终金额查看 -->
+                  <div v-if="checked.length">
+                    <div class="row" v-for="book in checked">
+                      <div
+                        class="float-left"
+                        style="width: 30px; height: 60px;"
+                      >
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          style="margin-top: 1.25rem;"
+                          v-model="checked"
+                          :value="book"
+                        />
+                      </div>
+                      <div
+                        class="float-left like_book_item"
+                        style="width: 60px; height: 60px;"
+                      >
+                        <img :src="book.pic" width="60px" height="60px" />
+                      </div>
+                      <div class="float-left" style="margin-left: 15px;">
+                        <label>{{ book.name }}</label>
+                      </div>
+                      <div class="float-left" style="margin-left: 15px;">
+                        <label
+                          >{{ book.price
+                          }}<label v-if="balanceFullFlag">元宝</label></label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      <div style="margin-top: 10px;">
+                        <span>总金额: {{ totalPrice }} 元宝</span>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <input
+                        type="button"
+                        class="btn btn-info"
+                        value="立刻购买"
+                        @click="buy()"
+                        v-if="totalPrice > 0"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <!-- 添加收货地址页面 -->
+            <!-- note:添加收货地址页面 -->
             <div v-if="addAddressFlag">
-                <div class="row input-group" v-for="(value, key) in address" style="margin-top: 5px;">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">{{ getPropertyName(key) }}</span>
-                  </div>
-                  <input type="text" class="form-control" :name="key" :placeholder="key" v-model="address[key]"/>
+              <div
+                class="row input-group"
+                v-for="(value, key) in address"
+                style="margin-top: 5px;"
+              >
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{
+                    getPropertyName(key)
+                  }}</span>
                 </div>
-                <div class="row">
-                  <div class="input-group">
-                    <button type="button" class="btn btn-primary" @click="addAddress()">添加</button>
-                    <button type="button" class="btn btn-danger" @click="showAddAddress()">取消</button>
-                  </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  :name="key"
+                  :placeholder="key"
+                  v-model="address[key]"
+                />
+              </div>
+              <div class="row">
+                <div class="input-group">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="addAddress()"
+                  >
+                    添加
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-danger"
+                    @click="showAddAddress()"
+                  >
+                    取消
+                  </button>
                 </div>
+              </div>
             </div>
           </div>
           <div class="col"></div>
         </div>
       </div>
       <!-- 购物车为空时显示 -->
-      <div v-if="!carts.length">
+      <div v-if="cartsIsEmpty()">
         <div class="row">
           <div class="col"></div>
           <div class="col">
@@ -160,11 +278,14 @@
             province: "",
             region: "",
           },
+          selectAddress: {},
           addressList: [],
           axios: null,
           buyFlag: false,
+          balanceFullFlag: true,
           carts: [],
           checked: [],
+          showChangeAddressFlag: false,
         };
       },
       methods: {
@@ -186,6 +307,12 @@
             let result = response.data;
             me.carts = result;
           });
+        },
+        objIsEmpty: function (obj) {
+          for (let key in obj) {
+            return false;
+          }
+          return true;
         },
         getAddress: function () {
           let me = this;
@@ -216,39 +343,52 @@
         /**
          * 返回地址对象的中文键名
          */
-        getPropertyName: function(key) {
-          let result = '';
+        getPropertyName: function (key) {
+          let result = "";
           switch (key) {
-            case 'city': result = '城市';break;
-            case 'detailAddress': result = '详细地址';break;
-            case 'name': result = '收货人姓名';break;
-            case 'phone': result = '联系电话';break;
-            case 'province': result = '省份';break;
-            case 'region': result = '地区';break;
-            default: break;
+            case "city":
+              result = "城市";
+              break;
+            case "detailAddress":
+              result = "详细地址";
+              break;
+            case "name":
+              result = "收货人姓名";
+              break;
+            case "phone":
+              result = "联系电话";
+              break;
+            case "province":
+              result = "省份";
+              break;
+            case "region":
+              result = "地区";
+              break;
+            default:
+              break;
           }
           return result;
         },
         /**
          * 添加地址
          */
-        addAddress: function() {
+        addAddress: function () {
           let me = this;
           let address = me.address;
 
           for (let key in address) {
-            if (address[key] === '') {
+            if (address[key] === "") {
               return;
             }
           }
 
-          let url = '/order/addAddress';
+          let url = "/order/addAddress";
           let params = {
-            address: address
+            address: address,
           };
           let config = {};
 
-          me.axios.post(url, params, config).then(response => {
+          me.axios.post(url, params, config).then((response) => {
             let result = response.data;
             console.dir(result);
             if (result.meta.success === true) {
@@ -257,8 +397,66 @@
             }
           });
         },
+        showChangeAddress: function () {
+          let me = this;
+          me.showChangeAddressFlag = !me.showChangeAddressFlag;
+        },
+        changeAddress: function (address) {
+          let me = this;
+          me.selectAddress = address;
+          me.showChangeAddressFlag = false;
+        },
+        cartsIsEmpty: function () {
+          let me = this;
+          let result = true;
+          if (me.carts.length > 0) {
+            result = false;
+          }
+          // console.log(result);
+          return false;
+        },
+        /**
+         * 购买
+         */
+        buy: function() {
+          let me = this;
+          let totalPrice = me.totalPrice;
+          let books = me.checked;
+          let address = me.selectAddress;
+
+          console.log('buy invoke');
+
+          // Todo:
+          let url = '/order/buyBooks';
+          let params = {
+            address: address,
+            books: books
+          };
+          let config = {};
+
+          me.axios.post(url, params, config).then(response => {
+            let result = response.data;
+            if (result.meta.success === true){
+              window.location.reload();
+            }
+          });
+        }
       },
-      watch: {},
+      watch: {
+        addressList: function (newVal) {
+          let me = this;
+          let addressList = me.addressList;
+          for (let i = 0; i < addressList.length; i++) {
+            if (addressList[i].receiveStatus === 1) {
+              me.selectAddress = addressList[i];
+            }
+          }
+          if (addressList.length > 0) {
+            me.selectAddress = addressList[0];
+          }
+          return {};
+        },
+      },
       computed: {
         totalPrice: function () {
           let me = this;
@@ -267,7 +465,12 @@
           for (let i = 0; i < me.checked.length; i++) {
             totalPrice += me.checked[i].price;
           }
-
+          if (totalPrice > getCookie("balance")) {
+            totalPrice = "余额不足";
+            me.balanceFullFlag = false;
+            return totalPrice;
+          }
+          me.balanceFullFlag = true;
           return totalPrice;
         },
       },

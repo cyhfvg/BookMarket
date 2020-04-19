@@ -29,7 +29,7 @@ router.post("/getAddress", (req, res) => {
     .get(url, params, config)
     .then((response) => {
       let result = response.data;
-      console.dir(result);
+      // console.dir(result);
       if (result.meta.success === true) {
         res.send(result.data);
       } else {
@@ -68,6 +68,39 @@ router.post('/addAddress', (req, res) => {
   });
 
 });
+
+/**
+ * 用户买书
+ */
+router.post("/buyBooks", (req, res) => {
+  let { address, books } = req.body;
+  let { userId, token } = req.cookies;
+
+  let url = "/omsOrder/buyBooks";
+  let params = {
+    address: address,
+    books: books,
+    userId: userId,
+  };
+  let config = {
+    headers: {
+      "X-Token": token,
+    },
+  };
+
+  axios
+    .post(url, params, config)
+    .then((response) => {
+      let result = response.data;
+      if (result.meta.success === true) {
+        res.send({ meta: { success: true } });
+      }
+    })
+    .catch((err) => {
+      console.dir(err);
+    });
+});
+
 
 // 导出路由
 module.exports = router;

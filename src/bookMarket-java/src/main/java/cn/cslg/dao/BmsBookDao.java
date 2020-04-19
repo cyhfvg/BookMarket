@@ -23,5 +23,11 @@ public interface BmsBookDao extends GenericDao<BmsBook, Long>{
      */
     List<BmsBook> queryBookByIds(List Ids);
 
+    /**
+     * 批量更新书籍信息
+     * @param books List
+     */
+    void updateBooks(List<BmsBook> books);
+
 
 }
