@@ -53,4 +53,12 @@ public class BmsBookDaoImpl extends GenericDaoImpl<BmsBook, Long> implements Bms
         }
         return list;
     }
+
+    @Override
+    public void updateBooks(List<BmsBook> books) {
+        for (BmsBook book :
+                books) {
+            super.getHibernateTemplate().saveOrUpdate(book);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package cn.cslg.service;
 
+import cn.cslg.dto.OmsOrderBuyBooksParam;
 import cn.cslg.model.OmsOrder;
 import java.util.List;
 
@@ -51,5 +52,12 @@ public interface OmsOrderService {
      * @return 是否成功
      */
     void deleteById(Long id);
+
+    /**
+     * 根据订单信息创建订单
+     * @param omsOrderBuyBooksParam dto
+     * @return true/false
+     */
+    boolean buyBooks(OmsOrderBuyBooksParam omsOrderBuyBooksParam);
 
 }

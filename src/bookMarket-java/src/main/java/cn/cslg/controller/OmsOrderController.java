@@ -1,5 +1,7 @@
 package cn.cslg.controller;
 
+import cn.cslg.dto.OmsOrderBuyBooksParam;
+import cn.cslg.model.BmsBook;
 import cn.cslg.model.OmsOrder;
 import cn.cslg.service.OmsOrderService;
 
@@ -11,6 +13,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * (OmsOrder)表控制层
@@ -41,6 +44,22 @@ public class OmsOrderController implements ApplicationContextAware{
     @RequestMapping(value = "/selectOne", method = RequestMethod.GET)
     public Response selectOne(Long id) {
         return new Response().failure("");
+    }
+
+    /**
+     * 用户买书
+     * @param omsOrderBuyBooksParam dto
+     * @return Response
+     */
+    @RequestMapping(value = "/buyBooks", method = RequestMethod.POST)
+    public Response buyBooks(@RequestBody OmsOrderBuyBooksParam omsOrderBuyBooksParam) {
+        logger.debug("/omsOrder/buyBooks controller");
+        boolean flag = omsOrderService.buyBooks(omsOrderBuyBooksParam);
+        Response response = new Response();
+        if (flag) {
+            return response.success();
+        }
+        return response.failure("买书失败");
     }
     
     @Override
