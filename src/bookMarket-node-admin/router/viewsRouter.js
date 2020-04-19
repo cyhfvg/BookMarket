@@ -7,10 +7,10 @@ let util = require('../util');
 let router = express.Router();
 
 /**
- * 个人信息页面
+ * 管理主页
  */
-router.get('/memberInfo', (req, res) => {
-    res.render('memberInfo.ejs');
+router.get('/home', (req, res) => {
+    res.render('home.ejs');
 });
 
 

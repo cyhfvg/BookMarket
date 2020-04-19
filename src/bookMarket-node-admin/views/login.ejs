@@ -9,74 +9,61 @@
   </head>
   <body>
     <div id="app">
-      <!-- 引入 head 大图 -->
-      <%- include('template/head.ejs') %>
-      <!-- 导航栏 -->
-      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <a class="navbar-brand" type="button">导航</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#collapsibleNavbar"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="collapsibleNavbar">
-          <!-- 搜索框 -->
-          <form class="form-inline">
-            <input
-              class="form-control"
-              v-model="searchContent"
-              type="text"
-              placeholder="Search"
-            />
-            <button class="btn btn-success" type="button" @click="search">
-              Search
-            </button>
-          </form>
-          <ul class="navbar-nav nav-pills">
-            <!-- 搜索框 -->
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                data-toggle="dropdown"
-                href="#"
-                >搜索方式</a
-              >
-              <div class="dropdown-menu">
-                <a class="dropdown-item btn" @click="changeSearchType(0)">搜索订单</a>
-                <a class="dropdown-item btn" @click="changeSearchType(1)">搜索用户</a>
-                <a class="dropdown-item btn" @click="changeSearchType(2)">搜索书籍</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">订单管理</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">用户管理</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">书籍管理</a>
-            </li>
-            <li class="nav-item" v-if="isLogin">
-              <a class="nav-link" href="#">注销</a>
-            </li>
-            <li class="nav-item" v-else>
-              <a class="nav-link" href="#">登录</a>
-            </li>
-          </ul>
+      <div class="container">
+        <div class="row" style="margin-top: 150px;">
+          <div class="col"></div>
+          <div class="col">
+            <!-- 登录 -->
+            <div>
+              <form>
+                <div class="form-group">
+                  <label for="username">用户名:</label>
+                  <input
+                    aria-describedby="username_helpId"
+                    class="form-control"
+                    placeholder="用户名"
+                    type="text"
+                    v-model="adminName"
+                  />
+                  <small id="username_helpId" class="text-muted"
+                    >用户名登录，用户名一但确定，不可更改</small
+                  >
+                </div>
+                <div class="form-group">
+                  <label for="password">密码:</label>
+                  <input
+                    aria-describedby="password_helpId"
+                    class="form-control"
+                    placeholder="密码"
+                    type="password"
+                    v-model="password"
+                  />
+                  <small id="password_helpId" class="text-muted"
+                    >用户登录密码</small
+                  >
+                </div>
+
+                <div class="form-group row">
+                  <div class="col">
+                    <input type="reset" class="btn btn-info" value="重置" />
+                  </div>
+                  <div class="col">
+                    <input
+                      type="button"
+                      class="btn btn-primary"
+                      value="提交"
+                      @click="login"
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="col"></div>
         </div>
-      </nav>
-
-      <!-- 主体 -->
-      <div class="container"></div>
-
-      <!-- 底部显示区 -->
-      <%- include('template/foot.ejs') %>
+      </div>
     </div>
   </body>
-
   <!-- 引入 axios and vue 依赖 -->
   <%- include('template/axios_and_vue.ejs') %>
 
@@ -86,116 +73,47 @@
       data() {
         return {
           axios: null,
-          searchContent: "",
-          /**
-           * 搜索方式:
-           * 0->订单搜索;
-           * 1->用户搜索;
-           * 2->书籍搜索
-           */
-          searchType: -1,
-          searchUrl: "",
-          searchParams: {},
-          searchConfig: {},
+          adminName: "",
+          password: "",
         };
       },
       methods: {
         init: function () {
-
+          // 设置axios实例的config
+          this.axios = axios.create({
+            baseURL: configValue.axiosBaseURL,
+            timeout: 30000,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
         },
-        isLogin: function () {
-          return true;
-        },
-        search: function () {
+        login: function () {
           let me = this;
-
-          me.axios
-            .post(me.searchUrl, me.searchParams, me.searchConfig)
-            .then((response) => {
-              let me = this;
-              let result = response.data;
-              switch (me.searchType) {
-                case 0:
-                  me.orderSearchChain(result);
-                  break;
-                case 1:
-                  me.memberSearchChain(result);
-                  break;
-                case 2:
-                  me.bookSearchChain(result);
-                  break;
-                default:
-                  orderSearchChain(result);
-                  break;
-              }
-            });
-        },
-        orderSearchChain: function (result) {
-          // Todo: order Search ResultSet Chain
-          console.dir(result);
-        },
-        memberSearchChain: function (result) {
-          // Todo: member Search ResultSet Chain
-          console.dir(result);
-        },
-        bookSearchChain: function (result) {
-          // Todo: member Search ResultSet Chain
-          console.dir(result);
-        },
-        /**
-         * 更改搜索方式
-         */
-        changeSearchType: function(typeIndex) {
-          let me = this;
-          if (typeIndex > 2) {
-            typeIndex = 0;
+          let adminName = me.adminName;
+          let password = me.password;
+          if (adminName.trim() === "" || password.trim() === "") {
+            return;
           }
-          me.searchType = typeIndex;
-        }
-      },
-      watch: {
-        searchType: function (newVal) {
-          let me = this;
-          switch (newVal) {
-            case 0:
-              me.searchUrl = '/order/search';
-              me.searchParams = {};
-              me.searchConfig = {};
-              break;
-            case 1:
-              me.searchUrl = '/member/search';
-              me.searchParams = {};
-              me.searchConfig = {};
-              break;
-            case 2:
-              me.searchUrl = '/book/search';
-              me.searchParams = {};
-              me.searchConfig = {};
-              break;
-            default:
-              me.searchUrl = '';
-              me.searchParams = {};
-              me.searchConfig = {};
-              break;
-          }
+
+          let url = "/admin/login";
+          let params = {
+            name: adminName,
+            password: password,
+          };
+          let config = {};
+          me.axios.post(url, params, config).then((response) => {
+            let result = response.data;
+            if (result.success === true) {
+              window.location.replace("/views/home");
+            }
+          });
         },
       },
       computed: {},
       beforeCreate() {},
       created() {
-        // 设置axios实例的config
-        this.axios = axios.create({
-          baseURL: configValue.axiosBaseURL,
-          timeout: 30000,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        this.changeSearchType(0);
-        // Todo: admin 登录验证
-        // if (getCookie("token") != null) {
-        //   this.state.isLogin = true;
-        // }
+        this.init();
       },
       mounted() {},
     });
