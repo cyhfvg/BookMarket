@@ -34,5 +34,12 @@ router.get('/myShop', (req, res) => {
     res.render('myShop.ejs');
 });
 
+/**
+ * 用户购物车页面
+ */
+router.get('/myCart', (req, res) => {
+    res.render('cart.ejs');
+});
+
 // 导出路由
 module.exports = router;

@@ -71,4 +71,14 @@ public class BmsCartLogServiceImpl implements BmsCartLogService {
     public void deleteById(Long id) {
         this.bmsCartLogDao.deleteById(BmsCartLog.class, id);
     }
+
+    /**
+     * 获取用户的购物车内容
+     * @param memberId 用户id
+     * @return List<BmsCartLog>
+     */
+    @Override
+    public List<BmsCartLog> getCarts(long memberId) {
+        return bmsCartLogDao.findByProperty(BmsCartLog.class, "memberId", memberId);
+    }
 }

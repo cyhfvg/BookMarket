@@ -13,20 +13,30 @@ import org.springframework.context.annotation.Scope;
 /**
  * @description 订单中所包含的商品(oms_order_item)表实体类
  * @author zhangguangzhou
- * @date 2020-04-13 10:06:18
+ * @date 2020-04-19 09:55:40
  */
 @Entity
 @Table(name = "oms_order_item")
 @Scope("prototype")
 public class OmsOrderItem {
     
-            private Long id;
+            
+    /**
+     * 编号
+     */
+    private Long id;
  
             
     /**
      * 订单id
      */
     private Long orderId;
+ 
+            
+    /**
+     * 用户id
+     */
+    private Long memberId;
  
             
     /**
@@ -40,13 +50,17 @@ public class OmsOrderItem {
      */
     private Long bookId;
  
-            private String bookName;
+            
+    /**
+     * 书籍isbn
+     */
+    private String bookIsbn;
  
             
     /**
-     * 书籍编号
+     * 书名
      */
-    private String bookSn;
+    private String bookName;
  
             
     /**
@@ -56,7 +70,7 @@ public class OmsOrderItem {
  
             
     /**
-     * 销售价格
+     * 书籍价格
      */
     private Integer bookPrice;
  
@@ -65,12 +79,6 @@ public class OmsOrderItem {
      * 商品分类id
      */
     private Long productCategoryId;
- 
-            
-    /**
-     * 商品促销名称
-     */
-    private String promotionName;
  
         
     @Id
@@ -96,6 +104,16 @@ public class OmsOrderItem {
     }
         
     
+    @Column(name = "member_id")
+    public Long getMemberId() {
+        return memberId;
+    }
+    
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+        
+    
     @Column(name = "order_sn")
     public String getOrderSn() {
         return orderSn;
@@ -116,6 +134,16 @@ public class OmsOrderItem {
     }
         
     
+    @Column(name = "book_isbn")
+    public String getBookIsbn() {
+        return bookIsbn;
+    }
+    
+    public void setBookIsbn(String bookIsbn) {
+        this.bookIsbn = bookIsbn;
+    }
+        
+    
     @Column(name = "book_name")
     public String getBookName() {
         return bookName;
@@ -123,16 +151,6 @@ public class OmsOrderItem {
     
     public void setBookName(String bookName) {
         this.bookName = bookName;
-    }
-        
-    
-    @Column(name = "book_sn")
-    public String getBookSn() {
-        return bookSn;
-    }
-    
-    public void setBookSn(String bookSn) {
-        this.bookSn = bookSn;
     }
         
     
@@ -163,16 +181,6 @@ public class OmsOrderItem {
     
     public void setProductCategoryId(Long productCategoryId) {
         this.productCategoryId = productCategoryId;
-    }
-        
-    
-    @Column(name = "promotion_name")
-    public String getPromotionName() {
-        return promotionName;
-    }
-    
-    public void setPromotionName(String promotionName) {
-        this.promotionName = promotionName;
     }
         
     public OmsOrderItem() {

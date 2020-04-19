@@ -13,4 +13,9 @@ import org.springframework.stereotype.Repository;
 @Repository("omsOrderDao")
 public class OmsOrderDaoImpl extends GenericDaoImpl<OmsOrder, Long> implements OmsOrderDao {
 
+    @Override
+    public OmsOrder saveReturnEntity(OmsOrder order) {
+        super.getHibernateTemplate().save(order);
+        return order;
+    }
 }

@@ -135,4 +135,14 @@ public class BmsBookServiceImpl implements BmsBookService {
 
         return map;
     }
+
+    /**
+     *
+     * @param Ids 书籍id
+     * @return List<BmsBook>
+     */
+    @Override
+    public List<BmsBook> getBooksByIds(List Ids) {
+        return bmsBookDao.queryBookByIds(Ids);
+    }
 }
