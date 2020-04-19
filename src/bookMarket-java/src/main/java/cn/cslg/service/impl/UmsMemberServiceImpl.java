@@ -115,4 +115,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public void deleteById(Long id) {
         this.umsMemberDao.deleteById(UmsMember.class, id);
     }
+
+    @Override
+    public void updateMembers(List<UmsMember> members) {
+        umsMemberDao.updateUmsMembers(members);
+    }
 }

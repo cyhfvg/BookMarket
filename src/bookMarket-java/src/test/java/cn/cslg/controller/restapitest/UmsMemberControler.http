@@ -20,4 +20,8 @@ Content-Type: application/json
   "charge": 100
 }
 
+### /umsMember/listAll
+GET http://localhost:8080/bookMarket-java/umsMember/listAll?page=1&pageSize=20
+Content-Type: application/json
+
 ###

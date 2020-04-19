@@ -31,6 +31,7 @@ app.use('/', require(path.join(config.project_path, 'router', 'index')));
 app.use('/order', require(path.join(config.project_path, 'router', 'orderRouter')));
 app.use('/book', require(path.join(config.project_path, 'router', 'bookRouter')));
 app.use('/member', require(path.join(config.project_path, 'router', 'memberRouter')));
+app.use('/admin', require(path.join(config.project_path, 'router', 'adminRouter')));
 // views 页面
 app.use('/views', require(path.join(config.project_path, 'router', 'viewsRouter')));
 
