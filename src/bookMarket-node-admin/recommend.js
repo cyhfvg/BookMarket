@@ -419,4 +419,5 @@ const RecommendGoodsService = class RecommendGoodsService {
   }
 };
 
-module.exports = { RecommendUserService, RecommendGoodsService };
+// module.exports = { RecommendUserService, RecommendGoodsService };
+module.exports = RecommendGoodsService;

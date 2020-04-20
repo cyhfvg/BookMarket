@@ -248,7 +248,7 @@ router.post("/searchBooks", (req, res) => {
     .get(url, params, config)
     .then((response) => {
       let result = response.data;
-      console.dir(result);
+      // console.dir(result);
       res.send(result);
     })
     .catch((err) => {
@@ -315,7 +315,7 @@ router.post("/lookHistory", (req, res) => {
     .post(url, params, config)
     .then((response) => {
       let result = response.data;
-      console.dir(result);
+      // console.dir(result);
       if (result.meta.success === true) {
         res.send(result.meta);
       } else {
@@ -323,7 +323,7 @@ router.post("/lookHistory", (req, res) => {
       }
     })
     .catch((err) => {
-      console.dir(err);
+      // console.dir(err);
       res.send({ meta: { success: false } });
     });
 });
