@@ -3,6 +3,7 @@ package cn.cslg.service;
 import cn.cslg.dto.MemberBookActionParam;
 import cn.cslg.dto.MemberBookActionSetParam;
 import cn.cslg.dto.UmsMemberLikePromoteParam;
+import cn.cslg.model.BmsBook;
 import cn.cslg.model.UmsMemberLike;
 import java.util.List;
 import java.util.Map;
@@ -63,5 +64,12 @@ public interface UmsMemberLikeService {
      * @param param dto
      */
     void insertPromoteQueue(UmsMemberLikePromoteParam param);
+
+    /**
+     * 根据用户id获取用户的推荐列表
+     * @param memberId 用户id
+     * @return List
+     */
+    List<BmsBook> getMemberPromoteByMemberId(long memberId);
 
 }

@@ -201,7 +201,7 @@ router.post("/likeBooks", (req, res) => {
     });
     return;
   }
-  let url = "/bmsBook/listLikeBooks";
+  let url = "/umsMemberLike/listLikeBooks";
   let params = {
     params: {
       userId: userId,

@@ -3,10 +3,7 @@ package cn.cslg.controller;
 import cn.cslg.dto.MemberBookActionParam;
 import cn.cslg.dto.MemberBookActionSetParam;
 import cn.cslg.dto.UmsMemberLikePromoteParam;
-import cn.cslg.model.BmsSearchLog;
-import cn.cslg.model.OmsOrderItem;
-import cn.cslg.model.UmsMember;
-import cn.cslg.model.UmsMemberLike;
+import cn.cslg.model.*;
 import cn.cslg.security.IgnoreSecurity;
 import cn.cslg.service.UmsMemberLikeService;
 
@@ -77,7 +74,19 @@ public class UmsMemberLikeController implements ApplicationContextAware{
         umsMemberLikeService.insertPromoteQueue(umsMemberLikePromoteParam);
         return response.success();
     }
-    
+
+    /**
+     * 列出用户可能喜欢的书籍
+     * @param userId long 用户id
+     * @return Response
+     */
+    @RequestMapping(value = "listLikeBooks", method = RequestMethod.GET)
+    public Response listLikeBooks(@RequestParam("userId") long userId) {
+        Response response = new Response();
+        List<BmsBook> result = umsMemberLikeService.getMemberPromoteByMemberId(userId);
+        return response.success(result);
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;

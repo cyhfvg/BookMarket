@@ -61,4 +61,22 @@ public class BmsBookDaoImpl extends GenericDaoImpl<BmsBook, Long> implements Bms
             super.getHibernateTemplate().saveOrUpdate(book);
         }
     }
+
+    @Override
+    public List<BmsBook> queryBookByIsbns(List<String> isbns) {
+        List<BmsBook> list = new ArrayList<>();
+        if (CollectionUtil.isEmpty(isbns)) {
+            return list;
+        }
+
+        for (String isbn :
+                isbns) {
+            DetachedCriteria dc = DetachedCriteria.forEntityName(BmsBook.class.getName());
+            dc.add(Restrictions.eq("isbn", isbn));
+            dc.add(Restrictions.eq("publishStatus", 1));
+            List<BmsBook> result = (List<BmsBook>) super.getHibernateTemplate().findByCriteria(dc, 0, 1);
+            list.addAll(result);
+        }
+        return list;
+    }
 }
