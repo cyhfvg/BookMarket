@@ -16,6 +16,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 会员表(UmsMember)表控制层
@@ -97,7 +98,7 @@ public class UmsMemberController implements ApplicationContextAware{
     /**
      *  修改个人信息
      * @param umsMemberInfoUpdateParam UmsMember dto
-     * @return
+     * @return Response
      */
     @RequestMapping(value = "/umsMember", method = RequestMethod.PATCH)
     public Response updateOne(@RequestBody UmsMemberInfoUpdateParam umsMemberInfoUpdateParam) {
@@ -166,6 +167,10 @@ public class UmsMemberController implements ApplicationContextAware{
         UmsMember umsMember = umsMemberService.login(new UmsMemberParam(userName, userPassword));
         Response response = new Response();
         if (umsMember != null) {
+            if (umsMember.getStatus() == 0) {
+                response.failure("账号未启用");
+                return response;
+            }
             String token = tokenManager.createToken(umsMember.getUsername());
             // 写入登录记录
             UmsMemberLoginLogParam umsMemberLoginLogParam = new UmsMemberLoginLogParam();
@@ -179,6 +184,32 @@ public class UmsMemberController implements ApplicationContextAware{
             return response.success(umsMember).token(token);
         }
         response.failure("用户名或密码错误");
+        return response;
+    }
+
+    /**
+     * 获取分页列表用户
+     * @param page 页码
+     * @param pageSize 页长
+     * @return Response
+     */
+    @RequestMapping(value = "/umsMember/listAll", method = RequestMethod.GET)
+    public Response listAll(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        Response response = new Response();
+        List<UmsMember> list = umsMemberService.queryAllByLimit(pageSize * (page - 1), pageSize);
+        return response.success(list);
+    }
+
+    @RequestMapping(value = "/umsMember/deleteMembers", method = RequestMethod.PATCH)
+    public Response deleteMembers(@RequestBody UmsMemberDeleteMembersParam umsMemberDeleteMembersParam) {
+        Response response = new Response();
+        List<UmsMember> members = umsMemberDeleteMembersParam.getMembers();
+
+        for (int i = 0; i < members.size(); i++) {
+            members.get(i).setStatus(0);
+        }
+
+        umsMemberService.updateMembers(members);
         return response;
     }
     

@@ -74,14 +74,19 @@ public class UmsAdminController implements ApplicationContextAware{
         return response.success(umsAdmin);
     }
 
+
     /**
      * 管理员登录
-     * @param umsAdminLoginParam
+     * @param adminName 用户名
+     * @param password 密码
      * @return
      */
     @IgnoreSecurity
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public Response login(@RequestBody UmsAdminLoginParam umsAdminLoginParam) {
+    public Response login(@RequestParam("adminName") String adminName, @RequestParam("password") String password) {
+        UmsAdminLoginParam umsAdminLoginParam = new UmsAdminLoginParam();
+        umsAdminLoginParam.setUsername(adminName);
+        umsAdminLoginParam.setPassword(password);
         UmsAdmin umsAdmin = umsAdminService.login(umsAdminLoginParam);
         if (umsAdmin != null) {
             String token = tokenManager.createToken(umsAdmin.getUsername());

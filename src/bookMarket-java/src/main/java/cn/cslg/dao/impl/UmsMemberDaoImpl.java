@@ -4,6 +4,8 @@ import cn.cslg.model.UmsMember;
 import cn.cslg.dao.UmsMemberDao;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * 会员表(UmsMember)表服务实现类
  *
@@ -13,4 +15,11 @@ import org.springframework.stereotype.Repository;
 @Repository("umsMemberDao")
 public class UmsMemberDaoImpl extends GenericDaoImpl<UmsMember, Long> implements UmsMemberDao {
 
+    @Override
+    public void updateUmsMembers(List<UmsMember> members) {
+        for (UmsMember member :
+                members) {
+            super.getHibernateTemplate().update(member);
+        }
+    }
 }

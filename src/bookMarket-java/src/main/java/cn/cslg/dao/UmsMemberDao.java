@@ -11,4 +11,9 @@ import java.util.List;
  */
 public interface UmsMemberDao extends GenericDao<UmsMember, Long>{
 
+    /**
+     * 更新用户列表
+     * @param members 用户列表
+     */
+    public void updateUmsMembers(List<UmsMember> members);
 }
