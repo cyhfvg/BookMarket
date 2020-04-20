@@ -1,0 +1,16 @@
+###
+GET http://localhost:8080/bookMarket-java/bmsBook/shop/list?userId=28
+Accept: application/json
+
+###
+GET http://localhost:8080/bookMarket-java/bmsBook/listAll?page=1&pageSize=20
+Accept: application/json
+
+###
+GET http://localhost:8080/bookMarket-java/bmsBook/listLikeBooks?userId=28
+Accept: application/json
+
+###
+GET http://localhost:8080/bookMarket-java/bmsBook/searchBooks?userId=28&searchText=老人与海&page=1&pageSize=20
+Accept: application/json
+

@@ -1,0 +1,11 @@
+### 管理员注册
+POST http://localhost:8080/bookMarket-java/umsAdmin/register
+Content-Type: application/json
+
+{
+  "username": "adminTest1",
+  "password": "123456*hhd"
+}
+
+###
+

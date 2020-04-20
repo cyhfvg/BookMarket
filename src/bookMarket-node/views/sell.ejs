@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我要卖书</title>
+    <!-- 引入css样式表，和js -->
+    <%- include('template/css_and_js') %>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 引入 head 大图 -->
+      <%- include('template/head.ejs') %>
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+          <div class="col-sm-6 clearfix">
+            <div class="form-group float-left" style="width: 250px;">
+              <input
+                type="text"
+                class="form-control"
+                name="searchText"
+                placeholder="输入书名或ISBN寻找书籍"
+                v-model="searchText"
+              />
+            </div>
+            <div class="form-group float-left" style="margin-left: 20px;">
+              <input
+                type="button"
+                class="btn btn-light"
+                value="查找"
+                @click="queryBook()"
+              />
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+        <!-- note: v-for 渲染卖书时 搜索的书籍 -->
+        <div v-if="!isbnSearchFlag && searchBooks.length">
+          <div class="row" v-for="n in rows">
+            <div class="col" v-for="book in eachRowBooks(n)">
+              <div class="book_item" @click="query(book.isbn)">
+                <img :src="book.pic" alt="" height="120px" width="120px" />
+              </div>
+              <label>ISBN: {{ book.isbn }}</label>
+            </div>
+          </div>
+          <!-- 剩余书籍 -->
+          <div class="row" v-if="remain.length">
+            <div class="col" v-for="book in remain">
+              <div class="book_item" @click="query(book.isbn)">
+                <img :src="book.pic" alt="" height="120px" width="120px" />
+              </div>
+              <label>ISBN: {{ book.isbn }}</label>
+            </div>
+          </div>
+          <!-- note: 搜索分页按钮 -->
+          <div class="clearfix" v-if="searchBooks.length > 0">
+            <div class="float-right">
+              <!-- 上十页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage > 10"
+                class="page_item"
+                @click="changePage(curPage - 10)"
+              >
+              <img src="/icons/double-left.svg">
+              </div>
+              <!-- 上一页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage > 1"
+                class="page_item"
+                @click="changePage(curPage - 1)"
+              >
+              <img src="/icons/single-left.svg">
+              </div>
+              <!-- 下一页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage < totalPage"
+                class="page_item"
+                @click="changePage(curPage + 1)"
+              >
+              <img src="/icons/single-right.svg">
+              </div>
+              <!-- 下十页 -->
+              <div
+                class="float-left"
+                style="border:3px solid #000;width: 32px; height: 32px;"
+                v-if="curPage < totalPage - 9"
+                class="page_item"
+                @click="changePage(curPage + 10)"
+              >
+              <img src="/icons/double-right.svg">
+              </div>
+              <!-- 跳转页码 -->
+              <div
+                class="page_item float-right"
+                style="border:3px solid #000;width: 86px; height: 32px;"
+              >
+                <input
+                  type="text"
+                  name="page"
+                  v-model="curPage"
+                  style="width: 32px;"
+                /><input
+                  type="button"
+                  value="跳转"
+                  @click="changePage(curPage)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- note: ISBN 搜索到的书籍渲染 -->
+        <div v-if="isbnSearchFlag && !objIsEmpty(book)">
+          <div class="row">
+            <div class="col">
+              <div class="book_item" style="width: 240px; height: 240px;">
+                <img
+                  :src="book.pic"
+                  :alt="book.summary"
+                  height="240px"
+                  width="240px"
+                />
+              </div>
+              <div>书籍名称:&nbsp;&nbsp;{{ book.title }}</div>
+              <div>出版社:&nbsp;&nbsp;{{ book.publisher }}</div>
+              <div>出版时间:&nbsp;&nbsp;{{ book.pubdate }}</div>
+              <div>书籍页数;&nbsp;&nbsp;{{ book.page }}</div>
+              <div>书籍定价: &nbsp;&nbsp;{{ book.price }}元</div>
+            </div>
+            <div class="col">
+              <!-- note: 返回按钮 -->
+              <div v-if="searchBooks.length" @click="showResults()">
+                <label style="background-color: #f0f8ff;">返回</label>
+              </div>
+              <div>
+                <p>
+                  注: 此处提交的卖书请求，需在<font color="#EEB422"
+                    >我的摊位</font
+                  >中提交信息才可上架
+                </p>
+              </div>
+              <div><label>我的定价:</label></div>
+              <div class="clearfix">
+                <div class="form-group float-left" style="width: 250px;">
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="myPrice"
+                    v-model="myPrice"
+                  />
+                </div>
+                <div class="form-group float-left">
+                  <input
+                    class="btn btn-light"
+                    type="button"
+                    value="卖出书籍"
+                    @click="sell()"
+                  />
+                </div>
+                <div class="float-right" style="color: red;">
+                  {{ alertText }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('template/foot.ejs') %>
+  </body>
+
+  <!-- 引入 axios and vue 依赖 -->
+  <%- include('template/axios_and_vue.ejs') %>
+
+<script src="/js/utils.js"></script>
+
+<script type="text/javascript">
+  let vm = new Vue({
+    el: "#app",
+    data() {
+      return {
+        alertText: "",
+        axiosInstance: null,
+        book: {},
+        cols: 5,
+        curPage: 1,
+        isbnSearchFlag: false,
+        total: 0,
+        myPrice: 1,
+        rows: 0,
+        searchBooks: [],
+        searchText: "",
+      };
+    },
+    methods: {
+      init: function () {
+      },
+      /**
+       * 查找按钮查找书籍信息
+       */
+      queryBook: function () {
+        let me = this;
+        let text = me.searchText;
+        me.query(text, me.curPage);
+      },
+      /**
+       * 分页功能
+       */
+      changePage: function (pageNum) {
+        let me = this;
+        me.curPage = pageNum;
+        me.queryBook();
+      },
+      /**
+       * 查找书籍信息
+       */
+      query: function (text, page) {
+        let me = this;
+        if (text === "") {
+          return;
+        }
+        me.axiosInstance
+          .post("/book/sell/searchBook", {
+            text: text,
+            page: page,
+          })
+          .then((response) => {
+            if (response.data.status === 0) {
+              let result = response.data.result;
+              console.log(result);
+              // 书名查询 结果
+              if (result.total !== undefined) {
+                me.total = result.total;
+                me.searchBooks = result.list;
+                me.isbnSearchFlag = false;
+              } else {
+                // ISBN 查询 结果
+                me.book = result;
+                me.isbnSearchFlag = true;
+              }
+            } else {
+              // 失败
+              me.searchText = "";
+            }
+          });
+      },
+      /**
+       * 渲染书名查找结果集时，每行数据
+       */
+      eachRowBooks: function (row) {
+        let me = this;
+        let cols = me.cols;
+        let books = [];
+        for (let i = 0; i < cols; i++) {
+          books[i] = me.searchBooks[(row - 1) * cols + i];
+        }
+        return books;
+      },
+      objIsEmpty: function (obj) {
+        for (let key in obj) {
+          return false;
+        }
+        return true;
+      },
+      /**
+       * 根据isbn获取书籍信息
+       */
+      getBookInfo: function (isbn) {
+        let me = this;
+        me.query(isbn);
+      },
+      /**
+       * 设置显示区域 显示flag
+       */
+      showResults: function () {
+        let me = this;
+        me.isbnSearchFlag = false;
+      },
+      /**
+       * 卖书
+       */
+      sell() {
+        let me = this;
+        let book = me.book;
+        let myPrice = Math.floor(me.myPrice);
+
+        let url = "/book/sell";
+        let config = {
+          book: {
+            name: book.title,
+            price: myPrice,
+            isbn: book.isbn,
+            author: book.author,
+            pic: book.pic,
+            description: book.summary,
+          },
+        };
+        me.axiosInstance.post(url, config).then((response) => {
+          console.log(response.data);
+          if (response.data.success === true) {
+            window.opener = null;
+            window.open("", "_self");
+            window.close();
+          } else {
+            me.alertText = "请刷新页面重新提交";
+          }
+        });
+      },
+    },
+    beforeCreate() {
+      // tag: 验证身份
+      // 是否已经登录
+      if (getCookie("token") === null) {
+        window.opener = null;
+        window.open("", "_self");
+        window.close();
+      }
+    },
+    created() {
+      // 设置axios实例的config
+      this.axiosInstance = axios.create({
+        baseURL: configValue.axiosBaseURL,
+        timeout: 30000,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    mounted() {
+      // 数据初始化
+      this.init();
+    },
+    watch: {
+      /**
+       * 当书名搜索结果集变化时，更新 渲染行数
+       */
+      searchBooks(newVal) {
+        let me = this;
+        me.rows = Math.floor(me.searchBooks.length / me.cols);
+      },
+      /**
+       * 根据 搜索文本变化设置 搜索结果显示
+       */
+      searchText(newVal) {
+        let me = this;
+        let regexp = /^\d+$/g;
+        if (regexp.exec(newVal) != null) {
+          me.isbnSearchFlag = true;
+        } else {
+          me.isbnSearchFlag = false;
+        }
+      },
+      /**
+       * 我的定价
+       */
+      myPrice(newVal) {
+        let me = this;
+        if (newVal <= 0 || newVal > me.book.price * 100) {
+          me.myPrice = 0;
+        }
+      },
+    },
+    computed: {
+      remain: function () {
+        let me = this;
+        let len = me.searchBooks.length;
+        let count = len - me.rows * me.cols;
+        let remain = [];
+        for (let i = 0; i < count; i++) {
+          remain[i] = me.searchBooks[len - i - 1];
+        }
+        return remain;
+      },
+      /**
+       * 总页数
+       */
+      totalPage: function () {
+        let me = this;
+        return Math.ceil(me.total / (me.rows * me.cols));
+      },
+    },
+  });
+</script>
+
+</html>

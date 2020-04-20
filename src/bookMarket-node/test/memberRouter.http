@@ -1,0 +1,26 @@
+###
+POST http://127.0.0.1:8081/member/register
+Content-Type: application/json
+
+{
+    "username": "cyhfvg2",
+    "password": "password"
+}
+
+###
+POST http://127.0.0.1:8081/member/login
+Content-Type: application/json
+
+{
+    "username": "userTest2",
+    "password": "userTest2"
+}
+
+###
+POST http://127.0.0.1:8081/member/login
+Content-Type: application/json
+
+{
+    "username": "shabulaji",
+    "password": "shabulaji"
+}

@@ -1,0 +1,10 @@
+### 新用户注册
+POST http://localhost:8080/bookMarket-java/umsMember
+Content-Type: application/json
+
+{
+  "username": "userTest20",
+  "password": "password"
+}
+
+###

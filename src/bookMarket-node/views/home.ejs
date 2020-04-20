@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width= device-width, initial-scale=1.0" />
+    <title>书城</title>
+    <!-- 引入css样式表，和js -->
+    <%- include('template/css_and_js') %>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 引入 head 大图 -->
+      <%- include('template/head.ejs') %>
+      <!-- 导航栏 -->
+      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <a class="navbar-brand" type="button" @click="getAllBooks()">导航</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#collapsibleNavbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+          <!-- 搜索框 -->
+          <form class="form-inline" v-if="showSearchInputFlag">
+            <input
+              class="form-control"
+              v-model="searchText"
+              type="text"
+              placeholder="Search"
+            />
+            <button class="btn btn-success" type="button" @click="search()">
+              Search
+            </button>
+          </form>
+          <ul class="navbar-nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link" type="button" @click="showSearchInput()"
+                >搜索</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/views/sell" target="_blank"
+                >我要卖书</a
+              >
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+                href="#"
+                >我的</a
+              >
+              <!-- note: 我的 标签页 -->
+              <div class="dropdown-menu">
+                <a
+                  class="dropdown-item button"
+                  :class="{display_hide:state.isLogin}"
+                  data-toggle="modal"
+                  data-target="#registerModal"
+                  >注册</a
+                >
+                <a
+                  class="dropdown-item button"
+                  id="loginButton"
+                  :class="{display_hide:state.isLogin}"
+                  data-toggle="modal"
+                  data-target="#loginModal"
+                  >登录</a
+                >
+                <a
+                  class="dropdown-item"
+                  :class="{display_hide:!state.isLogin}"
+                  href="/views/myShop"
+                  target="_blank"
+                  >我的摊位</a
+                >
+                <a
+                  class="dropdown-item"
+                  :class="{display_hide:!state.isLogin}"
+                  href="/views/myCart"
+                  target="_blank"
+                  >购物车</a
+                >
+                <a
+                  class="dropdown-item"
+                  :class="{display_hide:!state.isLogin}"
+                  href="/views/memberInfo"
+                  target="_blank"
+                  >个人中心</a
+                >
+                <!-- <a class="dropdown-item" :class="{display_hide:!state.isLogin}" href="/views/account" target="_blank">账号设置</a> -->
+                <a
+                  class="dropdown-item button"
+                  :class="{display_hide:!state.isLogin}"
+                  @click="logout()"
+                  >退出登录</a
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!-- note: 警告提示框 -->
+        <div
+          v-if="isAlert"
+          style="
+            width: 250px;
+            position: relative;
+            left: 0px;
+            top: 0px;
+            margin: 0;
+          "
+        >
+          <div class="alert alert-success alert-dismissible" style="margin: 0;">
+            <button type="button" class="close" @click="alertDismiss()">
+              &times;
+            </button>
+            <strong>成功!</strong><font size="2">成功加入购物车</font>
+          </div>
+        </div>
+      </nav>
+      <!-- 登录/注册模态框 -->
+      <%- include('template/register_modal.ejs') %> <%-
+      include('template/login_modal.ejs') %>
+
+      <!-- 主体 -->
+      <div class="container">
+        <!-- 书城书籍 -->
+        <div v-if="!showDetail">
+          <!-- tag: 猜你喜欢 -->
+          <div v-if="likeBooks.length">
+            <div class="row">
+              <div class="col"><hr /></div>
+              <div class="col-auto">猜你喜欢</div>
+              <div class="col"><hr /></div>
+            </div>
+            <div class="row" v-for="n in likeBookRows">
+              <div class="col" v-for="(book, index) in eachRowLikes(n)">
+                <div class="like_book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" height="60px" width="60px" />
+                </div>
+              </div>
+              <div
+                class="col"
+                v-if="1 === likeBookRows"
+                @click="viewMoreLikes()"
+              >
+                <div style="width: 150px; height: 70px;">
+                  <div style="width: 2px; height: 20px;"></div>
+                  <span>查看更多</span>
+                </div>
+              </div>
+              <div
+                class="col"
+                v-else-if="n === likeBookRows"
+                @click="viewLessLikes()"
+              >
+                <div style="width: 150px; height: 70px;">
+                  <div style="width: 2px; height: 20px;"></div>
+                  <span>收起</span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="row"
+              v-if="likeBookRows > 1 && likeBooksViewRemain.length"
+            >
+              <div class="col" v-for="(book, index) in likeBooksViewRemain">
+                <div class="like_book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" height="60px" width="60px" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- tag: 全部商品 -->
+          <div v-if="allBooks.length">
+            <div class="row">
+              <div class="col"><hr /></div>
+              <div class="col-auto">全部书籍</div>
+              <div class="col"><hr /></div>
+            </div>
+            <div class="row" v-for="n in rows">
+              <div class="col" v-for="book in eachRowBooks(n)">
+                <div class="book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" height="120px" width="120px" />
+                </div>
+                <label>{{ book.name }}</label>
+              </div>
+            </div>
+            <!-- 不满一页时，不满一行的数据单独渲染 -->
+            <div class="row" v-if="remain.length">
+              <div class="col" v-for="book in remain">
+                <div class="book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" alt="" height="120px" width="120px" />
+                </div>
+                <label>{{ book.name }}</label>
+              </div>
+              <div class="col" v-for="n in (cols - remain.length)">
+                <div></div>
+              </div>
+            </div>
+            <!-- note: 搜索分页按钮 -->
+            <div class="clearfix" v-if="allBooks.length > 0">
+              <div class="float-right">
+                <!-- 上十页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage > 10"
+                  class="page_item"
+                  @click="changePage(curPage - 10)"
+                >
+                  <img src="/icons/double-left.svg" />
+                </div>
+                <!-- 上一页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage > 1"
+                  class="page_item"
+                  @click="changePage(curPage - 1)"
+                >
+                  <img src="/icons/single-left.svg" />
+                </div>
+                <!-- 下一页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage < totalPage"
+                  class="page_item"
+                  @click="changePage(curPage + 1)"
+                >
+                  <img src="/icons/single-right.svg" />
+                </div>
+                <!-- 下十页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage < totalPage - 9"
+                  class="page_item"
+                  @click="changePage(curPage + 10)"
+                >
+                  <img src="/icons/double-right.svg" />
+                </div>
+                <!-- 跳转页码 -->
+                <div
+                  class="page_item float-right"
+                  style="border: 3px solid #000; width: 86px; height: 32px;"
+                >
+                  <input
+                    type="text"
+                    name="page"
+                    v-model="curPage"
+                    style="width: 32px;"
+                  /><input
+                    type="button"
+                    value="跳转"
+                    @click="changePage(curPage)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- note:书籍详情购买面 -->
+        <div v-if="showDetail">
+          <div class="row">
+            <div class="col">
+              <div
+                class="book_item"
+                style="width: 242px; height: 242px; border: 1px solid gray;"
+              >
+                <img
+                  id="bookPic"
+                  :src="book.pic"
+                  :alt="book.summary"
+                  height="240px"
+                  width="240px"
+                />
+              </div>
+              <div style="width: 1; height: 10px;"></div>
+              <!-- 图书图册显示 -->
+              <div
+                class="row"
+                v-if="bookUrls.length"
+                style="border: 2px solid gray;"
+              >
+                <div class="col" v-for="url in bookUrls">
+                  <div
+                    style="width: 60px; height: 60px;"
+                    @click="viewAlbums(url)"
+                  >
+                    <img :src="url" width="60px" height="60px" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div>书籍名称:&nbsp;&nbsp;{{ book.name }}</div>
+              <div>
+                <p>卖家描述:&nbsp;&nbsp;{{ book.description }}</p>
+              </div>
+              <div>书籍定价: &nbsp;&nbsp;{{ book.price }}元宝</div>
+              <div>
+                <input
+                  class="btn btn-success"
+                  type="button"
+                  value="添加到购物车"
+                  @click="addCart()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('template/foot.ejs') %>
+    </div>
+  </body>
+
+  <!-- 引入 axios and vue 依赖 -->
+  <%- include('template/axios_and_vue.ejs') %>
+
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: "#app",
+      data() {
+        return {
+          alertBox: {
+            alertStyle: "",
+            messageInfo: "",
+            messageState: "",
+          },
+          alertStyles: {
+            danger: "alert-danger",
+            dark: "alert-dark",
+            info: "alert-info",
+            light: "alert-light",
+            primary: "alert-primary",
+            secondary: "alert-secondary",
+            success: "alert-success",
+            warning: "alert-warning",
+          },
+          axiosInstance: null,
+          allBooks: [],
+          book: {},
+          likeBooks: [],
+          searchBooks: [],
+          isAlert: false,
+          alertText: "",
+          searchText: "",
+          showSearchInputFlag: false,
+          totalPage: 1,
+          curPage: 1,
+          isSearch: false,
+          showDetail: false,
+          likeBookRows: 1,
+          cols: 5,
+          rows: 4,
+          total: 0,
+          state: {
+            isLogin: false,
+            isMsgShow: false,
+          },
+        };
+      },
+      methods: {
+        /**
+         * 初始化
+         */
+        init: function () {
+          let me = this;
+          me.getAllBooks();
+          me.getLikeBooks();
+        },
+        /**
+         * 用户注册
+         */
+        register: () => {
+          let username = document.getElementById("registerUsername").value;
+          let password = document.getElementById("registerPassword").value;
+          let password1 = document.getElementById("registerPassword1").value;
+          if (username === "") {
+            vm.$options.methods.showAlert(
+              vm.alertStyles.danger,
+              "错误!",
+              "用户名不可为空"
+            );
+          } else if (password === "" || password1 === "") {
+            vm.$options.methods.showAlert(
+              vm.alertStyles.danger,
+              "错误!",
+              "密码不可为空"
+            );
+          } else if (password !== password1) {
+            vm.$options.methods.showAlert(
+              vm.alertStyles.danger,
+              "错误!",
+              "两次密码必须相同"
+            );
+          } else {
+            vm.axiosInstance
+              .post("/member/register", {
+                username: username,
+                password: password,
+              })
+              .then((response) => {
+                if (response.data.success === true) {
+                  // window.location.replace("/");
+                  document.getElementById("register_close_btn").click();
+                  document.getElementById("loginButton").click();
+                } else {
+                  // tag: 注册失败 清空表单
+                  document.getElementById("register_reset_btn").click();
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        },
+        /**
+         * 用户登录
+         */
+        login: () => {
+          let username = document.getElementById("loginUsername").value;
+          let password = document.getElementById("loginPassword").value;
+
+          vm.axiosInstance
+            .post("/member/login", {
+              username: username,
+              password: password,
+            })
+            .then((response) => {
+              if (response.data.success === true) {
+                // 关闭 登录 模态框
+                vm.state.isLogin = true;
+                vm.init();
+
+                document.getElementById("login_close_btn").click();
+              } else {
+                vm.$options.methods.showAlert(
+                  vm.alertStyles.warning,
+                  "警告!",
+                  response.data.message
+                );
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        },
+        /**
+         * 用户注销
+         */
+        logout: () => {
+          foreach();
+          window.location.replace("/");
+        },
+        showAlert: (alertStyle, messageState, messageInfo) => {
+          vm.alertBox.alertStyle = alertStyle;
+          vm.alertBox.messageState = messageState;
+          vm.alertBox.messageInfo = messageInfo;
+          vm.state.isMsgShow = true;
+        },
+        hideAlert: () => {
+          vm.state.isMsgShow = !vm.state.isMsgShow;
+        },
+        /**
+         * 全部书籍每行数据
+         */
+        eachRowBooks: function (row) {
+          let me = this;
+          let cols = me.cols;
+          let books = [];
+          for (let i = 0; i < cols; i++) {
+            books[i] = me.allBooks[(row - 1) * cols + i];
+          }
+          return books;
+        },
+        /**
+         * 展示具体书籍购买页面
+         */
+        showBookInfo: function (book) {
+          let me = this;
+          me.book = book;
+          me.showDetail = true;
+          console.log("showBookInfo");
+          me.pushLookHistory(book);
+        },
+        /**
+         * 上传用户点击查看的书籍信息
+         */
+        pushLookHistory: function (book) {
+          let me = this;
+          console.log("pushLookHistory");
+          let url = "/book/lookHistory";
+          let params = {
+            book: book,
+          };
+          me.axiosInstance.post(url, params).then((response) => {});
+        },
+        /**
+         * 搜索书籍
+         */
+        search: function () {
+          // 登录用户才可以使用搜索
+          if (getCookie("token") != null) {
+            let me = this;
+            let searchText = me.searchText.trim();
+            me.curPage = 1;
+            let url = "/book/searchBooks";
+            let params = {
+              searchText: searchText,
+              page: me.curPage,
+              pageSize: me.cols * 4,
+            };
+            let config = {};
+            me.axiosInstance.post(url, params, config).then((response) => {
+              let result = response.data;
+              console.dir(result);
+              if (result.meta.success === true) {
+                me.isSearch = true;
+                me.total = result.data.total;
+                me.allBooks = result.data.books;
+                if (me.allBooks.length < me.rows * me.cols) {
+                  me.rows = Math.floor(me.allBooks.length / me.cols);
+                }
+              }
+            });
+          }
+        },
+        /**
+         * 获取所有书籍
+         */
+        getAllBooks: function () {
+          // note:获取所有书籍
+          let me = this;
+          me.axiosInstance
+            .post("/book/allBooks", {
+              page: me.curPage,
+              pageSize: 4 * me.cols,
+            })
+            .then((response) => {
+              let result = response.data;
+              if (result.meta.success === true) {
+                me.searchText = "";
+                me.total = result.data.total;
+                me.allBooks = result.data.books;
+
+                me.isSearch = false;
+                me.showDetail = false;
+                if (me.allBooks.length < me.rows * me.cols) {
+                  me.rows = Math.floor(me.allBooks.length / me.cols);
+                }
+              }
+            });
+        },
+        /**
+         * 获取喜欢书籍
+         */
+        getLikeBooks: function () {
+          // 登录才可使用
+          if (getCookie("token") == null) {
+            return;
+          }
+          let me = this;
+          // note: 获取 猜你喜欢 书籍
+          me.axiosInstance.post("book/likeBooks", {}).then((response) => {
+            let result = response.data;
+            if (result.meta.success === true) {
+              me.likeBooks = result.data;
+            }
+          });
+        },
+        /**
+         * 添加到购物车
+         */
+        addCart: function () {
+          // note: 添加到购物车
+          let me = this;
+          let book = me.book;
+
+          let url = "/book/addCart";
+          let params = {
+            bookId: book.id,
+            isbn: book.isbn,
+          };
+          let config = {};
+          me.axiosInstance.post(url, params, config).then((response) => {
+            let result = response.data;
+            if (result.meta.success === true) {
+              me.isAlert = true;
+              me.alertText = "添加成功";
+              setTimeout(function () {
+                me.isAlert = false;
+                me.alertText = "";
+              }, 3000);
+              console.log("add cart success");
+            }
+          });
+        },
+        /**
+         * 提示框隐藏
+         */
+        alertDismiss: function () {
+          let me = this;
+          me.isAlert = false;
+        },
+        /**
+         * 书籍详情页 查看书籍 图册
+         */
+        viewAlbums: function (url) {
+          let me = this;
+          document.getElementById("bookPic").src = url;
+        },
+        /**
+         * 显示/隐藏 搜索框
+         */
+        showSearchInput: function () {
+          let me = this;
+          me.searchText = "";
+          me.showSearchInputFlag = !me.showSearchInputFlag;
+        },
+        viewMoreLikes: function () {
+          let me = this;
+          let len = me.likeBooks.length;
+          me.likeBookRows = Math.floor(len / me.cols);
+        },
+        viewLessLikes: function () {
+          let me = this;
+          me.likeBookRows = 1;
+        },
+        eachRowLikes: function (row) {
+          let me = this;
+          let result = [];
+          for (let i = 0; i < me.cols; i++) {
+            result[i] = me.likeBooks[(row - 1) * me.cols + i];
+          }
+          return result;
+        },
+      /**
+       * 分页功能
+       */
+      changePage: function (pageNum) {
+        let me = this;
+        me.curPage = pageNum;
+        me.getAllBooks();
+      },
+      },
+      beforeCreate() {},
+      created() {
+        // 设置axios实例的config
+        this.axiosInstance = axios.create({
+          baseURL: configValue.axiosBaseURL,
+          timeout: 30000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        // 是否已经登录
+        if (getCookie("token") != null) {
+          this.state.isLogin = true;
+        }
+      },
+      mounted() {
+        this.init();
+      },
+      watch: {
+        total: function(newVal) {
+          let me = this;
+          me.totalPage = Math.ceil(newVal / (me.cols * me.rows));
+        }
+      },
+      computed: {
+        likeBooksViewRemain: function () {
+          let me = this;
+          let len = me.likeBooks.length;
+          let row = me.likeBookRows;
+          let result = [];
+          for (let i = row * me.cols, j = 0; i < len; ) {
+            result[j++] = me.likeBooks[i++];
+          }
+          return result;
+        },
+        remain: function () {
+          let me = this;
+          let len = me.allBooks.length;
+          let count = len - me.rows * me.cols;
+          let remain = [];
+          for (let i = 0; i < count; i++) {
+            remain[i] = me.allBooks[len - i - 1];
+          }
+          return remain;
+        },
+        /**
+         * 图书的图册
+         */
+        bookUrls: function () {
+          let me = this;
+          let book = me.book;
+          let urls = [];
+          if (book.albumPics !== "") {
+            urls = book.albumPics.split(",");
+          }
+          urls.unshift(book.pic);
+          return urls;
+        },
+      },
+    });
+  </script>
+</html>
