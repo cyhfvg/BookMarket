@@ -101,7 +101,7 @@ public class BmsBookServiceImpl implements BmsBookService {
         String hql = "select book from BmsBook as book where delete_status = ?0 and publish_status = ?1";
         Object [] params = {0, 1};
 
-        List<BmsBook> list = bmsBookDao.findAll(BmsBook.class,hql, params, pageSize * (page - 1), pageSize);
+        List<BmsBook> list = bmsBookDao.findAll(BmsBook.class,hql, params, pageSize * (page - 1) + 1, pageSize);
         long total = bmsBookDao.getCount();
 
         Map<String, Object> map = new HashMap<>();
