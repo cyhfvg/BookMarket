@@ -10,7 +10,7 @@
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-    <!--配置springmvc DispatcherServlet-->
+    <!-- begin 配置springmvc DispatcherServlet-->
     <servlet>
         <servlet-name>springMVC</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -26,7 +26,9 @@
         <servlet-name>springMVC</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <!--把applicationContext.xml加入到配置文件中-->
+    <!-- end springmvc -->
+
+    <!-- begin 把applicationContext.xml加入到配置文件中-->
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>/WEB-INF/applicationContext.xml</param-value>
@@ -34,4 +36,93 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+    <!-- end applicationContext.xml -->
+
+    <!-- begin WebContext 对象管理 -->
+    <filter>
+        <filter-name>webContextFilter</filter-name>
+        <filter-class>cn.cslg.web.WebContextFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>webContextFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- end WebContext 对象管理 -->
+
+
+    <!-- begin CORS -->
+    <filter>
+        <filter-name>corsFilter</filter-name>
+        <filter-class>cn.cslg.cors.CorsFilter</filter-class>
+        <init-param>
+            <param-name>allowOrigin</param-name>
+            <param-value>*</param-value>
+        </init-param>
+        <init-param>
+            <param-name>allowMethods</param-name>
+            <param-value>GET,POST,PUT,DELETE,PATCH</param-value>
+        </init-param>
+        <init-param>
+            <param-name>allowCredentials</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>allowHeaders</param-name>
+            <param-value>Content-Type,X-Token</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>corsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- end CORS -->
+
+
+    <!-- begin log4j -->
+    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <!-- log4j 配置文件 -->
+        <param-value>classpath:/config/log4j2.xml</param-value>
+    </context-param>
+    <listener>
+        <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+    </listener>
+    <filter>
+        <filter-name>log4jFilter</filter-name>
+        <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>log4jFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    <!-- end log4j -->
+    
+    <!-- begin 字符集过滤 -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>flushMode</param-name>
+            <param-value>AUTO</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!-- end 字符集过滤 -->
+
 </web-app>

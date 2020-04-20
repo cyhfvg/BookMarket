@@ -1,0 +1,416 @@
+<div id="right" style="background-color: #f5f6f7;">
+  <div><h3>个人资料</h3></div>
+  <div id="top" style="margin-bottom: 10px; background-color: #ffffff;">
+    <div class="clearfix" style="height: 90px;">
+      <div id="top_left" class="float-left">
+        <div id="head" style="height: 64px; width: 64px;">
+          <img width="64px" height="64px" :src="icon" />
+        </div>
+        <div style="margin-top: 5px;">
+          <a
+            type="button"
+            data-toggle="modal"
+            data-target="#headModal"
+            @click=""
+            style="color: #607dd2;"
+            >修改头像</a
+          >
+        </div>
+      </div>
+      <div id="top_right" class="float-left h-100" style="margin-left: 20px;">
+        <div id="id" class="h-50">ID:{{ username }}</div>
+        <div id="balance" class="h-50">
+          元宝: {{ balance }}&nbsp;&nbsp;<a
+          data-toggle="modal"
+          data-target="#balanceModal"
+            style="color: #607dd2;"
+            >充值</a
+          >
+        </div>
+      </div>
+      <div name="info_right" class="float-right">
+        <div>
+          <a type="button" @click="editInfo()" style="color: #607dd2;"
+            >修改资料</a
+          >
+        </div>
+      </div>
+    </div>
+    <!-- 修改头像模态框 -->
+    <div class="modal fade" id="headModal">
+      <div class="modal-dialog">
+        <form action="memberInfo/headUpdate" method="POST">
+          <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h5 class="modal-title">头像上传</h5>
+              <div style="color: darkorange;">{{ headAlertMsg }}</div>
+            </div>
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <input
+                id="head_update_input"
+                name="file"
+                type="file"
+                accept="image/png,image/gif,image/jpeg"
+              />
+            </div>
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button
+                type="button"
+                id="head_close_btn"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                关闭
+              </button>
+              <button
+                id="head_reset_button"
+                type="reset"
+                class="btn btn-primary"
+              >
+                重置
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="headUpdate()"
+              >
+                提交
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- 充值模态框 -->
+    <div class="modal fade" id="balanceModal">
+      <div class="modal-dialog">
+        <form action="#" method="POST">
+          <div class="modal-content">
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h5 class="modal-title">元宝充值</h5>
+              <div style="color: darkorange;">{{ headAlertMsg }}</div>
+            </div>
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <!-- note: 充值输入框 -->
+              <label>1元 可充值 100元宝</label><br />
+              <input type="text" name="charge" v-model="charge" />
+              <label>{{ charge / 100 }}元</label>
+            </div>
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button
+                type="button"
+                id="balance_close_btn"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                关闭
+              </button>
+              <button
+                id="balance_reset_button"
+                type="reset"
+                class="btn btn-primary"
+              >
+                重置
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click="recharge()"
+              >
+              充值
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <ul class="nav nav-list">
+    <li class="divider"></li>
+  </ul>
+  <div id="infoTab clearfix">
+    <!-- 修改显示 -->
+    <div name="info_left" class="float-left" :class="{display_hide : !isEdit}">
+      <div name="username" class="info_item clearfix">
+        <div class="float-left">昵称:</div>
+        <div class="float-left">
+          <input
+            class="form-control"
+            v-model="nickname"
+            placeholder="输入昵称"
+          />
+        </div>
+      </div>
+      <div name="gender" class="info_item clearfix">
+        <div class="float-left">性别:</div>
+        <div class="float-left">
+          <label class="radio-inline"
+            ><input
+              type="radio"
+              name="gender"
+              value="1"
+              v-model="gender"
+            />男</label
+          >
+          <label class="radio-inline"
+            ><input
+              type="radio"
+              name="gender"
+              value="2"
+              v-model="gender"
+            />女</label
+          >
+        </div>
+      </div>
+      <div name="city" class="info_item">
+        <div class="float-left">城市:</div>
+        <div class="float-left">
+          <input
+            type="text"
+            class="form-control"
+            v-model="city"
+            placeholder="输入城市.例 北京"
+          />
+        </div>
+      </div>
+      <div name="birthday" class="info_item">
+        <div class="float-left">生日:</div>
+        <div class="float-left">
+          <input
+            type="text"
+            class="form-control"
+            id="datePicker"
+            v-model="birthday"
+          />
+        </div>
+      </div>
+      <div name="job" class="info_item clearfix">
+        <div class="float-left">职业:</div>
+        <div class="float-left">
+          <input class="form-control" v-model="job" placeholder="输入职业" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <input
+            type="button"
+            class="btn btn-light"
+            value="保存"
+            @click="save()"
+          />
+        </div>
+        <div class="col">
+          <input
+            type="button"
+            class="btn btn-light"
+            value="取消"
+            @click="cancel()"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- 展示 -->
+    <div name="info_left" class="float-left" :class="{display_hide : isEdit}">
+      <div name="username" class="info_item clearfix">
+        <div class="float-left">昵称:</div>
+        <div class="float-left" style="margin-left: 5px;">
+          {{ nickname }}
+        </div>
+      </div>
+      <div name="gender" class="info_item clearfix">
+        <div class="float-left">性别:</div>
+        <div class="float-left" style="margin-left: 5px;">
+          {{ genderName }}
+        </div>
+      </div>
+      <div name="city" class="info_item">
+        <div class="float-left">城市:</div>
+        <div class="float-left" style="margin-left: 5px;">
+          {{ city }}
+        </div>
+      </div>
+      <div name="birthday" class="info_item">
+        <div class="float-left">生日:</div>
+        <div class="float-left" style="margin-left: 5px;">
+          {{ birthday }}
+        </div>
+      </div>
+      <div name="job" class="info_item clearfix">
+        <div class="float-left">职业:</div>
+        <div class="float-left" style="margin-left: 5px;">
+          {{ job }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  let right_vm = new Vue({
+    el: "#right",
+    data() {
+      return {
+        axiosInstance: null,
+        balance: 0,
+        birthday: "",
+        charge: 100,
+        city: "",
+        gender: "0",
+        headAlertMsg: "",
+        icon: "",
+        isEdit: false,
+        job: "",
+        nickname: "",
+        personalized_signature: "",
+        username: "",
+      };
+    },
+    methods: {
+      /**
+       * 初始化
+       */
+      init: function () {
+        this.axiosInstance
+          .post("/memberInfo/info", {
+            // no params
+          })
+          .then((response) => {
+            let member = response.data;
+            this.balance =
+              typeof member.balance == "undefined" ? "" : member.balance;
+            this.birthday =
+              typeof member.birthday == "undefined"
+                ? ""
+                : new Date(member.birthday).Format("yyyy-MM-dd");
+            this.city = typeof member.city == "undefined" ? "" : member.city;
+            this.icon = typeof member.icon == "undefined" ? "" : member.icon;
+            this.job = typeof member.job == "undefined" ? "" : member.job;
+            this.nickname =
+              typeof member.nickname == "undefined" ? "" : member.nickname;
+            this.username =
+              typeof member.username == "undefined" ? "" : member.username;
+            this.gender =
+              typeof member.gender == "undefined" ? 0 : member.gender;
+          });
+      },
+      /**
+       * 充值
+       */
+      recharge: function () {
+        let me = this;
+        me.axiosInstance.post('/memberInfo/charge', {
+          charge: me.charge / 100,
+        })
+        .then(response => {
+          window.open(decodeURIComponent(response.data.url));
+        })
+        .catch(err => {
+
+        });
+      },
+      /**
+       * 修改资料
+       */
+      editInfo: function () {
+        let me = this;
+        if (!me.$data.isEdit) {
+          me.$data.isEdit = !me.$data.isEdit;
+          return;
+        }
+      },
+      /**
+       * 保存修改信息
+       */
+      save: function () {
+        let me = this;
+        me.axiosInstance
+          .post("/memberInfo/update", {
+            nickname: me.$data.nickname,
+            gender: me.$data.gender,
+            birthday: me.$data.birthday,
+            job: me.$data.job,
+          })
+          .then((response) => {
+            location.reload();
+          });
+      },
+      /**
+       * 取消修改
+       */
+      cancel: () => {
+        location.reload();
+      },
+      /**
+       * 头像修改
+       */
+      headUpdate: function () {
+        let file = document.getElementById("head_update_input").files[0];
+
+        let param = new FormData();
+        param.append("file", file);
+        let config = {
+          headers: { "Content-Type": "multipart/form-data" },
+        };
+
+        this.axiosInstance
+          .post("/memberInfo/headUpdate", param, config)
+          .then((response) => {
+            if (response.data.success) {
+              document.getElementById("head_close_btn").click();
+              this.icon = response.data.icon;
+              this.headAlertMsg = "";
+            } else {
+              document.getElementById("head_reset_button").click();
+              this.headAlertMsg = "请重新上传";
+            }
+          });
+      },
+    },
+    beforeCreate() {},
+    created() {
+      // 设置axios实例的config
+      this.axiosInstance = axios.create({
+        baseURL: configValue.axiosBaseURL,
+        timeout: 30000,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    mounted() {
+      this.init();
+    },
+    computed: {
+      genderName: function () {
+        let me = this;
+        let name;
+        if (me.gender === 0) {
+          name = "未知";
+        } else if (me.gender === 1) {
+          name = "男";
+        } else if (me.gender === 2) {
+          name = "女";
+        }
+        return name;
+      },
+    },
+  });
+  // jQuery
+  $(document).ready(function () {
+    $("#datePicker")
+      .datepicker({
+        dateFormat: "yy-mm-dd",
+      })
+      .on("change", function (e) {
+        right_vm.$data.birthday = $(this).val();
+      });
+  });
+</script>

@@ -1,0 +1,63 @@
+html,
+body {
+  height: 100%;
+}
+
+.no_margin_padding {
+  margin: 0;
+  padding: 0;
+}
+
+.display_hide {
+  display: none;
+}
+
+.message_hide {
+  display: none;
+}
+
+.left_item {
+  background-color: beige;
+  height: 50px;
+  text-align: center;
+}
+
+.info_item {
+  height: 50px;
+  text-align: left;
+}
+
+#infoTab > div > div > div > input {
+  background: none;
+  border: 0px;
+  outline: none;
+}
+
+.book_item {
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-image: url(https://book-market.oss-cn-shanghai.aliyuncs.com/default/default-book-cover.jpg);
+  height: 120px;
+  width: 120px;
+}
+
+.like_book_item {
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-image: url(https://book-market.oss-cn-shanghai.aliyuncs.com/default/default-book-cover.jpg);
+  height: 60px;
+  width: 60px;
+}
+
+.publish_status {
+  border: 1px solid gray;
+  color: brown;
+}
+
+.stripe_antiquewhite {
+  background-color: antiquewhite;
+}
+
+.stripe_bisque {
+  background-color: bisque;
+}

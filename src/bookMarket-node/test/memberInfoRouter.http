@@ -1,0 +1,8 @@
+###
+POST http://127.0.0.1:8081//register
+Content-Type: application/json
+
+{
+    "username": "cyhfvg2",
+    "password": "password"
+}

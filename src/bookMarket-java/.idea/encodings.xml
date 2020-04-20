@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8" addBOMForNewFiles="with BOM under Windows, with no BOM otherwise">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/advice/ExceptionAdvice.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/bean/Response.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/cors/CorsFilter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/json/CustomObjectMapper.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/security/IgnoreSecurity.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/security/SecurityAspect.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/security/TokenException.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/security/TokenManager.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/security/impl/DefaultTokenManager.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/util/CodecUtil.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/util/CollectionUtil.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/util/StringUtil.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/validation/NotEmpty.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/validation/validator/NotEmptyValidator.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/web/WebContex.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/cn/cslg/web/WebContextFilter.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>

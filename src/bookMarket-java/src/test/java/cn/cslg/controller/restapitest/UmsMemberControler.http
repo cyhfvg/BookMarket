@@ -1,0 +1,27 @@
+###
+PATCH http://localhost:8080/bookMarket-java/umsMember/
+Content-Type: application/json
+
+{
+  "birthday": "1997-10-07",
+  "city": "上海",
+  "gender": 2,
+  "id": 27,
+  "job": "student",
+  "nickname": "userTest1"
+}
+
+###
+PATCH http://localhost:8080/bookMarket-java/umsMember/charge
+Content-Type: application/json
+
+{
+  "id": 27,
+  "charge": 100
+}
+
+### /umsMember/listAll
+GET http://localhost:8080/bookMarket-java/umsMember/listAll?page=1&pageSize=20
+Content-Type: application/json
+
+###

@@ -1,0 +1,310 @@
+<!-- 我的摊位页面 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的摊位</title>
+    <!-- 引入css样式表，和js -->
+    <%- include('template/css_and_js') %>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 引入 head 大图 -->
+      <%- include('template/head.ejs') %>
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div></div>
+          </div>
+          <div class="col clearfix">
+            <div
+              class="float-left"
+              :class="{publish_status : isCheck}"
+              @click="check()"
+              style="width: 100px;"
+            >
+              未上架
+            </div>
+            <div
+              class="float-left"
+              :class="{publish_status : !isCheck}"
+              @click="check()"
+              style="width: 100px;"
+            >
+              已上架
+            </div>
+          </div>
+          <div class="col"><div></div></div>
+        </div>
+        <!-- note:上架/未上架书籍显示 -->
+        <div v-if="publishFlag">
+          <div v-if="books.length">
+            <div class="row" v-for="n in rows">
+              <div class="col" v-for="book in eachRowBooks(n)">
+                <div class="book_item" @click="getInfo(book)">
+                  <img :src="book.pic" alt="" height="120px" width="120px" />
+                </div>
+                <label>ISBN: {{ book.isbn }}</label>
+              </div>
+            </div>
+          </div>
+          <div v-if="remain.length">
+            <div class="row">
+              <div class="col" v-for="book in remain">
+                <div class="book_item" @click="getInfo(book)">
+                  <img :src="book.pic" alt="" height="120px" width="120px" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- note: 未上架书籍 上架 -->
+        <div v-if="!publishFlag && !objIsEmpty(book)">
+          <div class="row">
+            <div class="col">
+              <div class="book_item" style="width: 240px; height: 240px;">
+                <img
+                  :src="book.pic"
+                  :alt="book.summary"
+                  height="240px"
+                  width="240px"
+                />
+              </div>
+              <div>书籍名称:&nbsp;&nbsp;{{ book.name }}</div>
+              <div>书籍定价: &nbsp;&nbsp;{{ book.price }}元宝</div>
+              <div>
+                <p>{{ book.summary }}</p>
+              </div>
+            </div>
+            <div class="col">
+              <!-- note: 返回按钮 -->
+              <div
+                v-if="books.length"
+                @click="changePublishFlag()"
+                style="width: 50px;"
+              >
+                <label style="background-color: #f0f8ff;">返回</label>
+              </div>
+              <div class="clearfix">
+                <div class="form-group">
+                  <!--  note 提交多份文件 -->
+                  <input type="file" id="files" name="files" multiple />
+                </div>
+                <div class="form-group">
+                  <label>输入书籍描述:</label>
+                  <input type="textarea" id="description" name="description" />
+                </div>
+                <div class="form-group float-left">
+                  <input
+                    class="btn btn-light"
+                    type="button"
+                    value="卖出书籍"
+                    @click="onSell()"
+                  />
+                </div>
+                <div class="float-right" style="color: red;">
+                  {{ alertText }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%- include('template/foot.ejs') %>
+  </body>
+
+  <!-- 引入 axios and vue 依赖 -->
+  <%- include('template/axios_and_vue.ejs') %>
+
+  <script src="/js/utils.js"></script>
+
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: "#app",
+      data() {
+        return {
+          axios: null,
+          alertText: "",
+          book: {},
+          books: [],
+          cols: 5,
+          isCheck: true,
+          publishFlag: true,
+          rows: 0,
+          showBooks: [],
+        };
+      },
+      methods: {
+        check: function (status) {
+          let me = this;
+          me.isCheck = !me.isCheck;
+          me.publishFlag = true;
+        },
+        objIsEmpty: function (obj) {
+          for (let key in obj) {
+            return false;
+          }
+          return true;
+        },
+        /**
+         * 渲染书名查找结果集时，每行数据
+         */
+        eachRowBooks: function (row) {
+          let me = this;
+          let books = [];
+          let cols = me.cols;
+          for (let i = 0; i < cols; i++) {
+            books[i] = me.books[(row - 1) * cols + i];
+          }
+          return books;
+        },
+        /**
+         * 获取 书籍信息
+         */
+        getBooks: function () {
+          let me = this;
+          let url = "/book/shopBooks";
+          let params = {};
+          let config = {};
+          me.axios.post(url, params, config).then((response) => {
+            let result = response.data;
+            if (result.meta.success === true) {
+              me.books = result.data;
+            }
+          });
+        },
+        /**
+         * 显示/隐藏 上架信息
+         */
+        changePublishFlag: function () {
+          let me = this;
+          me.publishFlag = !me.publishFlag;
+        },
+        getInfo: function (book) {
+          let me = this;
+          me.book = book;
+          me.changePublishFlag();
+        },
+        getCurrentBooks: function () {
+          let me = this;
+          let cols = me.cols;
+          let showBooks = [];
+
+          // 0 -> 未上架; 1-> 已上架
+          let status = me.isCheck === true ? 0 : 1;
+          let books = me.books;
+
+          for (let i = 0, j = 0; i < books.length; i++) {
+            if (books[i].publishStatus === status) {
+              showBooks[j++] = books[i];
+            }
+          }
+          me.showBooks = showBooks;
+
+          me.rows = Math.floor(me.showBooks.length / me.cols);
+        },
+        /**
+         * 书籍上架
+         */
+        onSell: function () {
+          let me = this;
+          let book = me.book;
+          let description = document.getElementById("description").value;
+          let files = document.getElementById("files").files;
+          if (files.length > 5) {
+            files.length = 5;
+          }
+
+          let url = configValue.axiosBaseURL + "/book/onSell";
+          let config = {
+            headers: { "Content-Type": "multipart/form-data" },
+          };
+          let param1 = new FormData();
+          let param2 = new FormData();
+          let param3 = new FormData();
+          let param4 = new FormData();
+          let param5 = new FormData();
+          param1.append("file", files[0]);
+          param2.append("file", files[1]);
+          param3.append("file", files[2]);
+          param4.append("file", files[3]);
+          param5.append("file", files[4]);
+          param1.append("bookId", me.book.id);
+          param2.append("bookId", me.book.id);
+          param3.append("bookId", me.book.id);
+          param4.append("bookId", me.book.id);
+          param5.append("bookId", me.book.id);
+          param1.append("description", description);
+          param2.append("description", description);
+          param3.append("description", description);
+          param4.append("description", description);
+          param5.append("description", description);
+          axios
+            .all([
+              me.axios.post(url, param1, config),
+              me.axios.post(url, param2, config),
+              me.axios.post(url, param3, config),
+              me.axios.post(url, param4, config),
+              me.axios.post(url, param5, config),
+            ])
+            .then(
+              axios.spread(function (res1, res2, res3, res4, res5) {
+                console.log(res1);
+                if (res1.data.success === true) {
+                  me.getBooks();
+                  me.changePublishFlag();
+                }
+              })
+            );
+        },
+      },
+      beforeCreate() {
+        // tag: 验证身份
+        // 是否已经登录
+        if (getCookie("token") === null) {
+          window.opener = null;
+          window.open("", "_self");
+          window.close();
+        }
+      },
+      created() {
+        let me = this;
+        // 设置axios实例的config
+        me.axios = axios.create({
+          baseURL: configValue.axiosBaseURL,
+          timeout: 30000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        me.getBooks();
+      },
+      mounted() {},
+      watch: {
+        isCheck: function (newVal) {
+          let me = this;
+          me.getCurrentBooks();
+        },
+        books: function (newVal) {
+          let me = this;
+          me.getCurrentBooks();
+        },
+      },
+      computed: {
+        remain: function () {
+          let me = this;
+          let len = me.showBooks.length;
+          let count = len - me.rows * me.cols;
+          let remain = [];
+          for (let i = 0; i < count; i++) {
+            remain[i] = me.showBooks[len - i - 1];
+          }
+          return remain;
+        },
+      },
+    });
+  </script>
+</html>
