@@ -326,6 +326,11 @@ jsonfile@^4.0.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
+lodash@^4.17.15:
+  version "4.17.15"
+  resolved "http://r.cnpmjs.org/lodash/download/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  integrity sha1-tEf2ZwoEVbv+7dETku/zMOoJdUg=
+
 log4js@^6.2.0:
   version "6.2.0"
   resolved "http://r.cnpmjs.org/log4js/download/log4js-6.2.0.tgz#e7514cd139c09b7b81a98b71c1b1eebc8a96c1ad"
