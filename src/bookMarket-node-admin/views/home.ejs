@@ -140,6 +140,13 @@
         isLogin: function () {
           return true;
         },
+        /**
+         * 初始化所有页码有关变量
+         */
+        initPageInfo: function () {
+          let me = this;
+          me.curPage = 1;
+        },
         search: function () {
           let me = this;
 
@@ -189,9 +196,18 @@
           };
           me.axios.post(url, params).then((response) => {
             let result = response.data;
+            if (result.length === 0) {
+              me.initPageInfo();
+              me.getAllMembers();
+            }
             console.dir(result);
             me.members = result;
           });
+        },
+        getOtherPageMembers: function (page) {
+          let me = this;
+          me.curPage = page;
+          me.getAllMembers();
         },
         /**
          * 更改搜索方式
