@@ -29,7 +29,6 @@ router.post("/getAddress", (req, res) => {
     .get(url, params, config)
     .then((response) => {
       let result = response.data;
-      // console.dir(result);
       if (result.meta.success === true) {
         res.send(result.data);
       } else {
@@ -59,7 +58,6 @@ router.post('/addAddress', (req, res) => {
 
   axios.post(url, params, config).then(response => {
     let result = response.data;
-    console.dir(result);
     if (result.meta.success === true) {
       res.send(result);
     }

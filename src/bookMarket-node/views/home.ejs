@@ -387,6 +387,22 @@
           let me = this;
           me.book = book;
           me.showDetail = true;
+          console.log('showBookInfo')
+          me.pushLookHistory(book);
+        },
+        /**
+         * 上传用户点击查看的书籍信息
+         */
+        pushLookHistory: function (book) {
+          let me = this;
+          console.log('pushLookHistory');
+          let url = '/book/lookHistory';
+          let params = {
+            book: book
+          };
+          me.axiosInstance.post(url, params).then(response => {
+
+          });
         },
         /**
          * 搜索书籍
