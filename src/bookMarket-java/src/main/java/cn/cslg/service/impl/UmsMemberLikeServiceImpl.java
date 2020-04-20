@@ -1,16 +1,10 @@
 package cn.cslg.service.impl;
 
-import cn.cslg.dao.BmsSearchLogDao;
-import cn.cslg.dao.OmsOrderItemDao;
-import cn.cslg.dao.UmsMemberDao;
+import cn.cslg.dao.*;
 import cn.cslg.dto.MemberBookActionParam;
 import cn.cslg.dto.MemberBookActionSetParam;
 import cn.cslg.dto.UmsMemberLikePromoteParam;
-import cn.cslg.model.BmsSearchLog;
-import cn.cslg.model.OmsOrderItem;
-import cn.cslg.model.UmsMember;
-import cn.cslg.model.UmsMemberLike;
-import cn.cslg.dao.UmsMemberLikeDao;
+import cn.cslg.model.*;
 import cn.cslg.service.BmsSearchLogService;
 import cn.cslg.service.UmsMemberLikeService;
 import cn.cslg.util.CollectionUtil;
@@ -39,6 +33,9 @@ public class UmsMemberLikeServiceImpl implements UmsMemberLikeService {
 
     @Resource(name = "umsMemberDao")
     private UmsMemberDao umsMemberDao;
+
+    @Resource(name = "bmsBookDao")
+    private BmsBookDao bmsBookDao;
 
     /**
      * 通过ID查询单条数据
@@ -171,5 +168,16 @@ public class UmsMemberLikeServiceImpl implements UmsMemberLikeService {
     @Override
     public void insertPromoteQueue(UmsMemberLikePromoteParam param) {
         umsMemberLikeDao.saveAllPromote(param);
+    }
+
+    @Override
+    public List<BmsBook> getMemberPromoteByMemberId(long memberId) {
+        List<UmsMemberLike> list = umsMemberLikeDao.findByProperty(UmsMemberLike.class, "memberId", memberId);
+        List<String> isbns = new ArrayList<>();
+        for (UmsMemberLike like :
+                list) {
+            isbns.add(like.getIsbn());
+        }
+        return bmsBookDao.queryBookByIsbns(isbns);
     }
 }

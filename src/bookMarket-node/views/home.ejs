@@ -37,10 +37,9 @@
           </form>
           <ul class="navbar-nav nav-pills">
             <li class="nav-item">
-              <a class="nav-link" type="button" @click="showSearchInput()">搜索</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">分类</a>
+              <a class="nav-link" type="button" @click="showSearchInput()"
+                >搜索</a
+              >
             </li>
             <li class="nav-item">
               <a class="nav-link" href="/views/sell" target="_blank"
@@ -114,10 +113,7 @@
             margin: 0;
           "
         >
-          <div
-            class="alert alert-success alert-dismissible"
-            style="margin: 0;"
-          >
+          <div class="alert alert-success alert-dismissible" style="margin: 0;">
             <button type="button" class="close" @click="alertDismiss()">
               &times;
             </button>
@@ -140,8 +136,38 @@
               <div class="col-auto">猜你喜欢</div>
               <div class="col"><hr /></div>
             </div>
-            <div class="row">
-              <div class="col" v-for="(book, index) in likeBooksView">
+            <div class="row" v-for="n in likeBookRows">
+              <div class="col" v-for="(book, index) in eachRowLikes(n)">
+                <div class="like_book_item" @click="showBookInfo(book)">
+                  <img :src="book.pic" height="60px" width="60px" />
+                </div>
+              </div>
+              <div
+                class="col"
+                v-if="1 === likeBookRows"
+                @click="viewMoreLikes()"
+              >
+                <div style="width: 150px; height: 70px;">
+                  <div style="width: 2px; height: 20px;"></div>
+                  <span>查看更多</span>
+                </div>
+              </div>
+              <div
+                class="col"
+                v-else-if="n === likeBookRows"
+                @click="viewLessLikes()"
+              >
+                <div style="width: 150px; height: 70px;">
+                  <div style="width: 2px; height: 20px;"></div>
+                  <span>收起</span>
+                </div>
+              </div>
+            </div>
+            <div
+              class="row"
+              v-if="likeBookRows > 1 && likeBooksViewRemain.length"
+            >
+              <div class="col" v-for="(book, index) in likeBooksViewRemain">
                 <div class="like_book_item" @click="showBookInfo(book)">
                   <img :src="book.pic" height="60px" width="60px" />
                 </div>
@@ -175,13 +201,77 @@
                 <div></div>
               </div>
             </div>
+            <!-- note: 搜索分页按钮 -->
+            <div class="clearfix" v-if="allBooks.length > 0">
+              <div class="float-right">
+                <!-- 上十页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage > 10"
+                  class="page_item"
+                  @click="changePage(curPage - 10)"
+                >
+                  <img src="/icons/double-left.svg" />
+                </div>
+                <!-- 上一页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage > 1"
+                  class="page_item"
+                  @click="changePage(curPage - 1)"
+                >
+                  <img src="/icons/single-left.svg" />
+                </div>
+                <!-- 下一页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage < totalPage"
+                  class="page_item"
+                  @click="changePage(curPage + 1)"
+                >
+                  <img src="/icons/single-right.svg" />
+                </div>
+                <!-- 下十页 -->
+                <div
+                  class="float-left"
+                  style="border: 3px solid #000; width: 32px; height: 32px;"
+                  v-if="curPage < totalPage - 9"
+                  class="page_item"
+                  @click="changePage(curPage + 10)"
+                >
+                  <img src="/icons/double-right.svg" />
+                </div>
+                <!-- 跳转页码 -->
+                <div
+                  class="page_item float-right"
+                  style="border: 3px solid #000; width: 86px; height: 32px;"
+                >
+                  <input
+                    type="text"
+                    name="page"
+                    v-model="curPage"
+                    style="width: 32px;"
+                  /><input
+                    type="button"
+                    value="跳转"
+                    @click="changePage(curPage)"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <!-- note:书籍详情购买面 -->
         <div v-if="showDetail">
           <div class="row">
             <div class="col">
-              <div class="book_item" style="width: 242px; height: 242px; border: 1px solid gray;">
+              <div
+                class="book_item"
+                style="width: 242px; height: 242px; border: 1px solid gray;"
+              >
                 <img
                   id="bookPic"
                   :src="book.pic"
@@ -192,9 +282,16 @@
               </div>
               <div style="width: 1; height: 10px;"></div>
               <!-- 图书图册显示 -->
-              <div class="row" v-if="bookUrls.length" style="border: 2px solid gray;">
+              <div
+                class="row"
+                v-if="bookUrls.length"
+                style="border: 2px solid gray;"
+              >
                 <div class="col" v-for="url in bookUrls">
-                  <div style="width: 60px; height: 60px;" @click="viewAlbums(url)">
+                  <div
+                    style="width: 60px; height: 60px;"
+                    @click="viewAlbums(url)"
+                  >
                     <img :src="url" width="60px" height="60px" />
                   </div>
                 </div>
@@ -254,9 +351,11 @@
           alertText: "",
           searchText: "",
           showSearchInputFlag: false,
+          totalPage: 1,
           curPage: 1,
           isSearch: false,
           showDetail: false,
+          likeBookRows: 1,
           cols: 5,
           rows: 4,
           total: 0,
@@ -387,7 +486,7 @@
           let me = this;
           me.book = book;
           me.showDetail = true;
-          console.log('showBookInfo')
+          console.log("showBookInfo");
           me.pushLookHistory(book);
         },
         /**
@@ -395,14 +494,12 @@
          */
         pushLookHistory: function (book) {
           let me = this;
-          console.log('pushLookHistory');
-          let url = '/book/lookHistory';
+          console.log("pushLookHistory");
+          let url = "/book/lookHistory";
           let params = {
-            book: book
+            book: book,
           };
-          me.axiosInstance.post(url, params).then(response => {
-
-          });
+          me.axiosInstance.post(url, params).then((response) => {});
         },
         /**
          * 搜索书籍
@@ -469,7 +566,7 @@
             return;
           }
           let me = this;
-          // Fixme: 获取 猜你喜欢 书籍
+          // note: 获取 猜你喜欢 书籍
           me.axiosInstance.post("book/likeBooks", {}).then((response) => {
             let result = response.data;
             if (result.meta.success === true) {
@@ -514,18 +611,43 @@
         /**
          * 书籍详情页 查看书籍 图册
          */
-        viewAlbums: function(url) {
+        viewAlbums: function (url) {
           let me = this;
-          document.getElementById('bookPic').src = url;
+          document.getElementById("bookPic").src = url;
         },
         /**
          * 显示/隐藏 搜索框
          */
-        showSearchInput: function() {
+        showSearchInput: function () {
           let me = this;
-          me.searchText = '';
+          me.searchText = "";
           me.showSearchInputFlag = !me.showSearchInputFlag;
         },
+        viewMoreLikes: function () {
+          let me = this;
+          let len = me.likeBooks.length;
+          me.likeBookRows = Math.floor(len / me.cols);
+        },
+        viewLessLikes: function () {
+          let me = this;
+          me.likeBookRows = 1;
+        },
+        eachRowLikes: function (row) {
+          let me = this;
+          let result = [];
+          for (let i = 0; i < me.cols; i++) {
+            result[i] = me.likeBooks[(row - 1) * me.cols + i];
+          }
+          return result;
+        },
+      /**
+       * 分页功能
+       */
+      changePage: function (pageNum) {
+        let me = this;
+        me.curPage = pageNum;
+        me.getAllBooks();
+      },
       },
       beforeCreate() {},
       created() {
@@ -544,6 +666,12 @@
       },
       mounted() {
         this.init();
+      },
+      watch: {
+        total: function(newVal) {
+          let me = this;
+          me.totalPage = Math.ceil(newVal / (me.cols * me.rows));
+        }
       },
       computed: {
         /**
@@ -567,6 +695,16 @@
           }
           return books;
         },
+        likeBooksViewRemain: function () {
+          let me = this;
+          let len = me.likeBooks.length;
+          let row = me.likeBookRows;
+          let result = [];
+          for (let i = row * me.cols, j = 0; i < len; ) {
+            result[j++] = me.likeBooks[i++];
+          }
+          return result;
+        },
         remain: function () {
           let me = this;
           let len = me.allBooks.length;
@@ -587,7 +725,7 @@
           if (book.albumPics !== "") {
             urls = book.albumPics.split(",");
           }
-          urls.unshift(book.pic)
+          urls.unshift(book.pic);
           return urls;
         },
       },

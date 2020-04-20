@@ -141,18 +141,7 @@ public class BmsBookController implements ApplicationContextAware{
         return response.success(map);
     }
 
-    /**
-     * 列出用户可能喜欢的书籍
-     * @param userId long 用户id
-     * @return Response
-     */
-    @RequestMapping(value = "listLikeBooks", method = RequestMethod.GET)
-    public Response listLikeBooks(@RequestParam("userId") long userId) {
-        Response response = new Response();
-//        Todo: 更换方法 获取 喜欢书籍
-        List<BmsBook> list = bmsBookService.queryAllByLimit(0, 10);
-        return response.success(list);
-    }
+
 
     /**
      * 搜索书籍
