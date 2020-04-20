@@ -3,6 +3,7 @@ package cn.cslg.controller;
 import cn.cslg.dto.OmsOrderBuyBooksParam;
 import cn.cslg.model.BmsBook;
 import cn.cslg.model.OmsOrder;
+import cn.cslg.model.UmsMember;
 import cn.cslg.service.OmsOrderService;
 
 import cn.cslg.bean.Response;
@@ -60,6 +61,19 @@ public class OmsOrderController implements ApplicationContextAware{
             return response.success();
         }
         return response.failure("买书失败");
+    }
+
+    /**
+     * 获取分页列表用户
+     * @param page 页码
+     * @param pageSize 页长
+     * @return Response
+     */
+    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
+    public Response listAll(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        Response response = new Response();
+        List<OmsOrder> list = omsOrderService.queryAllByLimit(pageSize * (page - 1), pageSize);
+        return response.success(list);
     }
     
     @Override

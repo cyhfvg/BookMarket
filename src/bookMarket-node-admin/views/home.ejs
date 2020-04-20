@@ -57,13 +57,28 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">订单管理</a>
+              <a
+                class="nav-link"
+                type="button"
+                @click="changeShowState('showOrder')"
+                >订单管理</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">用户管理</a>
+              <a
+                class="nav-link"
+                type="button"
+                @click="changeShowState('showMember')"
+                >用户管理</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">书籍管理</a>
+              <a
+                class="nav-link"
+                type="button"
+                @click="changeShowState('showBook')"
+                >书籍管理</a
+              >
             </li>
             <li class="nav-item">
               <a type="button" class="nav-link" @click="logout">注销</a>
@@ -109,6 +124,16 @@
           members: [],
           checkedMembers: [],
           /**
+           * 订单
+           */
+          orders: [],
+          checkedOrders: [],
+          /**
+           * 书籍
+           */
+          books: [],
+          checkedBooks: [],
+          /**
            * 行数
            */
           rows: 4,
@@ -124,9 +149,11 @@
            * 三个信号量 同时只有一个为true
            * 同时只控制一个显示区域显示
            */
-          showMember: true,
-          showOrder: false,
-          showBook: false,
+          showState: {
+            showMember: true,
+            showOrder: false,
+            showBook: false,
+          },
         };
       },
       methods: {
@@ -199,6 +226,7 @@
             if (result.length === 0) {
               me.initPageInfo();
               me.getAllMembers();
+              return;
             }
             console.dir(result);
             me.members = result;
@@ -208,6 +236,57 @@
           let me = this;
           me.curPage = page;
           me.getAllMembers();
+        },
+        /**
+         * *分页获取订单
+         */
+        getAllOrders: function () {
+          let me = this;
+          let url = "/order/listAll";
+          let params = {
+            page: me.curPage,
+            pageSize: me.cols * me.rows,
+          };
+          me.axios.post(url, params).then((response) => {
+            let result = response.data;
+            if (result.length === 0) {
+              me.initPageInfo();
+              me.getAllOrders();
+              return;
+            }
+            me.orders = result;
+          });
+        },
+        getOtherPageOrders: function (page) {
+          let me = this;
+          me.curPage = page;
+          me.getAllOrders();
+        },
+        /**
+         * 分页获取书籍
+         */
+        getAllBooks: function () {
+          let me = this;
+          let url = "/book/listAll";
+          let params = {
+            page: me.curPage,
+            pageSize: me.cols * me.rows,
+          };
+          me.axios.post(url, params).then((response) => {
+            let result = response.data;
+            console.dir(result);
+            if (result.length === 0) {
+              me.initPageInfo();
+              me.getAllBooks();
+              return;
+            }
+            me.books = result;
+          });
+        },
+        getOtherPageBooks: function (page) {
+          let me = this;
+          me.curPage = page;
+          me.getAllBooks();
         },
         /**
          * 更改搜索方式
@@ -223,17 +302,49 @@
           foreach();
           window.location.replace("/");
         },
+        changeShowState: function (part) {
+          let me = this;
+          for (let key in me.showState) {
+            me.showState[key] = false;
+            if (key === part) {
+              me.showState[key] = true;
+              me.getShowData(key);
+            }
+          }
+        },
         deleteCheckedMembers: function () {
           let me = this;
           let members = me.checkedMembers;
 
-          let url = '/member/deleteMembers';
+          let url = "/member/deleteMembers";
           let params = {
-            members: members
-          }
-          axios.post(url, params).then(response => {
+            members: members,
+          };
+          axios.post(url, params).then((response) => {
             window.location.reload();
-          })
+          });
+        },
+        /**
+         * 做不同管理时 根据传入的字符串
+         * 使用不同方法获取对应数据
+         */
+        getShowData: function (part) {
+          let me = this;
+          me.initPageInfo();
+          switch (part) {
+            case "showMember":
+              me.getAllMembers();
+              break;
+            case "showOrder":
+              me.getAllOrders();
+              break;
+            case "showBook":
+              me.getAllBooks();
+              break;
+            default:
+              me.changeShowState("showMember");
+              break;
+          }
         },
       },
       watch: {
