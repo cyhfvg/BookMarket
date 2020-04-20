@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>管理员管理中心</title>
+    <!-- 引入css样式表，和js -->
+    <%- include('template/css_and_js') %>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 引入 head 大图 -->
+      <%- include('template/head.ejs') %>
+      <!-- 导航栏 -->
+      <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <a class="navbar-brand" type="button">导航</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#collapsibleNavbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+          <!-- 搜索框 -->
+          <form class="form-inline">
+            <input
+              class="form-control"
+              v-model="searchContent"
+              type="text"
+              placeholder="Search"
+            />
+            <button class="btn btn-success" type="button" @click="search">
+              Search
+            </button>
+          </form>
+          <ul class="navbar-nav nav-pills">
+            <!-- 搜索框 -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+                href="#"
+                >搜索方式</a
+              >
+              <div class="dropdown-menu">
+                <a class="dropdown-item btn" @click="changeSearchType(1)"
+                  >搜索用户</a
+                >
+                <a class="dropdown-item btn" @click="changeSearchType(0)"
+                  >搜索订单</a
+                >
+                <a class="dropdown-item btn" @click="changeSearchType(2)"
+                  >搜索书籍</a
+                >
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">订单管理</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">用户管理</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">书籍管理</a>
+            </li>
+            <li class="nav-item">
+              <a type="button" class="nav-link" @click="logout">注销</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- 主体 -->
+      <div class="container">
+        <!-- 主页用户管理显示 -->
+        <%- include('template/component/home_showMember.ejs') %>
+      </div>
+
+      <!-- 底部显示区 -->
+      <%- include('template/foot.ejs') %>
+    </div>
+  </body>
+
+  <!-- 引入 axios and vue 依赖 -->
+  <%- include('template/axios_and_vue.ejs') %>
+
+  <script type="text/javascript">
+    let vm = new Vue({
+      el: "#app",
+      data() {
+        return {
+          axios: null,
+          searchContent: "",
+          /**
+           * 搜索方式:
+           * 0->订单搜索;
+           * 1->用户搜索;
+           * 2->书籍搜索
+           */
+          searchType: -1,
+          searchUrl: "",
+          searchParams: {},
+          searchConfig: {},
+          /**
+           * 用户
+           */
+          members: [],
+          checkedMembers: [],
+          /**
+           * 行数
+           */
+          rows: 4,
+          /**
+           * 列数
+           */
+          cols: 5,
+          /**
+           * 当前页码
+           */
+          curPage: 1,
+          /**
+           * 三个信号量 同时只有一个为true
+           * 同时只控制一个显示区域显示
+           */
+          showMember: true,
+          showOrder: false,
+          showBook: false,
+        };
+      },
+      methods: {
+        init: function () {
+          let me = this;
+          me.getAllMembers();
+        },
+        isOdd: function (num) {
+          return parseInt(num) % 2 === 1;
+        },
+        isLogin: function () {
+          return true;
+        },
+        search: function () {
+          let me = this;
+
+          me.axios
+            .post(me.searchUrl, me.searchParams, me.searchConfig)
+            .then((response) => {
+              let me = this;
+              let result = response.data;
+              switch (me.searchType) {
+                case 0:
+                  me.memberSearchChain(result);
+                  break;
+                case 1:
+                  me.orderSearchChain(result);
+                  break;
+                case 2:
+                  me.bookSearchChain(result);
+                  break;
+                default:
+                  me.memberSearchChain(result);
+                  break;
+              }
+            });
+        },
+        orderSearchChain: function (result) {
+          // Todo: order Search ResultSet Chain
+          console.dir(result);
+        },
+        memberSearchChain: function (result) {
+          // Todo: member Search ResultSet Chain
+          console.dir(result);
+        },
+        bookSearchChain: function (result) {
+          // Todo: member Search ResultSet Chain
+          console.dir(result);
+        },
+        /**
+         * 按分页方式获取所有用户
+         */
+        getAllMembers: function () {
+          let me = this;
+
+          let url = "/member/listAll";
+          let params = {
+            page: me.curPage,
+            pageSize: me.cols * me.rows,
+          };
+          me.axios.post(url, params).then((response) => {
+            let result = response.data;
+            console.dir(result);
+            me.members = result;
+          });
+        },
+        /**
+         * 更改搜索方式
+         */
+        changeSearchType: function (typeIndex) {
+          let me = this;
+          if (typeIndex > 2) {
+            typeIndex = 0;
+          }
+          me.searchType = typeIndex;
+        },
+        logout: function () {
+          foreach();
+          window.location.replace("/");
+        },
+        deleteCheckedMembers: function () {
+          let me = this;
+          let members = me.checkedMembers;
+
+          let url = '/member/deleteMembers';
+          let params = {
+            members: members
+          }
+          axios.post(url, params).then(response => {
+            window.location.reload();
+          })
+        },
+      },
+      watch: {
+        searchType: function (newVal) {
+          let me = this;
+          switch (newVal) {
+            case 0:
+              me.searchUrl = "/order/search";
+              me.searchParams = {};
+              me.searchConfig = {};
+              break;
+            case 1:
+              me.searchUrl = "/member/search";
+              me.searchParams = {};
+              me.searchConfig = {};
+              break;
+            case 2:
+              me.searchUrl = "/book/search";
+              me.searchParams = {};
+              me.searchConfig = {};
+              break;
+            default:
+              me.searchUrl = "";
+              me.searchParams = {};
+              me.searchConfig = {};
+              break;
+          }
+        },
+      },
+      computed: {},
+      beforeCreate() {
+        // Fixme: 验证身份
+        // 是否已经登录
+        if (getCookie("adminToken") === null) {
+          window.location.replace("/");
+        }
+      },
+      created() {
+        // 设置axios实例的config
+        this.axios = axios.create({
+          baseURL: configValue.axiosBaseURL,
+          timeout: 30000,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        this.changeSearchType(0);
+        this.getAllMembers();
+      },
+      mounted() {},
+    });
+  </script>
+</html>

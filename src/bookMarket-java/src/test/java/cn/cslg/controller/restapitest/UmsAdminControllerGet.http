@@ -1,11 +1,6 @@
 ### 管理员登录
-GET http://localhost:8080/bookMarket-java/umsAdmin/login
+GET http://localhost:8080/bookMarket-java/umsAdmin/login?adminName=adminTest1&password=123456*hhd
 Content-Type: application/json
-
-{
-    "username": "adminTest1",
-    "password": "123456*hhd"
-}
 
 ###
 GET http://localhost:8080/bookMarket-java/umsAdmin/login

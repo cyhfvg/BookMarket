@@ -33,6 +33,7 @@
             <tx:method name="mod*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="ins*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="upd*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="find*" propagation="REQUIRED" rollback-for="Exception"/>
             <tx:method name="invoke" propagation="REQUIRES_NEW" rollback-for="Exception"/>
             <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
         </tx:attributes>

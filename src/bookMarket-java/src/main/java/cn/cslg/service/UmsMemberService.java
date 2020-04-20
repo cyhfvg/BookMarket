@@ -61,4 +61,10 @@ public interface UmsMemberService {
      */
     void deleteById(Long id);
 
+    /**
+     * 一次更新多个用户
+     * @param members 用户列表
+     */
+    void updateMembers(List<UmsMember> members);
+
 }
