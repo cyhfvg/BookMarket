@@ -160,7 +160,6 @@ router.post("/charge", (req, res) => {
   let tradeNo = uuid.v1();
   alipay
     .charge(tradeNo, charge, (result) => {
-      console.log(result);
       // Fixme: 还未支付 就增加余额
       axios
         .patch(
@@ -176,7 +175,6 @@ router.post("/charge", (req, res) => {
           }
         )
         .then((response) => {
-          console.log("charge success");
           // res.send("success");
         })
         .catch((err) => {
@@ -194,7 +192,6 @@ router.post("/charge", (req, res) => {
  */
 router.post("/notify", (req, res) => {
   let postData = req.body;
-  console.log("触发付款");
   if (postData.trade_status === "TRADE_SUCCESS") {
     let data = req.body; // 订单信息
     let charge = total_amount * 100;
@@ -212,7 +209,6 @@ router.post("/notify", (req, res) => {
         }
       )
       .then((response) => {
-        console.log("charge success");
         res.send("success");
       })
       .catch((err) => {
