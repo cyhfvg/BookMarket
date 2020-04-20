@@ -25,7 +25,9 @@ axios.get(url, params, config).then((response) => {
   // 为每个用户生成推荐列表
   userIds.forEach((userId) => {
     const recommendService = new RecommendBookService(data, userId, promoteNum);
-    const result = recommendService.start();
+    let result = recommendService.start();
+    // 设置推荐列表长度
+    result.length = 20;
     let item = { memberId: userId, likeBooks: result };
     output[i++] = item;
   });
