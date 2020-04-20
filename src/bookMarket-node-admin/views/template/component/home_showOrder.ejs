@@ -2,22 +2,20 @@
 <div v-show="showState.showOrder" style="margin-top: 10px;">
   <div class="row">
     <div class="col">
-      <table style="width: 80%;">
+      <table class="table">
         <tr>
-          <th></th>
-          <th>编号</th>
-          <th>头像</th>
-          <th>用户名</th>
-          <th>昵称</th>
-          <th>性别</th>
-          <th>生日</th>
-          <th>城市</th>
-          <th>职业</th>
-          <th>启用状态</th>
+          <th align="center">选择</th>
+          <th align="center">编号</th>
+          <th align="center">所属用户</th>
+          <th align="center">创建时间</th>
+          <th align="center">收货地址</th>
+          <th align="center">总金额</th>
+          <th align="center">支付时间</th>
+          <th align="center">修改时间</th>
+          <th align="center">订单状态</th>
         </tr>
         <tr
           :class="[{stripe_antiquewhite:isOdd(index)}, {stripe_bisque: !isOdd(index)}]"
-          style="margin-top: 5px;"
           v-for="(order, index) of orders"
         >
           <td>
@@ -30,72 +28,102 @@
               />
             </div>
           </td>
-          <!-- 用户编号 -->
+          <!-- 订单编号 -->
           <td>
-            <div class="no_margin_padding">
-              <span style="margin-left: 2px;">{{ order.id }}</span>
+            <div>
+              <span>{{ order.id }}</span>
             </div>
           </td>
-          <!-- 头像 -->
+          <!-- 所属用户 -->
           <td>
-            <div class="no_margin_padding" v-if="order.hasOwnProperty('icon')">
-              <img :src="order.icon" width="32px" height="32px" />
+            <div
+
+              v-if="order.hasOwnProperty('memberId')"
+            >
+              <span >{{ order.memberId }}</span>
             </div>
           </td>
-          <!-- 用户名 -->
+          <!-- 创建时间 -->
           <td>
-            <div class="no_margin_padding">
-              <span style="margin-left: 2px;">{{ order.username }}</span>
+            <div>
+              <span >{{ order.createTime }}</span>
             </div>
           </td>
-          <!-- 昵称 -->
+          <!-- 收货地址 -->
           <td>
-            <div class="no_margin_padding">
-              <span
-                style="margin-left: 2px;"
-                v-if="order.hasOwnProperty('nickname')"
-                >{{ order.nickname }}</span
-              >
-            </div>
-          </td>
-          <!-- 性别 -->
-          <td>
-            <div class="no_margin_padding">
-              <span v-if="order.gender === 1">男</span>
-              <span v-else-if="order.gender === 2">女</span>
-              <span v-else>未知</span>
-            </div>
-          </td>
-          <!-- 生日 -->
-          <td>
-            <div class="no_margin_padding">
-              <span v-if="order.hasOwnProperty('birthday')">{{
-                order.birthday
+            <div>
+              <span v-if="order.hasOwnProperty('receiverProvince')">{{
+                order.receiverProvince
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverCity')">{{
+                order.receiverCity
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverRegion')">{{
+                order.receiverRegion
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverDetailAddress')">{{
+                order.receiverDetailAddress
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverName')">{{
+                order.receiverName
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverPhone')">{{
+                order.receiverPhone
               }}</span>
             </div>
           </td>
-          <!-- 城市 -->
+          <!-- 总金额 -->
           <td>
-            <div class="no_margin_padding">
-              <span v-if="order.hasOwnProperty('city')">{{
-                order.city
+            <div>
+              <span
+                v-if="order.hasOwnProperty('totalAmount')"
+              >
+                {{ order.totalAmount }}
+              </span>
+            </div>
+          </td>
+          <!-- 支付时间 -->
+          <td>
+            <div>
+              <span v-if="order.hasOwnProperty('paymemtTime')">{{
+                order.paymemtTime
               }}</span>
             </div>
           </td>
-          <!-- 职业 -->
+          <!-- 修改时间 -->
           <td>
-            <div class="no_margin_padding">
-              <span v-if="order.hasOwnProperty('job')">{{ order.job }}</span>
+            <div>
+              <span v-if="order.hasOwnProperty('modifyTime')" style="margin-left: 15px;">{{
+                order.modifyTime
+              }}</span>
             </div>
           </td>
-          <!-- 启用状态 -->
+          <!-- 订单状态 -->
           <td>
-            <div class="no_margin_padding">
-              <span
-                v-if="order.hasOwnProperty('status') && order.status === 0"
-                >未启用</span
+            <div>
+              <span v-if="order.hasOwnProperty('status') && order.status === 0"
+                >待付款</span
               >
-              <span v-else>已启用</span>
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 1"
+                >待发货</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 2"
+                >已发货</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 3"
+                >已完成</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 4"
+                >已关闭</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 5"
+                >无效订单</span
+              >
             </div>
           </td>
         </tr>
@@ -109,7 +137,7 @@
         class="btn btn-danger"
         type="button"
         value="删除"
-        @click="deleteCheckedMembers"
+        @click="deleteCheckedOrders"
       />
     </div>
     <div class="col"></div>

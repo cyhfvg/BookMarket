@@ -29,9 +29,9 @@
               class="form-control"
               v-model="searchContent"
               type="text"
-              placeholder="Search"
+              placeholder="默认搜索用户"
             />
-            <button class="btn btn-success" type="button" @click="search">
+            <button class="btn btn-success" type="button" @click="search(), changeShowState(searchViewName)">
               Search
             </button>
           </form>
@@ -60,7 +60,7 @@
               <a
                 class="nav-link"
                 type="button"
-                @click="changeShowState('showOrder')"
+                @click="changeShowState('showOrder'), getShowData('showOrder')"
                 >订单管理</a
               >
             </li>
@@ -68,7 +68,7 @@
               <a
                 class="nav-link"
                 type="button"
-                @click="changeShowState('showMember')"
+                @click="changeShowState('showMember'), getShowData('showMember')"
                 >用户管理</a
               >
             </li>
@@ -76,7 +76,7 @@
               <a
                 class="nav-link"
                 type="button"
-                @click="changeShowState('showBook')"
+                @click="changeShowState('showBook'), getShowData('showBook')"
                 >书籍管理</a
               >
             </li>
@@ -88,9 +88,13 @@
       </nav>
 
       <!-- 主体 -->
-      <div class="container">
+      <div class="container-fluid">
         <!-- 主页用户管理显示 -->
         <%- include('template/component/home_showMember.ejs') %>
+        <!-- 主页显示书籍管理 -->
+        <%- include('template/component/home_showBook.ejs') %>
+        <!-- 主页显示订单管理 -->
+        <%- include('template/component/home_showOrder.ejs') %>
       </div>
 
       <!-- 底部显示区 -->
@@ -118,6 +122,7 @@
           searchUrl: "",
           searchParams: {},
           searchConfig: {},
+          searchViewName: '',
           /**
            * 用户
            */
@@ -285,6 +290,9 @@
         },
         getOtherPageBooks: function (page) {
           let me = this;
+          if (page <= 0) {
+            page = 1;
+          }
           me.curPage = page;
           me.getAllBooks();
         },
@@ -308,7 +316,7 @@
             me.showState[key] = false;
             if (key === part) {
               me.showState[key] = true;
-              me.getShowData(key);
+              // me.getShowData(key);
             }
           }
         },
@@ -323,6 +331,12 @@
           axios.post(url, params).then((response) => {
             window.location.reload();
           });
+        },
+        deleteCheckedBooks: function () {
+          // Todo: deleteCheckedBooks
+        },
+        deleteCheckedOrders: function () {
+          // Todo: deleteCheckedOrders
         },
         /**
          * 做不同管理时 根据传入的字符串
@@ -353,23 +367,19 @@
           switch (newVal) {
             case 0:
               me.searchUrl = "/order/search";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchViewName = 'showOrder';
               break;
             case 1:
               me.searchUrl = "/member/search";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchViewName = 'showMember';
               break;
             case 2:
               me.searchUrl = "/book/search";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchViewName = 'showBook';
               break;
             default:
-              me.searchUrl = "";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchUrl = "/member/search";
+              me.searchViewName = 'showMember';
               break;
           }
         },

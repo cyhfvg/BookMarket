@@ -1,101 +1,100 @@
-<!-- 主页用户管理显示 -->
+<!-- 主页书籍管理显示 -->
 <div v-show="showState.showBook" style="margin-top: 10px;">
   <div class="row">
     <div class="col">
-      <table style="width: 80%;">
+      <table class="table">
         <tr>
-          <th></th>
-          <th>编号</th>
-          <th>头像</th>
-          <th>用户名</th>
-          <th>昵称</th>
-          <th>性别</th>
-          <th>生日</th>
-          <th>城市</th>
-          <th>职业</th>
-          <th>启用状态</th>
+          <th align="center">选择</th>
+          <th align="center">编号</th>
+          <th align="center">封面</th>
+          <th align="center">书名</th>
+          <th align="center">ISBN</th>
+          <th align="center">作者</th>
+          <th align="center">所属用户</th>
+          <th align="center">价格</th>
+          <th align="center">上架状态</th>
+          <th align="center">删除状态</th>
         </tr>
         <tr
           :class="[{stripe_antiquewhite:isOdd(index)}, {stripe_bisque: !isOdd(index)}]"
-          style="margin-top: 5px;"
-          v-for="(member, index) of members"
+          v-for="(book, index) of books"
         >
           <td>
             <div>
               <input
                 type="checkbox"
                 class="form-check-input"
-                v-model="checkedMembers"
-                :value="member"
+                v-model="checkedBooks"
+                :value="book"
               />
             </div>
           </td>
-          <!-- 用户编号 -->
+          <!-- 书籍编号 -->
           <td>
-            <div class="no_margin_padding">
-              <span style="margin-left: 2px;">{{ member.id }}</span>
+            <div>
+              <span >{{ book.id }}</span>
             </div>
           </td>
-          <!-- 头像 -->
+          <!-- 封面 -->
           <td>
-            <div class="no_margin_padding" v-if="member.hasOwnProperty('icon')">
-              <img :src="member.icon" width="32px" height="32px" />
+            <div v-if="book.hasOwnProperty('pic')">
+              <img :src="book.pic" width="32px" height="32px" />
             </div>
           </td>
-          <!-- 用户名 -->
+          <!-- 书名 -->
           <td>
-            <div class="no_margin_padding">
-              <span style="margin-left: 2px;">{{ member.username }}</span>
+            <div>
+              <span >{{ book.name }}</span>
             </div>
           </td>
-          <!-- 昵称 -->
+          <!-- ISBN -->
           <td>
-            <div class="no_margin_padding">
+            <div>
               <span
-                style="margin-left: 2px;"
-                v-if="member.hasOwnProperty('nickname')"
-                >{{ member.nickname }}</span
+                v-if="book.hasOwnProperty('isbn')"
+                >{{ book.isbn }}</span
               >
             </div>
           </td>
-          <!-- 性别 -->
+          <!-- 作者 -->
           <td>
-            <div class="no_margin_padding">
-              <span v-if="member.gender === 1">男</span>
-              <span v-else-if="member.gender === 2">女</span>
-              <span v-else>未知</span>
-            </div>
-          </td>
-          <!-- 生日 -->
-          <td>
-            <div class="no_margin_padding">
-              <span v-if="member.hasOwnProperty('birthday')">{{
-                member.birthday
-              }}</span>
-            </div>
-          </td>
-          <!-- 城市 -->
-          <td>
-            <div class="no_margin_padding">
-              <span v-if="member.hasOwnProperty('city')">{{
-                member.city
-              }}</span>
-            </div>
-          </td>
-          <!-- 职业 -->
-          <td>
-            <div class="no_margin_padding">
-              <span v-if="member.hasOwnProperty('job')">{{ member.job }}</span>
-            </div>
-          </td>
-          <!-- 启用状态 -->
-          <td>
-            <div class="no_margin_padding">
+            <div>
               <span
-                v-if="member.hasOwnProperty('status') && member.status === 0"
-                >未启用</span
+                v-if="book.hasOwnProperty('author')"
+                >{{ book.author}}</span
               >
-              <span v-else>已启用</span>
+            </div>
+          </td>
+          <!-- 所属用户 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('memberId')">{{
+                book.memberId
+              }}</span>
+            </div>
+          </td>
+          <!-- 价格 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('price')">{{ book.price}}</span>
+            </div>
+          </td>
+          <!-- 上架状态 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('publishStatus') && book.publishStatus === 0"
+                >未上架</span
+              >
+              <span v-else>已上架</span>
+            </div>
+          </td>
+          <!-- 删除状态 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('deleteStatus') && book.deleteStatus === 0"
+                >未删除</span
+              >
+              <span v-else>已删除</span>
             </div>
           </td>
         </tr>
@@ -109,21 +108,21 @@
         class="btn btn-danger"
         type="button"
         value="删除"
-        @click="deleteCheckedMembers"
+        @click="deleteCheckedBooks"
       />
     </div>
     <div class="col"></div>
   </div>
 
   <!-- note: 搜索分页按钮 -->
-  <div class="clearfix" v-if="members.length > 0">
+  <div class="clearfix" v-if="books.length > 0">
     <div class="float-right">
       <!-- 上十页 -->
       <div
         class="float-left"
         style="border: 3px solid #000; width: 32px; height: 32px;"
         class="page_item"
-        @click="getOtherPageMembers(curPage - 10)"
+        @click="getOtherPageBooks(curPage - 10)"
       >
         <img src="/icons/double-left.svg" />
       </div>
@@ -132,7 +131,7 @@
         class="float-left"
         style="border: 3px solid #000; width: 32px; height: 32px;"
         class="page_item"
-        @click="getOtherPageMembers(curPage - 1)"
+        @click="getOtherPageBooks(curPage - 1)"
       >
         <img src="/icons/single-left.svg" />
       </div>
@@ -141,7 +140,7 @@
         class="float-left"
         style="border: 3px solid #000; width: 32px; height: 32px;"
         class="page_item"
-        @click="getOtherPageMembers(curPage + 1)"
+        @click="getOtherPageBooks(curPage + 1)"
       >
         <img src="/icons/single-right.svg" />
       </div>
@@ -150,7 +149,7 @@
         class="float-left"
         style="border: 3px solid #000; width: 32px; height: 32px;"
         class="page_item"
-        @click="getOtherPageMembers(curPage + 10)"
+        @click="getOtherPageBooks(curPage + 10)"
       >
         <img src="/icons/double-right.svg" />
       </div>

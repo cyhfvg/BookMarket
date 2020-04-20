@@ -42,7 +42,6 @@ router.post('/listAll', (req, res) => {
     .get(url, params, config)
     .then((response) => {
       let result = response.data;
-      console.dir(result.data);
       if (result.meta.success === true) {
         res.send(result.data.books);
       } else {
