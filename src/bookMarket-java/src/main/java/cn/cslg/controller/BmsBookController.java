@@ -1,11 +1,19 @@
 package cn.cslg.controller;
 
+import cn.cslg.dao.OmsOrderItemDao;
 import cn.cslg.dto.BmsBookSubmitParam;
 import cn.cslg.dto.BmsBookUpdateAlbumsParam;
+import cn.cslg.dto.MemberBookActionParam;
 import cn.cslg.model.BmsBook;
+import cn.cslg.model.BmsSearchLog;
+import cn.cslg.model.OmsOrderItem;
+import cn.cslg.model.UmsMember;
 import cn.cslg.service.BmsBookService;
 
 import cn.cslg.bean.Response;
+import cn.cslg.service.BmsSearchLogService;
+import cn.cslg.service.OmsOrderItemService;
+import cn.cslg.service.UmsMemberService;
 import cn.cslg.util.CollectionUtil;
 import cn.cslg.util.StringUtil;
 import org.slf4j.Logger;
@@ -15,9 +23,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 商品信息(BmsBook)表控制层
@@ -34,6 +40,15 @@ public class BmsBookController implements ApplicationContextAware{
      */
     @Resource
     private BmsBookService bmsBookService;
+
+    @Resource
+    private BmsSearchLogService bmsSearchLogService;
+
+    @Resource
+    private OmsOrderItemService omsOrderItemService;
+
+    @Resource
+    private UmsMemberService umsMemberService;
     
     private ApplicationContext applicationContext;
 
@@ -153,16 +168,6 @@ public class BmsBookController implements ApplicationContextAware{
         Response response = new Response();
         Map<String, Object> map = bmsBookService.searchBooks(memberId, searchText,page, pageSize);
         return response.success(map);
-    }
-
-    /**
-     * 获取书籍用户倒查表
-     * @return Response
-     */
-    @RequestMapping(value = "/memberBookTable", method = RequestMethod.GET)
-    public Response getMemberBookTable() {
-        Response response = new Response();
-        return response;
     }
 
     @Override
