@@ -69,25 +69,32 @@
           <!-- 生日 -->
           <td>
             <div class="no_margin_padding">
-              <span v-if="member.hasOwnProperty('birthday')">{{member.birthday}}</span>
+              <span v-if="member.hasOwnProperty('birthday')">{{
+                member.birthday
+              }}</span>
             </div>
           </td>
           <!-- 城市 -->
           <td>
             <div class="no_margin_padding">
-              <span v-if="member.hasOwnProperty('city')">{{member.city}}</span>
+              <span v-if="member.hasOwnProperty('city')">{{
+                member.city
+              }}</span>
             </div>
           </td>
           <!-- 职业 -->
           <td>
             <div class="no_margin_padding">
-              <span v-if="member.hasOwnProperty('job')">{{member.job}}</span>
+              <span v-if="member.hasOwnProperty('job')">{{ member.job }}</span>
             </div>
           </td>
           <!-- 启用状态 -->
           <td>
             <div class="no_margin_padding">
-              <span v-if="member.hasOwnProperty('status') && member.status === 0">未启用</span>
+              <span
+                v-if="member.hasOwnProperty('status') && member.status === 0"
+                >未启用</span
+              >
               <span v-else>已启用</span>
             </div>
           </td>
@@ -98,9 +105,55 @@
   <div class="row" style="margin-top: 20px;">
     <div class="col"></div>
     <div class="col">
-      <input class="btn btn-danger" type="button" value="删除" @click="deleteCheckedMembers">
+      <input
+        class="btn btn-danger"
+        type="button"
+        value="删除"
+        @click="deleteCheckedMembers"
+      />
     </div>
     <div class="col"></div>
   </div>
 
+  <!-- note: 搜索分页按钮 -->
+  <div class="clearfix" v-if="members.length > 0">
+    <div class="float-right">
+      <!-- 上十页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage - 10)"
+      >
+        <img src="/icons/double-left.svg" />
+      </div>
+      <!-- 上一页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage - 1)"
+      >
+        <img src="/icons/single-left.svg" />
+      </div>
+      <!-- 下一页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage + 1)"
+      >
+        <img src="/icons/single-right.svg" />
+      </div>
+      <!-- 下十页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage + 10)"
+      >
+        <img src="/icons/double-right.svg" />
+      </div>
+    </div>
+  </div>
 </div>
