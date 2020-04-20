@@ -674,27 +674,6 @@
         }
       },
       computed: {
-        /**
-         * 显示最多五条喜欢书籍
-         */
-        likeBooksView: function () {
-          let me = this;
-          let likeBooks = me.likeBooks;
-          let len = likeBooks.length;
-          let books = [];
-
-          if (len > 5) {
-            for (let i = 0; i < 5; i++) {
-              books[i] = likeBooks[i];
-            }
-            return books;
-          }
-
-          for (let i = 0; i < len; i++) {
-            books[i] = likeBooks[i];
-          }
-          return books;
-        },
         likeBooksViewRemain: function () {
           let me = this;
           let len = me.likeBooks.length;
