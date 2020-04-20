@@ -147,14 +147,24 @@ public class BmsBookController implements ApplicationContextAware{
      * @param pageSize 页长
      * @return Response
      */
-    @RequestMapping(value = "searchBooks", method = RequestMethod.GET)
+    @RequestMapping(value = "/searchBooks", method = RequestMethod.GET)
     public Response searchBooks(@RequestParam("userId") long memberId, @RequestParam("searchText") String searchText,
                                 @RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
         Response response = new Response();
         Map<String, Object> map = bmsBookService.searchBooks(memberId, searchText,page, pageSize);
         return response.success(map);
     }
-    
+
+    /**
+     * 获取书籍用户倒查表
+     * @return Response
+     */
+    @RequestMapping(value = "/memberBookTable", method = RequestMethod.GET)
+    public Response getMemberBookTable() {
+        Response response = new Response();
+        return response;
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;

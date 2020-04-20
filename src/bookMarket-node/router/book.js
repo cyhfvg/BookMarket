@@ -226,7 +226,7 @@ router.post("/likeBooks", (req, res) => {
  * 搜索书籍
  */
 router.post("/searchBooks", (req, res) => {
-  let {searchText, page, pageSize} = req.body;
+  let { searchText, page, pageSize } = req.body;
   let { userId, token } = req.cookies;
 
   let url = "/bmsBook/searchBooks";
@@ -235,7 +235,7 @@ router.post("/searchBooks", (req, res) => {
       searchText: searchText,
       userId: userId,
       page: page,
-      pageSize: pageSize
+      pageSize: pageSize,
     },
   };
   let config = {
@@ -264,31 +264,68 @@ router.post("/searchBooks", (req, res) => {
 /**
  * 添加书籍到购物车
  */
-router.post('/addCart', (req, res) => {
-  let {userId, token} = req.cookies;
-  let {bookId, isbn} = req.body;
+router.post("/addCart", (req, res) => {
+  let { userId, token } = req.cookies;
+  let { bookId, isbn } = req.body;
 
-  let url = '/bmsCartLog/addBook';
+  let url = "/bmsCartLog/addBook";
   let params = {
     userId: userId,
     bookId: bookId,
-    isbn: isbn
+    isbn: isbn,
   };
   let config = {
     headers: {
-      'X-Token': token
-    }
+      "X-Token": token,
+    },
   };
 
   // 清加到后台
-  axios.post(url, params, config).then(response => {
-    let result = response.data;
-    if (result.meta.success === true) {
-      res.send(result);
-    }
-  }).catch(err => {
-    console.dir(err);
-  })
+  axios
+    .post(url, params, config)
+    .then((response) => {
+      let result = response.data;
+      if (result.meta.success === true) {
+        res.send(result);
+      }
+    })
+    .catch((err) => {
+      console.dir(err);
+    });
+});
+
+/**
+ * 保存用户浏览记录
+ */
+router.post("/lookHistory", (req, res) => {
+  let book = req.body.book;
+  let { userId, token } = req.cookies;
+
+  let url = "/bmsSearchLog/lookHistory";
+  let params = {
+    book: book,
+    userId: userId,
+  };
+  let config = {
+    headers: {
+      "X-Token": token,
+    },
+  };
+  axios
+    .post(url, params, config)
+    .then((response) => {
+      let result = response.data;
+      console.dir(result);
+      if (result.meta.success === true) {
+        res.send(result.meta);
+      } else {
+        res.send({ meta: { success: false } });
+      }
+    })
+    .catch((err) => {
+      console.dir(err);
+      res.send({ meta: { success: false } });
+    });
 });
 
 // 导出路由

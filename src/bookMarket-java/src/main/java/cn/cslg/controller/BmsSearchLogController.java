@@ -1,5 +1,6 @@
 package cn.cslg.controller;
 
+import cn.cslg.dto.BmsSearchLogLookHistoryAddParam;
 import cn.cslg.model.BmsSearchLog;
 import cn.cslg.service.BmsSearchLogService;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * (BmsSearchLog)表控制层
@@ -41,6 +43,23 @@ public class BmsSearchLogController implements ApplicationContextAware{
     @RequestMapping(value = "/selectOne", method = RequestMethod.GET)
     public Response selectOne(Long id) {
         return new Response().failure("");
+    }
+
+    /**
+     * 增加用户浏览记录
+     * @param param BmsSearchLogLookHistoryAddParam
+     * @return Response
+     */
+    @RequestMapping(value = "/lookHistory", method = RequestMethod.POST)
+    public Response insertLookHistory(@RequestBody BmsSearchLogLookHistoryAddParam param) {
+        Response response = new Response();
+        BmsSearchLog bmsSearchLog = new BmsSearchLog();
+        bmsSearchLog.setMemberId(param.getUserId());
+        bmsSearchLog.setIsbn(param.getBook().getIsbn());
+        bmsSearchLog.setCreateTime(new Date());
+        bmsSearchLogService.insert(bmsSearchLog);
+
+        return response.success();
     }
     
     @Override
