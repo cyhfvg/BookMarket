@@ -1,0 +1,74 @@
+<beans>
+<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+    <property name="driverClassName" value="${jdbc.driver}"/>
+    <property name="url" value="${jdbc.url}"/>
+    <property name="username" value="${jdbc.username}"/>
+    <property name="password" value="${jdbc.password}"/>
+    <property name="maxActive" value="10"/>
+    <property name="minIdle" value="5"/>
+</bean>
+
+<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="hibernateProperties">
+        <props>
+            <prop key="hibernate.show_sql">true</prop>
+            <prop key="hibernate.format_sql">true</prop>
+            <prop key="hibernate.hbm2ddl.auto">update</prop>
+            <prop key="hibernate.dialect">org.hibernate.dialect.MariaDB10Dialect</prop>
+            <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate5.SpringSessionContext</prop>
+        </props>
+    </property>
+    <!-- hibernate 扫描路径 -->
+    <property name="packagesToScan">
+        <list>
+            <value>cn.cslg.model</value>
+        </list>
+    </property>
+</bean>
+<context-param>
+    <param-name>log4jConfiguration</param-name>
+    <!-- log4j 配置文件 -->
+    <param-value>classpath:/config/log4j2.xml</param-value>
+</context-param>
+<listener>
+    <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener</listener-class>
+</listener>
+<filter>
+    <filter-name>log4jFilter</filter-name>
+    <filter-class>org.apache.logging.log4j.web.Log4jServletFilter</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>log4jFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>INCLUDE</dispatcher>
+    <dispatcher>ERROR</dispatcher>
+</filter-mapping>
+<!-- 事务管理 txManager, Hibernate的事务管理类 -->
+<bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+    <property name="sessionFactory" ref="sessionFactory"/>
+</bean>
+<!-- 指定具体哪些方法需要加上事务管理 -->
+<tx:advice id="txAdvice" transaction-manager="txManager">
+    <tx:attributes>
+        <tx:method name="do*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="del*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="mod*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="ins*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="upd*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="find*" propagation="REQUIRED" rollback-for="Exception"/>
+        <tx:method name="invoke" propagation="REQUIRES_NEW" rollback-for="Exception"/>
+        <tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+    </tx:attributes>
+</tx:advice>
+<!-- 利用AOP方式给方法加上事务管理 -->
+<aop:config proxy-target-class="true">
+    <!-- dao包中所有的方法 都加上切面,进行事务处理，具体处理在txManager -->
+    <aop:pointcut id="daoPointCut" expression="execution(* cn.cslg.dao..*.*(..))"/>
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="daoPointCut"/>
+</aop:config>
+</beans>
