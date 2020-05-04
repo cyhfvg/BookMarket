@@ -1,0 +1,158 @@
+<!-- 主页书籍管理显示 -->
+<div v-show="showState.showBook" style="margin-top: 10px;">
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <tr>
+          <th align="center">选择</th>
+          <th align="center">编号</th>
+          <th align="center">封面</th>
+          <th align="center">书名</th>
+          <th align="center">ISBN</th>
+          <th align="center">作者</th>
+          <th align="center">所属用户</th>
+          <th align="center">价格</th>
+          <th align="center">上架状态</th>
+          <th align="center">删除状态</th>
+        </tr>
+        <tr
+          :class="[{stripe_antiquewhite:isOdd(index)}, {stripe_bisque: !isOdd(index)}]"
+          v-for="(book, index) of books"
+        >
+          <td>
+            <div>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                v-model="checkedBooks"
+                :value="book"
+              />
+            </div>
+          </td>
+          <!-- 书籍编号 -->
+          <td>
+            <div>
+              <span >{{ book.id }}</span>
+            </div>
+          </td>
+          <!-- 封面 -->
+          <td>
+            <div v-if="book.hasOwnProperty('pic')">
+              <img :src="book.pic" width="32px" height="32px" />
+            </div>
+          </td>
+          <!-- 书名 -->
+          <td>
+            <div>
+              <span >{{ book.name }}</span>
+            </div>
+          </td>
+          <!-- ISBN -->
+          <td>
+            <div>
+              <span
+                v-if="book.hasOwnProperty('isbn')"
+                >{{ book.isbn }}</span
+              >
+            </div>
+          </td>
+          <!-- 作者 -->
+          <td>
+            <div>
+              <span
+                v-if="book.hasOwnProperty('author')"
+                >{{ book.author}}</span
+              >
+            </div>
+          </td>
+          <!-- 所属用户 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('memberId')">{{
+                book.memberId
+              }}</span>
+            </div>
+          </td>
+          <!-- 价格 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('price')">{{ book.price}}</span>
+            </div>
+          </td>
+          <!-- 上架状态 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('publishStatus') && book.publishStatus === 0"
+                >未上架</span
+              >
+              <span v-else>已上架</span>
+            </div>
+          </td>
+          <!-- 删除状态 -->
+          <td>
+            <div>
+              <span v-if="book.hasOwnProperty('deleteStatus') && book.deleteStatus === 0"
+                >未删除</span
+              >
+              <span v-else>已删除</span>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 20px;">
+    <div class="col"></div>
+    <div class="col">
+      <input
+        class="btn btn-danger"
+        type="button"
+        value="删除"
+        @click="deleteCheckedBooks"
+      />
+    </div>
+    <div class="col"></div>
+  </div>
+
+  <!-- note: 搜索分页按钮 -->
+  <div class="clearfix" v-if="books.length > 0">
+    <div class="float-right">
+      <!-- 上十页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageBooks(curPage - 10)"
+      >
+        <img src="/icons/double-left.svg" />
+      </div>
+      <!-- 上一页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageBooks(curPage - 1)"
+      >
+        <img src="/icons/single-left.svg" />
+      </div>
+      <!-- 下一页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageBooks(curPage + 1)"
+      >
+        <img src="/icons/single-right.svg" />
+      </div>
+      <!-- 下十页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageBooks(curPage + 10)"
+      >
+        <img src="/icons/double-right.svg" />
+      </div>
+    </div>
+  </div>
+</div>
