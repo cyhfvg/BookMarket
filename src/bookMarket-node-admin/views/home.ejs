@@ -29,9 +29,9 @@
               class="form-control"
               v-model="searchContent"
               type="text"
-              placeholder="Search"
+              placeholder="默认搜索用户"
             />
-            <button class="btn btn-success" type="button" @click="search">
+            <button class="btn btn-success" type="button" @click="search(), changeShowState(searchViewName)">
               Search
             </button>
           </form>
@@ -57,13 +57,28 @@
               </div>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">订单管理</a>
+              <a
+                class="nav-link"
+                type="button"
+                @click="changeShowState('showOrder'), getShowData('showOrder')"
+                >订单管理</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">用户管理</a>
+              <a
+                class="nav-link"
+                type="button"
+                @click="changeShowState('showMember'), getShowData('showMember')"
+                >用户管理</a
+              >
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">书籍管理</a>
+              <a
+                class="nav-link"
+                type="button"
+                @click="changeShowState('showBook'), getShowData('showBook')"
+                >书籍管理</a
+              >
             </li>
             <li class="nav-item">
               <a type="button" class="nav-link" @click="logout">注销</a>
@@ -73,9 +88,13 @@
       </nav>
 
       <!-- 主体 -->
-      <div class="container">
+      <div class="container-fluid">
         <!-- 主页用户管理显示 -->
         <%- include('template/component/home_showMember.ejs') %>
+        <!-- 主页显示书籍管理 -->
+        <%- include('template/component/home_showBook.ejs') %>
+        <!-- 主页显示订单管理 -->
+        <%- include('template/component/home_showOrder.ejs') %>
       </div>
 
       <!-- 底部显示区 -->
@@ -103,11 +122,22 @@
           searchUrl: "",
           searchParams: {},
           searchConfig: {},
+          searchViewName: '',
           /**
            * 用户
            */
           members: [],
           checkedMembers: [],
+          /**
+           * 订单
+           */
+          orders: [],
+          checkedOrders: [],
+          /**
+           * 书籍
+           */
+          books: [],
+          checkedBooks: [],
           /**
            * 行数
            */
@@ -124,9 +154,11 @@
            * 三个信号量 同时只有一个为true
            * 同时只控制一个显示区域显示
            */
-          showMember: true,
-          showOrder: false,
-          showBook: false,
+          showState: {
+            showMember: true,
+            showOrder: false,
+            showBook: false,
+          },
         };
       },
       methods: {
@@ -139,6 +171,13 @@
         },
         isLogin: function () {
           return true;
+        },
+        /**
+         * 初始化所有页码有关变量
+         */
+        initPageInfo: function () {
+          let me = this;
+          me.curPage = 1;
         },
         search: function () {
           let me = this;
@@ -189,9 +228,73 @@
           };
           me.axios.post(url, params).then((response) => {
             let result = response.data;
+            if (result.length === 0) {
+              me.initPageInfo();
+              me.getAllMembers();
+              return;
+            }
             console.dir(result);
             me.members = result;
           });
+        },
+        getOtherPageMembers: function (page) {
+          let me = this;
+          me.curPage = page;
+          me.getAllMembers();
+        },
+        /**
+         * *分页获取订单
+         */
+        getAllOrders: function () {
+          let me = this;
+          let url = "/order/listAll";
+          let params = {
+            page: me.curPage,
+            pageSize: me.cols * me.rows,
+          };
+          me.axios.post(url, params).then((response) => {
+            let result = response.data;
+            if (result.length === 0) {
+              me.initPageInfo();
+              me.getAllOrders();
+              return;
+            }
+            me.orders = result;
+          });
+        },
+        getOtherPageOrders: function (page) {
+          let me = this;
+          me.curPage = page;
+          me.getAllOrders();
+        },
+        /**
+         * 分页获取书籍
+         */
+        getAllBooks: function () {
+          let me = this;
+          let url = "/book/listAll";
+          let params = {
+            page: me.curPage,
+            pageSize: me.cols * me.rows,
+          };
+          me.axios.post(url, params).then((response) => {
+            let result = response.data;
+            console.dir(result);
+            if (result.length === 0) {
+              me.initPageInfo();
+              me.getAllBooks();
+              return;
+            }
+            me.books = result;
+          });
+        },
+        getOtherPageBooks: function (page) {
+          let me = this;
+          if (page <= 0) {
+            page = 1;
+          }
+          me.curPage = page;
+          me.getAllBooks();
         },
         /**
          * 更改搜索方式
@@ -207,17 +310,55 @@
           foreach();
           window.location.replace("/");
         },
+        changeShowState: function (part) {
+          let me = this;
+          for (let key in me.showState) {
+            me.showState[key] = false;
+            if (key === part) {
+              me.showState[key] = true;
+              // me.getShowData(key);
+            }
+          }
+        },
         deleteCheckedMembers: function () {
           let me = this;
           let members = me.checkedMembers;
 
-          let url = '/member/deleteMembers';
+          let url = "/member/deleteMembers";
           let params = {
-            members: members
-          }
-          axios.post(url, params).then(response => {
+            members: members,
+          };
+          axios.post(url, params).then((response) => {
             window.location.reload();
-          })
+          });
+        },
+        deleteCheckedBooks: function () {
+          // Todo: deleteCheckedBooks
+        },
+        deleteCheckedOrders: function () {
+          // Todo: deleteCheckedOrders
+        },
+        /**
+         * 做不同管理时 根据传入的字符串
+         * 使用不同方法获取对应数据
+         */
+        getShowData: function (part) {
+          let me = this;
+          me.initPageInfo();
+          switch (part) {
+            case "showMember":
+              me.getAllMembers();
+              break;
+            case "showOrder":
+              me.getAllOrders();
+              break;
+            case "showBook":
+              me.getAllBooks();
+              break;
+            default:
+              me.changeShowState("showMember");
+              break;
+          }
         },
       },
       watch: {
@@ -226,23 +367,19 @@
           switch (newVal) {
             case 0:
               me.searchUrl = "/order/search";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchViewName = 'showOrder';
               break;
             case 1:
               me.searchUrl = "/member/search";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchViewName = 'showMember';
               break;
             case 2:
               me.searchUrl = "/book/search";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchViewName = 'showBook';
               break;
             default:
-              me.searchUrl = "";
-              me.searchParams = {};
-              me.searchConfig = {};
+              me.searchUrl = "/member/search";
+              me.searchViewName = 'showMember';
               break;
           }
         },

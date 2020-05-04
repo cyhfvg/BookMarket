@@ -1,0 +1,187 @@
+<!-- 主页订单管理显示 -->
+<div v-show="showState.showOrder" style="margin-top: 10px;">
+  <div class="row">
+    <div class="col">
+      <table class="table">
+        <tr>
+          <th align="center">选择</th>
+          <th align="center">编号</th>
+          <th align="center">所属用户</th>
+          <th align="center">创建时间</th>
+          <th align="center">收货地址</th>
+          <th align="center">总金额</th>
+          <th align="center">支付时间</th>
+          <th align="center">修改时间</th>
+          <th align="center">订单状态</th>
+        </tr>
+        <tr
+          :class="[{stripe_antiquewhite:isOdd(index)}, {stripe_bisque: !isOdd(index)}]"
+          v-for="(order, index) of orders"
+        >
+          <td>
+            <div>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                v-model="checkedOrders"
+                :value="order"
+              />
+            </div>
+          </td>
+          <!-- 订单编号 -->
+          <td>
+            <div>
+              <span>{{ order.id }}</span>
+            </div>
+          </td>
+          <!-- 所属用户 -->
+          <td>
+            <div
+
+              v-if="order.hasOwnProperty('memberId')"
+            >
+              <span >{{ order.memberId }}</span>
+            </div>
+          </td>
+          <!-- 创建时间 -->
+          <td>
+            <div>
+              <span >{{ order.createTime }}</span>
+            </div>
+          </td>
+          <!-- 收货地址 -->
+          <td>
+            <div>
+              <span v-if="order.hasOwnProperty('receiverProvince')">{{
+                order.receiverProvince
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverCity')">{{
+                order.receiverCity
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverRegion')">{{
+                order.receiverRegion
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverDetailAddress')">{{
+                order.receiverDetailAddress
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverName')">{{
+                order.receiverName
+              }}</span>
+              <span v-if="order.hasOwnProperty('receiverPhone')">{{
+                order.receiverPhone
+              }}</span>
+            </div>
+          </td>
+          <!-- 总金额 -->
+          <td>
+            <div>
+              <span
+                v-if="order.hasOwnProperty('totalAmount')"
+              >
+                {{ order.totalAmount }}
+              </span>
+            </div>
+          </td>
+          <!-- 支付时间 -->
+          <td>
+            <div>
+              <span v-if="order.hasOwnProperty('paymemtTime')">{{
+                order.paymemtTime
+              }}</span>
+            </div>
+          </td>
+          <!-- 修改时间 -->
+          <td>
+            <div>
+              <span v-if="order.hasOwnProperty('modifyTime')" style="margin-left: 15px;">{{
+                order.modifyTime
+              }}</span>
+            </div>
+          </td>
+          <!-- 订单状态 -->
+          <td>
+            <div>
+              <span v-if="order.hasOwnProperty('status') && order.status === 0"
+                >待付款</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 1"
+                >待发货</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 2"
+                >已发货</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 3"
+                >已完成</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 4"
+                >已关闭</span
+              >
+              <span
+                v-else-if="order.hasOwnProperty('status') && order.status === 5"
+                >无效订单</span
+              >
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="row" style="margin-top: 20px;">
+    <div class="col"></div>
+    <div class="col">
+      <input
+        class="btn btn-danger"
+        type="button"
+        value="删除"
+        @click="deleteCheckedOrders"
+      />
+    </div>
+    <div class="col"></div>
+  </div>
+
+  <!-- note: 搜索分页按钮 -->
+  <div class="clearfix" v-if="orders.length > 0">
+    <div class="float-right">
+      <!-- 上十页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage - 10)"
+      >
+        <img src="/icons/double-left.svg" />
+      </div>
+      <!-- 上一页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage - 1)"
+      >
+        <img src="/icons/single-left.svg" />
+      </div>
+      <!-- 下一页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage + 1)"
+      >
+        <img src="/icons/single-right.svg" />
+      </div>
+      <!-- 下十页 -->
+      <div
+        class="float-left"
+        style="border: 3px solid #000; width: 32px; height: 32px;"
+        class="page_item"
+        @click="getOtherPageMembers(curPage + 10)"
+      >
+        <img src="/icons/double-right.svg" />
+      </div>
+    </div>
+  </div>
+</div>
