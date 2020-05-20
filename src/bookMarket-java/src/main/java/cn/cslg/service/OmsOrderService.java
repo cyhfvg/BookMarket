@@ -60,4 +60,19 @@ public interface OmsOrderService {
      */
     boolean buyBooks(OmsOrderBuyBooksParam omsOrderBuyBooksParam);
 
+    /**
+     * 根据内容搜索订单
+     * @param content 搜索内容
+     * @param page 页码
+     * @param pageSize 页长
+     * @return List<OmsOrder>
+     */
+    List<OmsOrder> searchOrder(String content, int page, int pageSize);
+
+    /**
+     * 删除订单
+     * @param orders 欲删除的订单
+     */
+    void deleteOrders(List<OmsOrder> orders);
+
 }

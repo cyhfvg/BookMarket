@@ -96,7 +96,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     /**
      *
      * @param omsOrderBuyBooksParam dto
-     * @return
+     * @return boolean
      */
     @Override
     public boolean buyBooks(OmsOrderBuyBooksParam omsOrderBuyBooksParam) {
@@ -179,5 +179,22 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         bmsBookDao.updateBooks(books);
 
         return true;
+    }
+
+    @Override
+    public List<OmsOrder> searchOrder(String content, int page, int pageSize) {
+        String hql = "select order from OmsOrder as order where " +
+                "order.memberUsername like ?0 " +
+                "or order.orderSn like ?1 ";
+        Object[] params = {
+                "%" + content + "%",
+                "%" + content + "%"};
+
+        return omsOrderDao.findAll(OmsOrder.class, hql, params, pageSize * (page - 1), pageSize);
+    }
+
+    @Override
+    public void deleteOrders(List<OmsOrder> orders) {
+        omsOrderDao.updateOrders(orders);
     }
 }

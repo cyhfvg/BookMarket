@@ -306,6 +306,10 @@
        */
       recharge: function () {
         let me = this;
+        if (me.charge.trim() === '') {
+          me.charge = 100;
+          return ;
+        }
         me.axiosInstance.post('/memberInfo/charge', {
           charge: me.charge / 100,
         })

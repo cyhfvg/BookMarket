@@ -145,4 +145,14 @@ public class BmsBookServiceImpl implements BmsBookService {
     public List<BmsBook> getBooksByIds(List Ids) {
         return bmsBookDao.queryBookByIds(Ids);
     }
+
+    @Override
+    public List<BmsBook> adminSearchBook(String content, int page, int pageSize) {
+        return bmsBookDao.findAll(BmsBook.class, "select book from BmsBook as book where book.name like ?0 or book.isbn like ?1 ",new Object[]{"%" + content + "%", "%" + content + "%"}, pageSize * (page - 1), pageSize);
+    }
+
+    @Override
+    public void deleteBooks(List<BmsBook> books) {
+        bmsBookDao.updateBooks(books);
+    }
 }
