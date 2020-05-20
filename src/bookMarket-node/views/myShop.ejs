@@ -213,6 +213,9 @@
           let book = me.book;
           let description = document.getElementById("description").value;
           let files = document.getElementById("files").files;
+          if (files.length === 0) {
+            return;
+          }
           if (files.length > 5) {
             files.length = 5;
           }

@@ -2,6 +2,8 @@ package cn.cslg.dao;
 
 import cn.cslg.model.OmsOrder;
 
+import java.util.List;
+
 /**
  * (OmsOrder)表数据库访问层
  *
@@ -14,5 +16,11 @@ public interface OmsOrderDao extends GenericDao<OmsOrder, Long>{
      * @return OmsOrder
      */
     public OmsOrder saveReturnEntity(OmsOrder order);
+
+    /**
+     * 批量更新订单信息
+     * @param orders 订单列表
+     */
+    void updateOrders(List<OmsOrder> orders);
 
 }

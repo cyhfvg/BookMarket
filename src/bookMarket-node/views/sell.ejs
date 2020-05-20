@@ -363,7 +363,7 @@
       myPrice(newVal) {
         let me = this;
         if (newVal <= 0 || newVal > me.book.price * 100) {
-          me.myPrice = 0;
+          me.myPrice = 1;
         }
       },
     },

@@ -8,6 +8,7 @@ import cn.cslg.service.UmsMemberLoginLogService;
 import cn.cslg.service.UmsMemberService;
 
 import cn.cslg.bean.Response;
+import cn.cslg.util.CollectionUtil;
 import cn.cslg.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,6 +201,11 @@ public class UmsMemberController implements ApplicationContextAware{
         return response.success(list);
     }
 
+    /**
+     * 删除用户
+     * @param umsMemberDeleteMembersParam dto
+     * @return Response
+     */
     @RequestMapping(value = "/umsMember/deleteMembers", method = RequestMethod.PATCH)
     public Response deleteMembers(@RequestBody UmsMemberDeleteMembersParam umsMemberDeleteMembersParam) {
         Response response = new Response();
@@ -210,7 +216,25 @@ public class UmsMemberController implements ApplicationContextAware{
         }
 
         umsMemberService.updateMembers(members);
-        return response;
+        return response.success();
+    }
+
+    /**
+     * 根据content模糊搜索用户
+     * @param content 搜索内容
+     * @param page 页码
+     * @param pageSize 页长
+     * @return Response
+     */
+    @RequestMapping(value = "/umsMember/search", method = RequestMethod.GET)
+    public Response searchMember(@RequestParam("content") String content, @RequestParam("page") int page,
+                                 @RequestParam("pageSize") int pageSize) {
+        Response response = new Response();
+        List<UmsMember> list = umsMemberService.searchMember(content, page, pageSize);
+        if (CollectionUtil.isEmpty(list)) {
+            return response.failure("无内容");
+        }
+        return response.success(list);
     }
     
     @Override
