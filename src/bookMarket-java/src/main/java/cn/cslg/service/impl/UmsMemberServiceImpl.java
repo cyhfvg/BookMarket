@@ -120,4 +120,17 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public void updateMembers(List<UmsMember> members) {
         umsMemberDao.updateUmsMembers(members);
     }
+
+    @Override
+    public List<UmsMember> searchMember(String content, int page, int pageSize) {
+//        String hql = "from UmsMember as member where member.username like ?0 or member.nickname like ?1 ";
+        String hql = "from UmsMember a where " +
+                "a.username like ?0 " +
+                "or a.nickname like ?1 ";
+        Object[] params = {
+                "%" + content + "%",
+                "%" + content + "%"};
+
+        return umsMemberDao.findAll(UmsMember.class, hql, params, pageSize * (page - 1), pageSize);
+    }
 }

@@ -67,4 +67,13 @@ public interface UmsMemberService {
      */
     void updateMembers(List<UmsMember> members);
 
+    /**
+     * 根据内容搜索用户
+     * @param content 搜索内容
+     * @param page 页码
+     * @param pageSize 页长
+     * @return List<UmsMember>
+     */
+    List<UmsMember> searchMember(String content, int page, int pageSize);
+
 }

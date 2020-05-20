@@ -45,10 +45,10 @@
                 >搜索方式</a
               >
               <div class="dropdown-menu">
-                <a class="dropdown-item btn" @click="changeSearchType(1)"
+                <a class="dropdown-item btn" @click="changeSearchType(0)"
                   >搜索用户</a
                 >
-                <a class="dropdown-item btn" @click="changeSearchType(0)"
+                <a class="dropdown-item btn" @click="changeSearchType(1)"
                   >搜索订单</a
                 >
                 <a class="dropdown-item btn" @click="changeSearchType(2)"
@@ -182,11 +182,27 @@
         search: function () {
           let me = this;
 
+          let content = me.searchContent.trim();
+          if (content === '') {
+            return false;
+          }
+
+          me.curPage = 1;
+
+          me.searchParams = {
+            content: content,
+            page: me.curPage,
+            pageSize: me.cols * me.rows,
+          };
+
           me.axios
             .post(me.searchUrl, me.searchParams, me.searchConfig)
             .then((response) => {
               let me = this;
               let result = response.data;
+              if (result.meta.success === false) {
+                return;
+              }
               switch (me.searchType) {
                 case 0:
                   me.memberSearchChain(result);
@@ -204,16 +220,19 @@
             });
         },
         orderSearchChain: function (result) {
-          // Todo: order Search ResultSet Chain
-          console.dir(result);
+          let me = this;
+          let data = result;
+          me.orders = data.data;
         },
         memberSearchChain: function (result) {
-          // Todo: member Search ResultSet Chain
-          console.dir(result);
+          let me = this;
+          let data = result;
+          me.members = data.data;
         },
         bookSearchChain: function (result) {
-          // Todo: member Search ResultSet Chain
-          console.dir(result);
+          let me = this;
+          let data = result;
+          me.books = data.data;
         },
         /**
          * 按分页方式获取所有用户
@@ -233,7 +252,6 @@
               me.getAllMembers();
               return;
             }
-            console.dir(result);
             me.members = result;
           });
         },
@@ -279,7 +297,6 @@
           };
           me.axios.post(url, params).then((response) => {
             let result = response.data;
-            console.dir(result);
             if (result.length === 0) {
               me.initPageInfo();
               me.getAllBooks();
@@ -333,10 +350,29 @@
           });
         },
         deleteCheckedBooks: function () {
-          // Todo: deleteCheckedBooks
+          let me = this;
+          let books = me.checkedBooks;
+
+          let url = "/book/deleteBooks";
+          let params = {
+            books: books
+          };
+          axios.post(url, params).then((response) => {
+            window.location.reload();
+          });
         },
         deleteCheckedOrders: function () {
           // Todo: deleteCheckedOrders
+          let me = this;
+          let orders = me.checkedOrders;
+
+          let url = "/order/deleteOrders";
+          let params = {
+            orders: orders
+          };
+          axios.post(url, params).then((response) => {
+            window.location.reload();
+          });
         },
         /**
          * 做不同管理时 根据传入的字符串
@@ -366,12 +402,12 @@
           let me = this;
           switch (newVal) {
             case 0:
-              me.searchUrl = "/order/search";
-              me.searchViewName = 'showOrder';
-              break;
-            case 1:
               me.searchUrl = "/member/search";
               me.searchViewName = 'showMember';
+              break;
+            case 1:
+              me.searchUrl = "/order/search";
+              me.searchViewName = 'showOrder';
               break;
             case 2:
               me.searchUrl = "/book/search";

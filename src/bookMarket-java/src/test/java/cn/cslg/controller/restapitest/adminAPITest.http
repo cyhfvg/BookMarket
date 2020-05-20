@@ -1,0 +1,13 @@
+###
+GET http://localhost:8080/bookMarket-java/umsMember/search?content=21&page=1&pageSize=20
+Accept: application/json
+
+###
+GET http://localhost:8080/bookMarket-java/omsOrder/search?content=24&page=1&pageSize=20
+Accept: application/json
+
+###
+GET http://localhost:8080/bookMarket-java/bmsBook/search?content=24&page=1&pageSize=20
+Accept: application/json
+
+###
