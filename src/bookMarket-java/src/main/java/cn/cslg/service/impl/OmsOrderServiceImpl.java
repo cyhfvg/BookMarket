@@ -222,8 +222,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
         Map<Long, UmsMember> members = new HashMap<>();
 
-        for (OmsOrderItem item :
-                orderItems) {
+        // Fixme: 修复内容
+        for (int i = 0; i < orderItems.size(); i++) {
+            OmsOrderItem item = orderItems.get(i);
+
             UmsMember member = null;
             if (members.containsKey(item.getMemberId())) {
                 member = members.get(item.getMemberId());
@@ -232,9 +234,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             }
             member.setBalance(member.getBalance() + item.getBookPrice());
             members.put(member.getId(), member);
+            item.setProductCategoryId((long) 2);
         }
         logger.debug("checkBalance2Shop membersSize = {}", members.size());
 
+        omsOrderItemDao.updateItems(orderItems);
         List<UmsMember> updateMembers = new ArrayList<>(members.values());
 
         umsMemberDao.updateUmsMembers(updateMembers);
@@ -246,9 +250,6 @@ public class OmsOrderServiceImpl implements OmsOrderService {
                 new String[]{"memberId", "publishStatus", "deleteStatus"},
                 new Object[] {memberId, 0, 1});
 
-//        List<OmsOrderItem> orderItems = omsOrderItemDao.findByProperties(OmsOrderItem.class,
-//                new String []{"memberId", "productCategoryId"},
-//                new Object[]{memberId, (long)0});
         List<OmsOrderItem> orderItems = new ArrayList<>();
 
         for (BmsBook book
