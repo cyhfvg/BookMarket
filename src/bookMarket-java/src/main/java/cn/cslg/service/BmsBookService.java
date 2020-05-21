@@ -87,4 +87,19 @@ public interface BmsBookService {
      */
     List<BmsBook> getBooksByIds(List Ids);
 
+    /**
+     * 根据内容搜索书籍
+     * @param content 内容
+     * @param page 页码
+     * @param pageSize 页长
+     * @return List
+     */
+    List<BmsBook> adminSearchBook(String content, int page, int pageSize);
+
+    /**
+     * 删除书籍
+     * @param books 欲删除的书籍
+     */
+    void deleteBooks(List<BmsBook> books);
+
 }

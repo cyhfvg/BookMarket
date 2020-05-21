@@ -7,8 +7,8 @@ GET http://localhost:8080/bookMarket-java/umsAdmin/login
 Content-Type: application/json
 
 {
-    "username": "adminTest1",
-    "password": "123456"
+    "adminName": "adminTest1",
+    "password": "123456*hhd"
 }
 
 ###

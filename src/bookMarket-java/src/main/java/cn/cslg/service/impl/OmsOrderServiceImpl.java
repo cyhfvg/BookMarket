@@ -1,18 +1,18 @@
 package cn.cslg.service.impl;
 
 import cn.cslg.dao.*;
+import cn.cslg.dto.OmsBookParam;
 import cn.cslg.dto.OmsOrderBuyBooksParam;
 import cn.cslg.model.*;
 import cn.cslg.service.OmsOrderService;
 import cn.cslg.util.CodecUtil;
+import cn.cslg.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * (OmsOrder)表服务实现类
@@ -96,7 +96,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     /**
      *
      * @param omsOrderBuyBooksParam dto
-     * @return
+     * @return boolean
      */
     @Override
     public boolean buyBooks(OmsOrderBuyBooksParam omsOrderBuyBooksParam) {
@@ -147,6 +147,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             item.setBookName(book.getName());
             item.setBookPic(book.getPic());
             item.setBookPrice(book.getPrice());
+            item.setProductCategoryId((long) 0);
             items.add(item);
         }
         items = omsOrderItemDao.saveItems(items);
@@ -179,5 +180,104 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         bmsBookDao.updateBooks(books);
 
         return true;
+    }
+
+    @Override
+    public List<OmsOrder> searchOrder(String content, int page, int pageSize) {
+        String hql = "select order from OmsOrder as order where " +
+                "order.memberUsername like ?0 " +
+                "or order.orderSn like ?1 ";
+        Object[] params = {
+                "%" + content + "%",
+                "%" + content + "%"};
+
+        return omsOrderDao.findAll(OmsOrder.class, hql, params, pageSize * (page - 1), pageSize);
+    }
+
+    @Override
+    public void deleteOrders(List<OmsOrder> orders) {
+        omsOrderDao.updateOrders(orders);
+    }
+
+    @Override
+    public void checkBalance2Shop() {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, -14);
+        logger.debug("checkBalance2Shop date = {}", calendar.get(Calendar.DATE));
+
+        String hql = "select order from OmsOrder as order where " +
+                "order.deleteStatus = 0 " +
+                "and order.status = 1 " +
+                "and order.paymemtTime < ?0 ";
+        Object [] params = {calendar.getTime()};
+
+        List<OmsOrder> orders = omsOrderDao.findAll(OmsOrder.class,
+                hql, params,
+                0, 0);
+        logger.debug("checkBalance2Shop ordersSize = {}", orders.size());
+
+        // 获取对应订单内容
+        List<OmsOrderItem> orderItems = omsOrderItemDao.queryItemsByOrders(orders);
+
+        Map<Long, UmsMember> members = new HashMap<>();
+
+        // Fixme: 修复内容
+        for (int i = 0; i < orderItems.size(); i++) {
+            OmsOrderItem item = orderItems.get(i);
+
+            UmsMember member = null;
+            if (members.containsKey(item.getMemberId())) {
+                member = members.get(item.getMemberId());
+            } else {
+                member = umsMemberDao.findById(UmsMember.class, item.getMemberId());
+            }
+            member.setBalance(member.getBalance() + item.getBookPrice());
+            members.put(member.getId(), member);
+            item.setProductCategoryId((long) 2);
+        }
+        logger.debug("checkBalance2Shop membersSize = {}", members.size());
+
+        omsOrderItemDao.updateItems(orderItems);
+        List<UmsMember> updateMembers = new ArrayList<>(members.values());
+
+        umsMemberDao.updateUmsMembers(updateMembers);
+    }
+
+    @Override
+    public List<OmsBookParam> getMyOrders(long memberId) {
+        List<BmsBook> books = bmsBookDao.findByProperties(BmsBook.class,
+                new String[]{"memberId", "publishStatus", "deleteStatus"},
+                new Object[] {memberId, 0, 1});
+
+        List<OmsOrderItem> orderItems = new ArrayList<>();
+
+        for (BmsBook book
+                : books
+             ) {
+            orderItems.addAll(
+                    omsOrderItemDao.findByProperties(OmsOrderItem.class,
+                    new String[]{"bookId", "productCategoryId"},
+                    new Object[]{book.getId(), (long)0}));
+        }
+
+        List<OmsBookParam> result = new ArrayList<>();
+        if (CollectionUtil.isEmpty(orderItems)) {
+            return result;
+        }
+
+        for (OmsOrderItem item :
+                orderItems) {
+            OmsOrder order = omsOrderDao.findById(OmsOrder.class, item.getOrderId());
+            OmsBookParam param = new OmsBookParam();
+            param.setBookName(item.getBookName());
+            param.setBookPrice(item.getBookPrice());
+            param.setPaymemtTime(order.getPaymemtTime());
+            param.setItemId(item.getId());
+            param.setBookPic(item.getBookPic());
+            result.add(param);
+        }
+
+        return result;
     }
 }

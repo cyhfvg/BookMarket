@@ -1,6 +1,7 @@
 package cn.cslg.controller;
 
 import cn.cslg.dao.OmsOrderItemDao;
+import cn.cslg.dto.BmsBookDeleteBooksParam;
 import cn.cslg.dto.BmsBookSubmitParam;
 import cn.cslg.dto.BmsBookUpdateAlbumsParam;
 import cn.cslg.dto.MemberBookActionParam;
@@ -157,6 +158,40 @@ public class BmsBookController implements ApplicationContextAware{
         Response response = new Response();
         Map<String, Object> map = bmsBookService.searchBooks(memberId, searchText,page, pageSize);
         return response.success(map);
+    }
+
+    /**
+     * 管理员根据内容搜索书籍
+     * @param content 内容
+     * @param page 页码
+     * @param pageSize 页长
+     * @return Response
+     */
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public Response adminSearchBook(@RequestParam("content") String content, @RequestParam("page") int page,
+                                 @RequestParam("pageSize") int pageSize) {
+        Response response = new Response();
+        List<BmsBook> list = bmsBookService.adminSearchBook(content, page, pageSize);
+        if (CollectionUtil.isEmpty(list)) {
+            return response.failure("无内容");
+        }
+        return response.success(list);
+    }
+
+    /**
+     * 批量删除书籍
+     * @param bmsBookDeleteBooksParam 书籍列表dto
+     * @return Response
+     */
+    @RequestMapping(value = "/deleteBooks", method = RequestMethod.PATCH)
+    public Response deleteBooks(@RequestBody BmsBookDeleteBooksParam bmsBookDeleteBooksParam) {
+        Response response = new Response();
+        List<BmsBook> books = bmsBookDeleteBooksParam.getBooks();
+        for (int i = 0; i < books.size(); i++) {
+            books.get(i).setDeleteStatus(1);
+        }
+        bmsBookService.deleteBooks(books);
+        return response.success();
     }
 
     @Override
