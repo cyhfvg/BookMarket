@@ -1,5 +1,6 @@
 package cn.cslg.controller;
 
+import cn.cslg.dto.OmsOrderItemSendParam;
 import cn.cslg.model.OmsOrderItem;
 import cn.cslg.service.OmsOrderItemService;
 
@@ -41,6 +42,21 @@ public class OmsOrderItemController implements ApplicationContextAware{
     @RequestMapping(value = "/selectOne", method = RequestMethod.GET)
     public Response selectOne(Long id) {
         return new Response().failure("");
+    }
+
+    /**
+     * 用户发货书籍
+     * @param omsOrderItemSendParam dto
+     * @return Response
+     */
+    @RequestMapping(value = "/sendBook", method = RequestMethod.PATCH)
+    public Response sendBook(@RequestBody OmsOrderItemSendParam omsOrderItemSendParam) {
+        long itemId = omsOrderItemSendParam.getItemId();
+        OmsOrderItem item = omsOrderItemService.queryById(itemId);
+        // 设置为1 表示 已发货
+        item.setProductCategoryId((long) 1);
+        omsOrderItemService.update(item);
+        return new Response().success();
     }
     
     @Override
