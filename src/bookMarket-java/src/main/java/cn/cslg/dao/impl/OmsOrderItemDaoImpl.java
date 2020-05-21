@@ -42,9 +42,18 @@ public class OmsOrderItemDaoImpl extends GenericDaoImpl<OmsOrderItem, Long> impl
                 orders) {
             DetachedCriteria dc = DetachedCriteria.forEntityName(OmsOrderItem.class.getName());
             dc.add(Restrictions.eq("orderId", order.getId()));
+            dc.add(Restrictions.eq("productCategoryId", (long)1));
             List<OmsOrderItem> result = (List<OmsOrderItem>) super.getHibernateTemplate().findByCriteria(dc, 0, 0);
             list.addAll(result);
         }
         return list;
+    }
+
+    @Override
+    public void updateItems(List<OmsOrderItem> items) {
+        for (OmsOrderItem item :
+                items) {
+            super.getHibernateTemplate().update(item);
+        }
     }
 }

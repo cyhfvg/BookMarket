@@ -27,4 +27,10 @@ public interface OmsOrderItemDao extends GenericDao<OmsOrderItem, Long>{
      */
     List<OmsOrderItem> queryItemsByOrders(List<OmsOrder> orders);
 
+    /**
+     * 批量更新内容
+     * @param items 更新实体
+     */
+    void updateItems(List<OmsOrderItem> items);
+
 }

@@ -194,26 +194,26 @@ router.post("/notify", (req, res) => {
   let postData = req.body;
   if (postData.trade_status === "TRADE_SUCCESS") {
     let data = req.body; // 订单信息
-    let charge = total_amount * 100;
-    axios
-      .patch(
-        "/umsMember/charge",
-        {
-          id: userId,
-          charge: charge,
-        },
-        {
-          headers: {
-            "X-Token": token,
-          },
-        }
-      )
-      .then((response) => {
-        res.send("success");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    let charge = postData.total_amount * 100;
+    // axios
+    //   .patch(
+    //     "/umsMember/charge",
+    //     {
+    //       id: userId,
+    //       charge: charge,
+    //     },
+    //     {
+    //       headers: {
+    //         "X-Token": token,
+    //       },
+    //     }
+    //   )
+    //   .then((response) => {
+    //     res.send("success");
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //   });
 
     console.log("支付完成！");
   }
