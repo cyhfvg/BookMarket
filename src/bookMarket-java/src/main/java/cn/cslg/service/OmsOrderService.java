@@ -1,5 +1,6 @@
 package cn.cslg.service;
 
+import cn.cslg.dto.OmsBookParam;
 import cn.cslg.dto.OmsOrderBuyBooksParam;
 import cn.cslg.model.OmsOrder;
 import java.util.List;
@@ -75,4 +76,14 @@ public interface OmsOrderService {
      */
     void deleteOrders(List<OmsOrder> orders);
 
+    /**
+     * 将满14天的书籍余额交给商家用户
+     */
+    void checkBalance2Shop();
+
+    /**
+     * 获取用户的待发货书籍
+     * @param memberId 用户id
+     */
+    List<OmsBookParam> getMyOrders(long memberId);
 }
