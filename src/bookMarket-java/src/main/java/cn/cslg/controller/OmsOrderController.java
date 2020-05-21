@@ -1,6 +1,7 @@
 package cn.cslg.controller;
 
 import cn.cslg.dto.BmsBookDeleteBooksParam;
+import cn.cslg.dto.OmsBookParam;
 import cn.cslg.dto.OmsOrderBuyBooksParam;
 import cn.cslg.dto.OmsOrderDeleteOrdersParam;
 import cn.cslg.model.BmsBook;
@@ -67,7 +68,7 @@ public class OmsOrderController implements ApplicationContextAware{
     }
 
     /**
-     * 获取分页列表用户
+     * 获取分页列表
      * @param page 页码
      * @param pageSize 页长
      * @return Response
@@ -111,6 +112,28 @@ public class OmsOrderController implements ApplicationContextAware{
         }
         omsOrderService.deleteOrders(orders);
         return response.success();
+    }
+
+    /**
+     * 由脚本调用
+     * 将余额交送给商家
+     */
+    @RequestMapping(value = "/checkBalance", method = RequestMethod.PATCH)
+    public void checkBalance2Shop() {
+        logger.debug("omsOrder checkBalance2Shop invoked");
+        omsOrderService.checkBalance2Shop();
+    }
+
+    /**
+     * 用户（商家身份）的订单处理
+     * @param memberId 用户id
+     * @return Response
+     */
+    @RequestMapping(value = "/getMyOrder", method = RequestMethod.GET)
+    public Response getMyOrder(@RequestParam("memberId") long memberId) {
+        Response response = new Response();
+        List<OmsBookParam> result = omsOrderService.getMyOrders(memberId);
+        return response.success(result);
     }
     
     @Override
