@@ -1,0 +1,18 @@
+###
+PATCH http://localhost:8080/bookMarket-java/omsOrder/checkBalance
+Content-Type: application/json
+
+{}
+###
+GET http://localhost:8080/bookMarket-java/omsOrder/getMyOrder?memberId=42
+Content-Type: application/json
+
+###
+PATCH http://localhost:8080/bookMarket-java/omsOrderItem/sendBook
+Content-Type: application/json
+
+{
+"itemId": 15
+}
+
+###

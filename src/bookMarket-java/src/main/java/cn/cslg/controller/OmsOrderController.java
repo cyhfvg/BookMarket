@@ -1,12 +1,16 @@
 package cn.cslg.controller;
 
+import cn.cslg.dto.BmsBookDeleteBooksParam;
+import cn.cslg.dto.OmsBookParam;
 import cn.cslg.dto.OmsOrderBuyBooksParam;
+import cn.cslg.dto.OmsOrderDeleteOrdersParam;
 import cn.cslg.model.BmsBook;
 import cn.cslg.model.OmsOrder;
 import cn.cslg.model.UmsMember;
 import cn.cslg.service.OmsOrderService;
 
 import cn.cslg.bean.Response;
+import cn.cslg.util.CollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -64,7 +68,7 @@ public class OmsOrderController implements ApplicationContextAware{
     }
 
     /**
-     * 获取分页列表用户
+     * 获取分页列表
      * @param page 页码
      * @param pageSize 页长
      * @return Response
@@ -74,6 +78,62 @@ public class OmsOrderController implements ApplicationContextAware{
         Response response = new Response();
         List<OmsOrder> list = omsOrderService.queryAllByLimit(pageSize * (page - 1), pageSize);
         return response.success(list);
+    }
+
+    /**
+     * 管理员根据内容搜索订单
+     * @param content 内容
+     * @param page 页码
+     * @param pageSize 页长
+     * @return Response
+     */
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public Response searchOrder(@RequestParam("content") String content, @RequestParam("page") int page,
+                                 @RequestParam("pageSize") int pageSize) {
+        Response response = new Response();
+        List<OmsOrder> list = omsOrderService.searchOrder(content, page, pageSize);
+        if (CollectionUtil.isEmpty(list)) {
+            return response.failure("无内容");
+        }
+        return response.success(list);
+    }
+
+    /**
+     * 批量删除订单
+     * @param OmsOrderDeleteOrdersParam 订单列表dto
+     * @return Response
+     */
+    @RequestMapping(value = "/deleteOrders", method = RequestMethod.PATCH)
+    public Response deleteOrders(@RequestBody OmsOrderDeleteOrdersParam OmsOrderDeleteOrdersParam) {
+        Response response = new Response();
+        List<OmsOrder> orders = OmsOrderDeleteOrdersParam.getOrders();
+        for (int i = 0; i < orders.size(); i++) {
+            orders.get(i).setDeleteStatus(1);
+        }
+        omsOrderService.deleteOrders(orders);
+        return response.success();
+    }
+
+    /**
+     * 由脚本调用
+     * 将余额交送给商家
+     */
+    @RequestMapping(value = "/checkBalance", method = RequestMethod.PATCH)
+    public void checkBalance2Shop() {
+        logger.debug("omsOrder checkBalance2Shop invoked");
+        omsOrderService.checkBalance2Shop();
+    }
+
+    /**
+     * 用户（商家身份）的订单处理
+     * @param memberId 用户id
+     * @return Response
+     */
+    @RequestMapping(value = "/getMyOrder", method = RequestMethod.GET)
+    public Response getMyOrder(@RequestParam("memberId") long memberId) {
+        Response response = new Response();
+        List<OmsBookParam> result = omsOrderService.getMyOrders(memberId);
+        return response.success(result);
     }
     
     @Override
