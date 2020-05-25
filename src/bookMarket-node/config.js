@@ -11,11 +11,11 @@ module.exports = {
     jiSuApiIpPath: "/ip/location",
     jiSuApiBookNamePath: 'isbn/search',
     jiSuApiBookIsbnPath: '/isbn/query',
-    jiSuApiAppKey: "148a5d000c527ed5",
+    jiSuApiAppKey: "xxxxxxxxxxxxxx",
     // 阿里云 OSS 配置项
     ossRegion: 'oss-cn-shanghai',
-    ossAccessKeyId: 'LTAI4FtQ9cPJRn3E7r6R7swT',
-    ossAccessKeySecret: 'ZYOq5vVHnQcAsszh4hXuTVmp9Bx1u7',
+    ossAccessKeyId: 'xxxxxxxxxxxxxxxxxx',
+    ossAccessKeySecret: 'xxxxxxxxxxxxxxxxxxxx',
     ossBucket: 'book-market',
 
 }
