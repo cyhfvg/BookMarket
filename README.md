@@ -25,7 +25,6 @@ bookMarket-java是系统的java后台API
 1. 使用*docs/sql/*下sql备份创建数据库。  
 或根据*bookMarket-java/src/main/resources/config/hibernate.properties*配置信息创建数据库
 1. 在*bookMarket-java/src/main/resources/config/hibernate.properties*中更新数据库配置
-1. 使用maven命令补全pom.xml中指定的依赖包。或使用*dist/bookMarket-java.war*解压？
 1. 使用maven命令重新打包*bookMarket-java.war*，放于tomcat目录下，启动tomcat,tomcat自动解压war
 
 ### bookMarket-node
