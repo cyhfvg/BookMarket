@@ -19,7 +19,7 @@ updates:
       time: "01:00"
       timezone: "Asia/Shanghai"
 
-- package-ecosystem: "npm"
+  - package-ecosystem: "npm"
     directory: "/src/bookMarket-node/"
     schedule:
       interval: "monthly"
