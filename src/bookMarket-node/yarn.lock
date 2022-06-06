@@ -2,6 +2,19 @@
 # yarn lockfile v1
 
 
+"@fidm/asn1@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@fidm/asn1/-/asn1-1.0.4.tgz#afbf9f10a0cb83aca2114c6f59a97dd48eb7dd84"
+  integrity sha512-esd1jyNvRb2HVaQGq2Gg8Z0kbQPXzV9Tq5Z14KNIov6KfFD6PTaRIO8UpcsYiTNzOqJpmyzWgVTrUwFV3UF4TQ==
+
+"@fidm/x509@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@fidm/x509/-/x509-1.2.1.tgz#ae546a661005d776cc4dca674b399c1132c1e0e4"
+  integrity sha512-nwc2iesjyc9hkuzcrMCBXQRn653XuAUKorfWM8PZyJawiy1QzLj4vahwzaI25+pfpwOLvMzbJ0uKpWLDNmo16w==
+  dependencies:
+    "@fidm/asn1" "^1.0.4"
+    tweetnacl "^1.0.1"
+
 "@types/node@^9.6.0":
   version "9.6.55"
   resolved "https://r.cnpmjs.org/@types/node/download/@types/node-9.6.55.tgz#7cc1358c9c18e71f6c020e410962971863232cf5"
@@ -82,17 +95,21 @@ ali-oss@^6.6.0:
     utility "^1.8.0"
     xml2js "^0.4.16"
 
-alipay-sdk@^3.0.8:
-  version "3.0.8"
-  resolved "https://r.cnpmjs.org/alipay-sdk/download/alipay-sdk-3.0.8.tgz#a90e612413433a67782ca31bbff0c2e2796ebb26"
-  integrity sha1-qQ5hJBNDOmd4LKMbv/DC4nluuyY=
+alipay-sdk@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/alipay-sdk/-/alipay-sdk-3.2.0.tgz#2879b39431c7ebec5e26315087844980c52399a2"
+  integrity sha512-JnTXyn+t+3mkQReWvw6n56e1QlxXlJ/jg1G2Q6/Rbf6aBABaC7VlMhIPs9OTBLFnVbIADM95goTigtoGQYVjyA==
   dependencies:
+    "@fidm/x509" "^1.2.1"
     "@types/node" "^9.6.0"
+    bignumber.js "^9.0.0"
     camelcase-keys "^4.2.0"
+    crypto-js "^4.0.0"
     decamelize "^2.0.0"
     is "^3.2.1"
     is-json "^2.0.1"
     isuri "^2.0.3"
+    lodash "^4.17.20"
     moment "^2.16.0"
     request "^2.86.0"
     snakecase-keys "^1.1.1"
@@ -176,6 +193,11 @@ bcrypt-pbkdf@^1.0.0:
   integrity sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
   dependencies:
     tweetnacl "^0.14.3"
+
+bignumber.js@^9.0.0:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.2.tgz#71c6c6bed38de64e24a65ebe16cfcf23ae693673"
+  integrity sha512-GAcQvbpsM0pUb0zw1EI0KhQEZ+lRwR5fYaAp3vPOYuP7aDvGy6cVN6XHLauvF8SOga2y0dcLcjt3iQDTSEliyw==
 
 body-parser@1.19.0:
   version "1.19.0"
@@ -354,6 +376,11 @@ cors@^2.8.5:
   dependencies:
     object-assign "^4"
     vary "^1"
+
+crypto-js@^4.0.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
+  integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==
 
 dashdash@^1.12.0:
   version "1.14.1"
@@ -1004,7 +1031,7 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lodash@^4.17.21:
+lodash@^4.17.20, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -1669,6 +1696,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://r.cnpmjs.org/tweetnacl/download/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+
+tweetnacl@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 type-check@~0.3.2:
   version "0.3.2"
