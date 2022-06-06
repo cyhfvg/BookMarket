@@ -5,15 +5,23 @@
 
 version: 2
 updates:
-    - package-ecosystem: "maven"
-        directory: "/src/bookMarket-java/"
-        schedule:
-            interval: "daily"
-    - package-ecosystem: "npm"
-        directory: "/src/bookMarket-node-admin/"
-        schedule:
-            interval: "daily"
-    - package-ecosystem: "npm"
-        directory: "/src/bookMarket-node/"
-        schedule:
-            interval: "daily"
+  - package-ecosystem: "maven"
+    directory: "/src/bookMarket-java/"
+    schedule:
+      interval: "monthly"
+      time: "01:00"
+      timezone: "Asia/Shanghai"
+
+  - package-ecosystem: "npm"
+    directory: "/src/bookMarket-node-admin/"
+    schedule:
+      interval: "monthly"
+      time: "01:00"
+      timezone: "Asia/Shanghai"
+
+- package-ecosystem: "npm"
+    directory: "/src/bookMarket-node/"
+    schedule:
+      interval: "monthly"
+      time: "01:00"
+      timezone: "Asia/Shanghai"
