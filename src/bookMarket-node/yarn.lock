@@ -94,10 +94,10 @@ ali-oss@^6.17.1:
     utility "^1.8.0"
     xml2js "^0.4.16"
 
-alipay-sdk@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/alipay-sdk/-/alipay-sdk-3.2.0.tgz#2879b39431c7ebec5e26315087844980c52399a2"
-  integrity sha512-JnTXyn+t+3mkQReWvw6n56e1QlxXlJ/jg1G2Q6/Rbf6aBABaC7VlMhIPs9OTBLFnVbIADM95goTigtoGQYVjyA==
+alipay-sdk@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/alipay-sdk/-/alipay-sdk-3.3.0.tgz#39af73124b41bef496542fbf523c8940af8bd095"
+  integrity sha512-5G3eJskCvLuQXEaOPRlooUEoLgL776WeQktPSgWeMWbkXayjMhQE4k+desLGSaAz8TZjS5l6/TrnDLWCF9NGSw==
   dependencies:
     "@fidm/x509" "^1.2.1"
     "@types/node" "^9.6.0"
@@ -105,6 +105,7 @@ alipay-sdk@^3.2.0:
     camelcase-keys "^4.2.0"
     crypto-js "^4.0.0"
     decamelize "^2.0.0"
+    iconv-lite "^0.4.24"
     is "^3.2.1"
     is-json "^2.0.1"
     isuri "^2.0.3"
@@ -918,7 +919,7 @@ humanize-ms@^1.2.0, humanize-ms@^1.2.1:
   dependencies:
     ms "^2.0.0"
 
-iconv-lite@0.4.24, iconv-lite@^0.4.15:
+iconv-lite@0.4.24, iconv-lite@^0.4.15, iconv-lite@^0.4.24:
   version "0.4.24"
   resolved "https://r.cnpmjs.org/iconv-lite/download/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
   integrity sha1-ICK0sl+93CHS9SSXSkdKr+czkIs=
