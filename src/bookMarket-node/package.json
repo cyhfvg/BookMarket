@@ -2,7 +2,7 @@
   "name": "book-market-node",
   "dependencies": {
     "ali-oss": "^6.17.1",
-    "alipay-sdk": "^3.2.0",
+    "alipay-sdk": "^3.3.0",
     "axios": "^1.3.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
